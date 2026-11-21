@@ -1953,3 +1953,170 @@ async def localization_qc_endpoint(req: LocalizationQCAuditRequest):
 async def list_localization_jobs_endpoint(project_id: str):
     jobs = db.list_localization_jobs(project_id)
     return {"project_id": project_id, "jobs": jobs}
+
+
+# ==============================================================================
+# Part 14 — Quality Control, Rendering & Delivery Endpoints
+# ==============================================================================
+
+class RenderPlanCompileRequest(BaseModel):
+    project_id: UUID
+    render_profile_id: str = "youtube_1080p"
+    project_metadata: Dict[str, Any] = Field(default_factory=dict)
+    timeline_id: Optional[UUID] = None
+
+class RenderJobSubmitRequest(BaseModel):
+    project_id: UUID
+    render_profile_id: str
+    priority: int = 5
+    sequence_id: Optional[UUID] = None
+    idempotency_key: Optional[str] = None
+
+class DeliveryPackageCreateRequest(BaseModel):
+    project_id: UUID
+    render_job_id: UUID
+    master_file_path: str
+    sidecars: List[Dict[str, str]] = Field(default_factory=list)
+    output_directory: Optional[str] = None
+    technical_specs: Optional[Dict[str, Any]] = None
+    qc_summary: Optional[Dict[str, Any]] = None
+
+class MediaQCAuditRequest(BaseModel):
+    project_id: UUID
+    file_path: str
+    asset_id: Optional[UUID] = None
+    policy_name: str = "STREAMING_STANDARD"
+    expected_checksum: Optional[str] = None
+    video: Optional[Dict[str, Any]] = None
+    audio: Optional[Dict[str, Any]] = None
+
+
+@app.post("/api/v1/rendering/plan")
+async def compile_render_plan_endpoint(req: RenderPlanCompileRequest):
+    import departments
+    from departments.rendering_delivery.service import RenderingDeliveryService
+    from departments.rendering_delivery.interface import RenderingDeliveryRequest
+    svc = RenderingDeliveryService()
+    resp = await svc.execute(RenderingDeliveryRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "compile_render_plan",
+            "render_profile_id": req.render_profile_id,
+            "project_metadata": req.project_metadata,
+            "timeline_id": req.timeline_id,
+        }
+    ))
+    if resp.success and "render_plan" in resp.data:
+        plan = resp.data["render_plan"]
+        db.save_render_plan(
+            plan_id=plan["plan_id"],
+            project_id=str(req.project_id),
+            render_profile_id=req.render_profile_id,
+            stages=plan["stages"],
+            estimated_duration_sec=plan["estimated_duration_sec"],
+            estimated_cost_usd=plan["estimated_cost_usd"],
+            timeline_id=str(req.timeline_id) if req.timeline_id else None,
+        )
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/rendering/jobs", status_code=status.HTTP_202_ACCEPTED)
+async def submit_render_job_endpoint(req: RenderJobSubmitRequest):
+    import departments
+    from departments.rendering_delivery.service import RenderingDeliveryService
+    from departments.rendering_delivery.interface import RenderingDeliveryRequest
+    svc = RenderingDeliveryService()
+    resp = await svc.execute(RenderingDeliveryRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "submit_render_job",
+            "render_profile_id": req.render_profile_id,
+            "priority": req.priority,
+            "sequence_id": req.sequence_id,
+            "idempotency_key": req.idempotency_key,
+        }
+    ))
+    return resp.model_dump(mode="json")
+
+
+@app.get("/api/v1/rendering/profiles")
+async def list_render_profiles_endpoint():
+    import departments
+    from departments.rendering_delivery.profiles.profile_registry import RenderProfileRegistry
+    profiles = RenderProfileRegistry.list_profiles()
+    return {"profiles": [p.model_dump(mode="json") for p in profiles]}
+
+
+@app.post("/api/v1/rendering/delivery/package", status_code=status.HTTP_201_CREATED)
+async def create_delivery_package_endpoint(req: DeliveryPackageCreateRequest):
+    import departments
+    from departments.rendering_delivery.service import RenderingDeliveryService
+    from departments.rendering_delivery.interface import RenderingDeliveryRequest
+    svc = RenderingDeliveryService()
+    resp = await svc.execute(RenderingDeliveryRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "package_delivery",
+            "job_id": req.render_job_id,
+            "master_file_path": req.master_file_path,
+            "sidecars": req.sidecars,
+            "output_directory": req.output_directory,
+            "technical_specs": req.technical_specs,
+            "qc_summary": req.qc_summary,
+        }
+    ))
+    if resp.success and "delivery_package" in resp.data:
+        pkg = resp.data["delivery_package"]
+        db.save_delivery_package(
+            package_id=pkg["package_id"],
+            delivery_id=pkg["delivery_id"],
+            project_id=str(req.project_id),
+            render_job_id=str(req.render_job_id),
+            master_file_path=pkg["master_file_path"],
+            manifest_path=pkg["manifest_path"],
+            sidecars=pkg["sidecar_files"],
+            total_size_bytes=pkg["total_size_bytes"],
+        )
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/qc/audit")
+async def media_qc_audit_endpoint(req: MediaQCAuditRequest):
+    import departments
+    from departments.quality_control.service import QualityControlService
+    from departments.quality_control.interface import QualityControlRequest
+    svc = QualityControlService()
+    resp = await svc.execute(QualityControlRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "audit_media_file",
+            "file_path": req.file_path,
+            "asset_id": req.asset_id,
+            "policy_name": req.policy_name,
+            "expected_checksum": req.expected_checksum,
+            "video": req.video,
+            "audio": req.audio,
+        }
+    ))
+    if resp.success and "qc_report" in resp.data:
+        rep = resp.data["qc_report"]
+        db.save_qc_report(
+            report_id=rep["report_id"],
+            project_id=str(req.project_id),
+            asset_id=rep["asset_id"],
+            passed=rep["passed"],
+            defects=rep["defects"],
+            critical_count=rep["critical_count"],
+            error_count=rep["error_count"],
+            warning_count=rep["warning_count"],
+            metrics=rep["metrics"],
+        )
+    return resp.model_dump(mode="json")
+
+
+@app.get("/api/v1/qc/reports/{report_id}")
+async def get_qc_report_endpoint(report_id: str):
+    rep = db.get_qc_report(report_id)
+    if not rep:
+        raise HTTPException(status_code=404, detail=f"QC report '{report_id}' not found.")
+    return {"qc_report": rep}

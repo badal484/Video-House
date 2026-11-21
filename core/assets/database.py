@@ -2405,6 +2405,52 @@ class AssetDatabase:
 
             CREATE INDEX IF NOT EXISTS idx_loc_projects ON localization_projects(project_id);
             CREATE INDEX IF NOT EXISTS idx_sub_tracks ON subtitle_tracks(project_id);
+
+            -- Part 14 Rendering & Quality Control Tables
+            CREATE TABLE IF NOT EXISTS render_plans (
+                plan_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                timeline_id TEXT,
+                render_profile_id TEXT NOT NULL,
+                stages_json TEXT NOT NULL,
+                estimated_duration_sec REAL DEFAULT 0.0,
+                estimated_cost_usd REAL DEFAULT 0.0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS qc_reports (
+                report_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                asset_id TEXT NOT NULL,
+                render_job_id TEXT,
+                passed INTEGER NOT NULL,
+                total_issues INTEGER DEFAULT 0,
+                critical_count INTEGER DEFAULT 0,
+                error_count INTEGER DEFAULT 0,
+                warning_count INTEGER DEFAULT 0,
+                defects_json TEXT NOT NULL,
+                metrics_json TEXT,
+                inspected_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS delivery_packages (
+                package_id TEXT PRIMARY KEY,
+                delivery_id TEXT NOT NULL,
+                project_id TEXT NOT NULL,
+                render_job_id TEXT NOT NULL,
+                master_file_path TEXT NOT NULL,
+                sidecars_json TEXT,
+                manifest_path TEXT NOT NULL,
+                total_size_bytes INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_render_plans_project ON render_plans(project_id);
+            CREATE INDEX IF NOT EXISTS idx_qc_reports_project ON qc_reports(project_id);
+            CREATE INDEX IF NOT EXISTS idx_delivery_packages_project ON delivery_packages(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -17106,5 +17152,193 @@ class AssetDatabase:
                 "format": row["format"],
                 "style_preset": row["style_preset"],
                 "cues": json.loads(row["cues_json"]),
+                "created_at": row["created_at"],
+            }
+
+    # --- Part 14 Rendering & Quality Control CRUD Methods ---
+
+    def save_render_plan(
+        self,
+        plan_id: str,
+        project_id: str,
+        render_profile_id: str,
+        stages: List[Dict[str, Any]],
+        estimated_duration_sec: float = 0.0,
+        estimated_cost_usd: float = 0.0,
+        timeline_id: Optional[str] = None,
+    ) -> None:
+        """Saves a compiled render plan."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO render_plans (
+                    plan_id, project_id, timeline_id, render_profile_id,
+                    stages_json, estimated_duration_sec, estimated_cost_usd, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(plan_id),
+                str(project_id),
+                str(timeline_id) if timeline_id else None,
+                render_profile_id,
+                json.dumps(stages),
+                estimated_duration_sec,
+                estimated_cost_usd,
+                now,
+            ))
+
+    def get_render_plan(self, plan_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a render plan by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM render_plans WHERE plan_id = ?",
+                (str(plan_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "plan_id": row["plan_id"],
+                "project_id": row["project_id"],
+                "timeline_id": row["timeline_id"],
+                "render_profile_id": row["render_profile_id"],
+                "stages": json.loads(row["stages_json"]),
+                "estimated_duration_sec": row["estimated_duration_sec"],
+                "estimated_cost_usd": row["estimated_cost_usd"],
+                "created_at": row["created_at"],
+            }
+
+    def save_qc_report(
+        self,
+        report_id: str,
+        project_id: str,
+        asset_id: str,
+        passed: bool,
+        defects: List[Dict[str, Any]],
+        critical_count: int = 0,
+        error_count: int = 0,
+        warning_count: int = 0,
+        render_job_id: Optional[str] = None,
+        metrics: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Saves an automated QC report."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO qc_reports (
+                    report_id, project_id, asset_id, render_job_id, passed, total_issues,
+                    critical_count, error_count, warning_count, defects_json, metrics_json, inspected_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(report_id),
+                str(project_id),
+                str(asset_id),
+                str(render_job_id) if render_job_id else None,
+                1 if passed else 0,
+                len(defects),
+                critical_count,
+                error_count,
+                warning_count,
+                json.dumps(defects),
+                json.dumps(metrics or {}),
+                now,
+            ))
+
+    def get_qc_report(self, report_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a QC report by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM qc_reports WHERE report_id = ?",
+                (str(report_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "report_id": row["report_id"],
+                "project_id": row["project_id"],
+                "asset_id": row["asset_id"],
+                "render_job_id": row["render_job_id"],
+                "passed": bool(row["passed"]),
+                "total_issues": row["total_issues"],
+                "critical_count": row["critical_count"],
+                "error_count": row["error_count"],
+                "warning_count": row["warning_count"],
+                "defects": json.loads(row["defects_json"]),
+                "metrics": json.loads(row["metrics_json"] or "{}"),
+                "inspected_at": row["inspected_at"],
+            }
+
+    def list_qc_reports(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all QC reports for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM qc_reports WHERE project_id = ? ORDER BY inspected_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "report_id": r["report_id"],
+                    "project_id": r["project_id"],
+                    "asset_id": r["asset_id"],
+                    "render_job_id": r["render_job_id"],
+                    "passed": bool(r["passed"]),
+                    "total_issues": r["total_issues"],
+                    "critical_count": r["critical_count"],
+                    "error_count": r["error_count"],
+                    "warning_count": r["warning_count"],
+                    "defects": json.loads(r["defects_json"]),
+                    "metrics": json.loads(r["metrics_json"] or "{}"),
+                    "inspected_at": r["inspected_at"],
+                }
+                for r in rows
+            ]
+
+    def save_delivery_package(
+        self,
+        package_id: str,
+        delivery_id: str,
+        project_id: str,
+        render_job_id: str,
+        master_file_path: str,
+        manifest_path: str,
+        sidecars: Optional[List[Dict[str, Any]]] = None,
+        total_size_bytes: int = 0,
+    ) -> None:
+        """Saves a delivery package record."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO delivery_packages (
+                    package_id, delivery_id, project_id, render_job_id,
+                    master_file_path, sidecars_json, manifest_path, total_size_bytes, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(package_id),
+                delivery_id,
+                str(project_id),
+                str(render_job_id),
+                master_file_path,
+                json.dumps(sidecars or []),
+                manifest_path,
+                total_size_bytes,
+                now,
+            ))
+
+    def get_delivery_package(self, package_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a delivery package by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM delivery_packages WHERE package_id = ?",
+                (str(package_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "package_id": row["package_id"],
+                "delivery_id": row["delivery_id"],
+                "project_id": row["project_id"],
+                "render_job_id": row["render_job_id"],
+                "master_file_path": row["master_file_path"],
+                "sidecars": json.loads(row["sidecars_json"] or "[]"),
+                "manifest_path": row["manifest_path"],
+                "total_size_bytes": row["total_size_bytes"],
                 "created_at": row["created_at"],
             }

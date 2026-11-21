@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <g id="lyr_a7f4ef3c4435" opacity="1.000" transform="translate(960.00, 540.00)">
+  <g id="lyr_4f7f1fac73e5" opacity="1.000" transform="translate(960.00, 540.00)">
     <rect x="-40" y="-40" width="80" height="80" rx="8" fill="none" stroke="#00F0FF" stroke-width="4" transform="rotate(45)" />
     <circle cx="0" cy="0" r="16" fill="#FF007F" />
     <text x="0" y="80" font-family="Montserrat" font-size="36" font-weight="800" fill="#FFFFFF" letter-spacing="8" text-anchor="middle">NEBULA</text>

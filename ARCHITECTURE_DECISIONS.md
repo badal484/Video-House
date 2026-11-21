@@ -905,3 +905,56 @@ Chosen option: **Cryptographically Validated Biometric Consent Records (`Consent
 - Every voice profile requires a registered `BiometricConsentRecord` specifying talent name, permitted purposes, approved territories, and expiration date.
 - The `VoiceAssignmentManager` and `DubbingOrchestrator` query the consent manager prior to executing any synthesis; missing or expired authorizations raise `ConsentAuthorizationException`.
 - Exported dubbed audio and video deliverables embed provenance metadata and synthetic media markers.
+
+---
+
+## ADR-052: Separation of Timeline Intermediate Rendering from Target Delivery Encoding
+
+### Status
+Accepted & Implemented (Part 14)
+
+### Context & Problem Statement
+Directly rendering multi-track timelines, dissolved transitions, dynamic graphics, and color grades into final consumer distribution codecs (H.264, HEVC, AV1) introduces massive compute duplication. If a project requires multiple deliveries (e.g. YouTube 4K, YouTube Shorts 9:16, ProRes Master, Broadcast MXF), re-evaluating the timeline effects graph for every single profile is computationally prohibitive and leads to inconsistencies across formats.
+
+### Decision Outcome
+Chosen option: **Two-Stage Render Architecture: Intermediate Master Generation + Parallel Profile Transcoding (`RenderPlanCompiler`, `TimelineAdapter`)**.
+- **Stage 1 (Timeline Composite Master):** The non-linear editing engine (Part 05) and DCC bridges render the active timeline into an uncompressed or high-bitrate visually lossless mezzanine master (Apple ProRes 422 HQ / DNxHR HQX).
+- **Stage 2 (Target Transcoding):** The hardware-accelerated `EncodingEngine` ingests the intermediate master once and fans out transcode jobs to target profiles concurrently.
+- Re-exports or profile adjustments reuse the cached intermediate master without touching the creative timeline layers.
+
+---
+
+## ADR-053: Hardware-Accelerated VideoToolbox Pipelines on Apple Silicon with Deterministic CPU Fallback
+
+### Status
+Accepted & Implemented (Part 14)
+
+### Context & Problem Statement
+Final export rendering on CPU software encoders (`libx264`, `libx265`, `libsvtav1`) consumes 100% of CPU cores, slows execution down to sub-realtime rates (0.3x–0.8x), and generates substantial thermal throttling on local developer laptops (Apple M4 MacBook Pro). However, relying exclusively on proprietary hardware APIs breaks compatibility in headless Linux server environments.
+
+### Decision Outcome
+Chosen option: **Automatic Hardware-Accelerated Pipeline Detection with Software Fallback (`EncodingEngine`, `LocalRenderWorker`)**.
+- On macOS Apple Silicon, the encoding engine automatically routes jobs through Apple VideoToolbox ASIC hardware encoders (`h264_videotoolbox`, `hevc_videotoolbox`, `prores_videotoolbox`), achieving up to 345+ FPS at 1080p and 6x realtime speedups.
+- On Linux or non-Apple hardware, the engine seamlessly falls back to standard multi-threaded CPU software encoders (`libx264`, `libx265`, `prores_ks`).
+- Both paths enforce bit-for-bit identical container conventions: FastStart moov atom placement at file start (`-movflags +faststart`), closed GOP structures, and accurate NCLX color signaling tags (`colorprim`, `transfer`, `colormatrix`).
+
+---
+
+## ADR-054: Mandatory Preflight Validation and Gatekeeping Prior to Render Dispatch
+
+### Status
+Accepted & Implemented (Part 14)
+
+### Context & Problem Statement
+Large-scale video rendering and multi-profile encoding represent the most resource-intensive phase of the studio workflow. Dispatching long-running rendering jobs without verifying asset availability risks catastrophic failures midway through execution due to missing media files, uninstalled typography fonts, missing 3D LUT tables, or unlicensed third-party media assets, wasting expensive compute time and cloud spend.
+
+### Decision Outcome
+Chosen option: **Mandatory Preflight Project Gatekeeper (`PreflightValidator`)**.
+- Every render plan compilation executes a mandatory preflight pass before any worker is scheduled.
+- Checks include:
+  1. **Media Integrity:** Audits all timeline clip references against the file system and Central Asset Database to ensure 0% offline or missing assets.
+  2. **Font Availability:** Verifies that all fonts referenced in motion graphics and subtitle tracks exist in system or project font directories.
+  3. **LUT Resolution:** Confirms that 1D/3D `.cube` color lookup tables are accessible on disk.
+  4. **Commercial Licensing:** Validates that all incorporated assets have approved commercial licenses (`Apache-2.0`, `MIT`, `BSD`, `Commercial-Royalty-Free`) and explicitly rejects non-commercial (`CC-BY-NC`) or copyleft traps.
+- If preflight detects any blocking defect, the render job immediately transitions to `FAILED_PREFLIGHT`, preventing unnecessary compute consumption.
+

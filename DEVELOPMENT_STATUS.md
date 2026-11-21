@@ -352,3 +352,54 @@
 | **26. Shot Boundary Snapping** | Snaps cues within 3 frames to hard scene cuts | **PASSED** |
 | **27. Localization QC Audits** | Automated audit of CPS reading speed, CPL, overlaps, LUFS | **PASSED** |
 | **28. Database & Bridge Integration** | SQLite persistence, OpenTimelineIO, DSP mixing, Asset Store | **PASSED** |
+
+---
+
+## 9. Completed Deliverables in Part 14
+
+### Status: Complete & Verified
+- **Departments:** 18_quality_control & 19_rendering_delivery
+- **Implementation Date:** 2026-11-21
+- **All 35 Acceptance Criteria Checkpoints:** PASSED
+- **Total Platform Unit Tests:** 214/214 PASSED (100% pass rate in 9.844s)
+- **Documentation:** 29 technical research & architecture specifications in `docs/rendering_qc/`
+- **Acceptance Artifacts:** Standardized export samples in `test_artifacts/rendering_delivery/` (`sample_delivery_manifest.json`, `sample_technical_qc_report.json`)
+
+| Checkpoint | Target Feature | Verification Result |
+| :--- | :--- | :---: |
+| **1. Render Domain Models** | Strongly-typed RenderPlan, RenderJob, DeliveryPackage, DeliveryManifest models | **PASSED** |
+| **2. QC Domain Models** | Strongly-typed QCDefect, QCRule, QCPolicy, QCReport models | **PASSED** |
+| **3. Preflight Project Validation** | Audits timeline clip references, fonts, LUTs, and licenses before render | **PASSED** |
+| **4. Preflight Offline Media Catch** | Detects and flags missing media files to abort expensive renders early | **PASSED** |
+| **5. Preflight License Clearance** | Strictly rejects non-commercial (CC-BY-NC) assets prior to render dispatch | **PASSED** |
+| **6. Profile Registry Standards** | ProRes 422 HQ, ProRes 4444, DNxHR HQX, YouTube 1080p/Shorts, MXF, FFV1 | **PASSED** |
+| **7. Multi-Format Profiles** | Master, broadcast, streaming, social vertical, and web preview presets | **PASSED** |
+| **8. Render Plan DAG Compilation** | Compiles requested profiles into dependency DAG with intermediate reuse | **PASSED** |
+| **9. Compute Cost Estimation** | Accurately calculates render time and monetary cost based on profile parameters | **PASSED** |
+| **10. Render Queue Prioritization** | Priority-ranked asynchronous queue with concurrency limits | **PASSED** |
+| **11. Render SHA-256 Idempotency** | Cryptographic hash caching prevents duplicate rendering of identical tasks | **PASSED** |
+| **12. Checkpoint & Job Recovery** | Stage checkpoints and automated exponential backoff retries | **PASSED** |
+| **13. Cancellation File Cleanup** | Atomic purge of partial/corrupted output files upon job cancellation | **PASSED** |
+| **14. Hardware-Accelerated VideoToolbox**| Apple Silicon M4 hardware encoder (`videotoolbox`) acceleration (345+ FPS) | **PASSED** |
+| **15. CPU Fallback Encoding** | Graceful multi-threaded CPU software fallback (`libx264`, `libx265`, `prores_ks`) | **PASSED** |
+| **16. FFmpeg Argument Pipelines** | Standardized command generation with FastStart, closed GOP, and NCLX tags | **PASSED** |
+| **17. NCLX Color Signaling** | Embeds exact colorprim, transfer, and colormatrix tags in container | **PASSED** |
+| **18. Timeline Intermediate Render** | Renders OpenTimelineIO timeline to high-bitrate mezzanine master | **PASSED** |
+| **19. Multi-Profile Transcoding** | Ingests intermediate master once and fans out transcode jobs | **PASSED** |
+| **20. Delivery Package Assembly** | Bundles master video, audio stems, subtitle sidecars, and logs | **PASSED** |
+| **21. Delivery Manifest & Checksums** | Generates machine-readable `delivery_manifest.json` with SHA-256 hashes | **PASSED** |
+| **22. File Integrity Inspection** | Verifies file existence, minimum size thresholds, and SHA-256 hashes | **PASSED** |
+| **23. Video Defect Detection** | Detects black frames, freeze frames, and flash frame anomalies | **PASSED** |
+| **24. Variable Frame Rate Catch** | Flags VFR video streams requiring CFR normalization for broadcast | **PASSED** |
+| **25. EBU R128 Audio Loudness QC** | Verifies integrated loudness (-23 LUFS / -14 LUFS) and True Peak ceilings | **PASSED** |
+| **26. Audio Clipping & Silence QC** | Detects digital clipping (0.0 dBFS) and dead audio dropouts | **PASSED** |
+| **27. A/V Sync Drift Verification** | Measures audio-video stream duration deltas to prevent drift | **PASSED** |
+| **28. Color & HDR MaxCLL/MaxFALL** | Validates NCLX signaling and HDR light levels against delivery spec | **PASSED** |
+| **29. Subtitle Timing & CPL QC** | Validates CPS reading speeds, CPL line limits, and cue overlaps | **PASSED** |
+| **30. Objective Visual Metrics** | Computes PSNR, SSIM, and approximate VMAF transcode fidelity scores | **PASSED** |
+| **31. QC Rule Policy Engine** | Evaluates defects against Strict Broadcast, Streaming, and Archival policies | **PASSED** |
+| **32. SQLite Database Persistence** | Persistent tables for `render_plans`, `qc_reports`, `delivery_packages` | **PASSED** |
+| **33. REST API Endpoints** | FastAPI endpoints for render planning, queue status, profiles, QC, packages | **PASSED** |
+| **34. Inter-Department Bridges** | Bridges to Timeline (Dept 08), DCCs (09/10/11/13/14), Asset Store (21) | **PASSED** |
+| **35. Full Service Facade Health** | End-to-end execution of `RenderingDeliveryService` & `QualityControlService` | **PASSED** |
+

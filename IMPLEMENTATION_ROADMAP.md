@@ -246,9 +246,24 @@ flowchart LR
   - SQLite persistence (`localization_projects`, `biometric_consents`, `subtitle_tracks`) and 7 FastAPI REST endpoints in `api.py`.
 - **Verification Gate:** 28/28 unit tests passing in `tests/unit/test_subtitles_dubbing.py`; all 179 studio platform tests passing (100% pass rate in 11.687s); subtitle artifacts exported in `test_artifacts/localization/`.
 
+### Phase 14 (Part 14): Professional Quality Control, Rendering & Delivery Studio [COMPLETED]
+- **Focus Departments:**
+  - Department 18: Quality Control (Automated Media QC, File Integrity, Video/Audio/Color/Subtitle Validation, Rule Engine)
+  - Department 19: Rendering & Delivery (Preflight Validator, Render Plan DAG Compiler, Profile Registry, Render Queue, VideoToolbox Hardware Encoding, Delivery Packaging & Manifest)
+- **Key Deliverables:**
+  - Mandatory Preflight Project Validator (`PreflightValidator`) checking offline media, missing fonts, missing LUTs, and commercial licensing.
+  - Render Plan DAG Compiler (`RenderPlanCompiler`) constructing optimized multi-stage execution graphs with compute cost estimation.
+  - Industry-standard Delivery Profile Registry (`RenderProfileRegistry`) supporting Master Archival (ProRes 422 HQ, ProRes 4444, DNxHR HQX, FFV1 MKV), Broadcast (MXF OP1a), Web Streaming (YouTube 4K/1080p), and Social Vertical (9:16 Shorts/Reels).
+  - Asynchronous Priority Render Queue (`RenderQueueManager`) with concurrency controls and cryptographic SHA-256 idempotency caching.
+  - Checkpoint and recovery system (`RecoveryManager`) with automated exponential backoff retries and atomic cleanup of partial files.
+  - Local Apple Silicon VideoToolbox ASIC hardware acceleration (`h264_videotoolbox`, `hevc_videotoolbox`, `prores_videotoolbox`) and deterministic software fallback.
+  - Packaging engine (`DeliveryPackageManager`, `DeliveryManifestGenerator`) outputting master video, stems, subtitles, logs, and `delivery_manifest.json` with SHA-256 checksums.
+  - Comprehensive Automated Quality Control Department (`QualityControlService`, `QCPolicyEngine`) auditing video defects (black, frozen, flash frames), audio loudness (EBU R128 integrated LUFS, True Peak), color/HDR NCLX tags, and subtitle constraints.
+  - Objective visual metrics evaluation (`VisualMetricsCalculator`) for PSNR, SSIM, and approximate VMAF scores.
+  - SQLite persistence (`render_plans`, `qc_reports`, `delivery_packages`) and 6 FastAPI REST endpoints.
+- **Verification Gate:** 35/35 unit tests passing in `tests/unit/test_rendering_delivery.py`; all 214 studio platform tests passing (100% pass rate in 9.844s); delivery manifest and technical QC report generated in `test_artifacts/rendering_delivery/`.
 
-
-### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application
+### Phase 15 (Part 15): Autonomous Agent Orchestration & Studio Application
 - **Focus Departments:**
   - Department 01: Studio Application (UI & Streaming Viewport)
   - Department 20: Agent Orchestration (LangGraph + Temporal.io)
