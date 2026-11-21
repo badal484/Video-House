@@ -1562,3 +1562,104 @@ async def generate_procedural_sfx_endpoint(req: AudioSFXGenerateRequest):
         "output_path": out_path,
     }
 
+
+# =========================================================================
+# Department 15: AI Generation Studio Endpoints
+# =========================================================================
+
+class GenerationJobSubmitRequest(BaseModel):
+    project_id: str
+    shot_id: Optional[str] = None
+    modality: str = "TEXT_TO_IMAGE"
+    prompt: str
+    preferred_provider: Optional[str] = None
+    duration_sec: float = 5.0
+    aspect_ratio: str = "16:9"
+
+class CompilePromptRequest(BaseModel):
+    dimensions: Dict[str, Any]
+    provider_id: str = "runway_gen3"
+
+class CharacterProfileCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    style_description: str = "cinematic photorealism"
+    distinguishing_features: List[str] = Field(default_factory=list)
+
+
+@app.post("/api/v1/generation/jobs")
+async def submit_generation_job_endpoint(req: GenerationJobSubmitRequest):
+    import departments
+    from departments.ai_generation.service import AIGenerationService
+    from departments.ai_generation.interface import AIGenerationRequest
+    svc = AIGenerationService()
+    resp = await svc.execute(AIGenerationRequest(
+        project_id=uuid.UUID(req.project_id) if len(req.project_id) == 36 else uuid.uuid4(),
+        parameters={
+            "action": "submit_job",
+            "modality": req.modality,
+            "prompt": req.prompt,
+            "shot_id": req.shot_id,
+            "preferred_provider": req.preferred_provider,
+            "duration_sec": req.duration_sec,
+            "aspect_ratio": req.aspect_ratio,
+        },
+    ))
+    return {"success": resp.success, "message": resp.message, "data": resp.data}
+
+
+@app.get("/api/v1/generation/jobs/{job_id}")
+async def get_generation_job_endpoint(job_id: str):
+    job = db.get_generation_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Generation job '{job_id}' not found.")
+    return {"job": job}
+
+
+@app.get("/api/v1/generation/projects/{project_id}/jobs")
+async def list_generation_jobs_endpoint(project_id: str):
+    jobs = db.list_generation_jobs(project_id)
+    return {"project_id": project_id, "jobs": jobs}
+
+
+@app.post("/api/v1/generation/compile-prompt")
+async def compile_prompt_endpoint(req: CompilePromptRequest):
+    from departments.ai_generation.prompts.prompt_compiler import PromptCompiler, StructuredPromptDimensions
+    dims = StructuredPromptDimensions(**req.dimensions)
+    pos, neg = PromptCompiler.compile_for_provider(dims, req.provider_id)
+    return {
+        "success": True,
+        "compiled_positive_prompt": pos,
+        "compiled_negative_prompt": neg,
+    }
+
+
+@app.post("/api/v1/generation/characters")
+async def create_character_profile_endpoint(req: CharacterProfileCreateRequest):
+    from departments.ai_generation.core.character_profile import CharacterReferenceProfile
+    prof = CharacterReferenceProfile(
+        project_id=req.project_id,
+        name=req.name,
+        style_description=req.style_description,
+        distinguishing_features=req.distinguishing_features,
+    )
+    db.save_generation_character_profile(prof)
+    return {"success": True, "character_profile": prof.to_dict()}
+
+
+@app.get("/api/v1/generation/characters/{character_id}")
+async def get_character_profile_endpoint(character_id: str):
+    prof = db.get_generation_character_profile(character_id)
+    if not prof:
+        raise HTTPException(status_code=404, detail=f"Character profile '{character_id}' not found.")
+    return {"character_profile": prof}
+
+
+@app.get("/api/v1/generation/providers")
+async def list_generation_providers_endpoint():
+    import departments
+    from departments.ai_generation.providers.registry import ProviderRegistry
+    reg = ProviderRegistry()
+    return {"providers": [p.model_dump() for p in reg.list_providers()]}
+
+

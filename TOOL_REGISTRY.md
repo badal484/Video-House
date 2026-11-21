@@ -395,6 +395,59 @@ flowchart LR
 - **Invocation Method:** Python in-process (`VoiceProducer`, `SubtitlesDubbingService`).
 - **Health Check Command:** `python3 -c "import departments; from departments.audio_production.voice import VoiceProducer; print('Voice Producer OK')"`
 
+---
+
+## 11. AI Media Generation & Multi-Provider Engines
+
+### 11.1 Capability-Based Generation Router
+- **Identifier:** `tool.generation.router`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Matches incoming multimodal generation requests against registered provider capabilities, selecting the optimal model based on modality, resolution, aspect ratio, frame rate, and budget constraints.
+- **Invocation Method:** Python in-process (`GenerationRouter`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.router import GenerationRouter; print('Generation Router OK')"`
+
+### 11.2 Multi-Dimensional Prompt Compiler
+- **Identifier:** `tool.generation.prompt_compiler`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Translates structured creative dimensions (subject, action, camera, lighting, mood) into model-native prompt dialects (Runway bracketed camera tags, Kling motion tags, FLUX prose paragraphs).
+- **Invocation Method:** Python in-process (`PromptCompiler`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.prompts import PromptCompiler; print('Prompt Compiler OK')"`
+
+### 11.3 Asynchronous Generation Job Queue & Idempotency Cache
+- **Identifier:** `tool.generation.job_queue`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Orchestrates non-blocking background generation workers with cryptographic SHA-256 idempotency caching to prevent duplicate API spend.
+- **Invocation Method:** Python in-process (`GenerationJobQueue`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.orchestration import GenerationJobQueue; print('Job Queue OK')"`
+
+### 11.4 Multi-Tier Budget Firewall & Cost Estimator
+- **Identifier:** `tool.generation.budget_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Enforces hard financial stop-losses ($5.00/shot, $100.00/project) and maintains immutable real-time expenditure ledgers across paid generative APIs.
+- **Invocation Method:** Python in-process (`GenerationBudgetManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.router import GenerationBudgetManager; print('Budget Manager OK')"`
+
+### 11.5 Post-Generation Media Quality Control Validator
+- **Identifier:** `tool.generation.media_validator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Inspects generated video, image, and audio files for black frames, freeze frames, duration drift, blank images, and digital audio clipping.
+- **Invocation Method:** Python in-process (`MediaValidator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.qc import MediaValidator; print('Media Validator OK')"`
+
+### 11.6 Human-in-the-Loop Approval Gate Manager
+- **Identifier:** `tool.generation.approval_gate`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Holds high-cost generation tickets (> $1.00) and unverified talent voice clones in pending status until human sign-off.
+- **Invocation Method:** Python in-process (`ApprovalGateManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.approval import ApprovalGateManager; print('Approval Gate OK')"`
+
+
 
 ---
 
@@ -551,4 +604,57 @@ flowchart LR
 - **Role:** Synthesizes emotional, character-consistent speech with word timestamps and verifies biometric talent commercial consent.
 - **Invocation Method:** Python in-process (`VoiceProducer`, `SubtitlesDubbingService`).
 - **Health Check Command:** `python3 -c "import departments; from departments.audio_production.voice import VoiceProducer; print('Voice Producer OK')"`
+
+---
+
+## 11. AI Media Generation & Multi-Provider Engines
+
+### 11.1 Capability-Based Generation Router
+- **Identifier:** `tool.generation.router`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Matches incoming multimodal generation requests against registered provider capabilities, selecting the optimal model based on modality, resolution, aspect ratio, frame rate, and budget constraints.
+- **Invocation Method:** Python in-process (`GenerationRouter`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.router import GenerationRouter; print('Generation Router OK')"`
+
+### 11.2 Multi-Dimensional Prompt Compiler
+- **Identifier:** `tool.generation.prompt_compiler`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Translates structured creative dimensions (subject, action, camera, lighting, mood) into model-native prompt dialects (Runway bracketed camera tags, Kling motion tags, FLUX prose paragraphs).
+- **Invocation Method:** Python in-process (`PromptCompiler`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.prompts import PromptCompiler; print('Prompt Compiler OK')"`
+
+### 11.3 Asynchronous Generation Job Queue & Idempotency Cache
+- **Identifier:** `tool.generation.job_queue`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Orchestrates non-blocking background generation workers with cryptographic SHA-256 idempotency caching to prevent duplicate API spend.
+- **Invocation Method:** Python in-process (`GenerationJobQueue`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.orchestration import GenerationJobQueue; print('Job Queue OK')"`
+
+### 11.4 Multi-Tier Budget Firewall & Cost Estimator
+- **Identifier:** `tool.generation.budget_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Enforces hard financial stop-losses ($5.00/shot, $100.00/project) and maintains immutable real-time expenditure ledgers across paid generative APIs.
+- **Invocation Method:** Python in-process (`GenerationBudgetManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.router import GenerationBudgetManager; print('Budget Manager OK')"`
+
+### 11.5 Post-Generation Media Quality Control Validator
+- **Identifier:** `tool.generation.media_validator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Inspects generated video, image, and audio files for black frames, freeze frames, duration drift, blank images, and digital audio clipping.
+- **Invocation Method:** Python in-process (`MediaValidator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.qc import MediaValidator; print('Media Validator OK')"`
+
+### 11.6 Human-in-the-Loop Approval Gate Manager
+- **Identifier:** `tool.generation.approval_gate`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Holds high-cost generation tickets (> $1.00) and unverified talent voice clones in pending status until human sign-off.
+- **Invocation Method:** Python in-process (`ApprovalGateManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.approval import ApprovalGateManager; print('Approval Gate OK')"`
+
 

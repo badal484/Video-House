@@ -572,6 +572,55 @@ Chosen option: **Automatic Sidechain Ducking & Deterministic Procedural SFX Synt
 - Sidechain ducking dynamically reduces background music gain (by -14 dB) with 120ms attack and 750ms release during speech activity.
 - Pure procedural synthesis generates sub-bass impacts, swept whooshes, tension risers, and ambient drones purely from mathematical equations, providing 100% royalty-free commercial safety.
 
+---
+
+## ADR-043: Provider-Independent Capability-Based Generative Model Orchestration
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+The generative AI landscape is evolving rapidly. Hardcoding vendor-specific APIs (Runway, Kling, Midjourney, ElevenLabs) throughout the application creates tight vendor lock-in, breaks when APIs deprecate parameters, and prevents seamless fallback to open-weight models (Wan2.1, FLUX.1, Kokoro-82M).
+
+### Decision Outcome
+Chosen option: **Decoupled Capability-Based Adapter & Registry Architecture (`BaseGenerationProvider`, `GenerationRouter`, `ProviderRegistry`)**.
+- Generation requests specify capabilities (`modality`, `min_resolution`, `aspect_ratio`, `target_fps`, `max_cost`) rather than specific vendors.
+- The `GenerationRouter` dynamically selects the best available registered model based on project budget and technical constraints.
+- Local mock adapters ensure deterministic, zero-cost unit testing and CI/CD execution without external API dependencies.
+
+---
+
+## ADR-044: Structured Multi-Dimensional Prompt Compilation vs Raw Plain-Text Prompts
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+Different generative models demand fundamentally different prompt syntax for optimal quality. Runway Gen-3 Alpha responds best to bracketed camera directives (`[Camera: pan right]`), Kling 1.5 requires anatomical physics descriptors, while FLUX.1 generates superior results from descriptive prose paragraphs without keyword tagging.
+
+### Decision Outcome
+Chosen option: **Multi-Dimensional Prompt Compiler (`PromptCompiler`)**.
+- Creative agents emit structured prompt dimensions (`StructuredPromptDimensions`: subject, action, environment, camera, lighting, mood, style, technical specs).
+- Dedicated compiler targets translate these dimensions deterministically into model-specific syntax (Runway, Kling, FLUX, Midjourney, AudioCraft).
+- Negative prompts and character-consistency triggers are automatically appended based on bound reference profiles.
+
+---
+
+## ADR-045: Multi-Tier Budget Firewalls & Human-in-the-Loop Approval Gates for Paid APIs
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+Autonomous AI creative agents operating in iterative loops can inadvertently exhaust project budgets by submitting repeated, unconstrained paid API calls (e.g. 4K high-tier video generation at $0.50-$2.00 per attempt).
+
+### Decision Outcome
+Chosen option: **Multi-Tier Financial Firewall & Cryptographic Idempotency (`GenerationBudgetManager`, `ApprovalGateManager`, `GenerationJobQueue`)**.
+- **Cryptographic Idempotency:** SHA-256 hashing of request parameters prevents duplicate paid generation calls on network retries.
+- **Budget Ceiling Firewall:** Hard project caps ($100 default) and per-shot caps ($5.00 default) halt execution before external charges occur.
+- **Human Approval Gates:** Generation jobs exceeding $1.00 or utilizing unverified biometric voice clones are held in an `ApprovalTicket` queue awaiting human confirmation.
+
+
 
 ---
 
@@ -709,4 +758,53 @@ Background music and sound effects frequently mask dialogue intelligibility. Fur
 Chosen option: **Automatic Sidechain Ducking & Deterministic Procedural SFX Synthesis**.
 - Sidechain ducking dynamically reduces background music gain (by -14 dB) with 120ms attack and 750ms release during speech activity.
 - Pure procedural synthesis generates sub-bass impacts, swept whooshes, tension risers, and ambient drones purely from mathematical equations, providing 100% royalty-free commercial safety.
+
+---
+
+## ADR-043: Provider-Independent Capability-Based Generative Model Orchestration
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+The generative AI landscape is evolving rapidly. Hardcoding vendor-specific APIs (Runway, Kling, Midjourney, ElevenLabs) throughout the application creates tight vendor lock-in, breaks when APIs deprecate parameters, and prevents seamless fallback to open-weight models (Wan2.1, FLUX.1, Kokoro-82M).
+
+### Decision Outcome
+Chosen option: **Decoupled Capability-Based Adapter & Registry Architecture (`BaseGenerationProvider`, `GenerationRouter`, `ProviderRegistry`)**.
+- Generation requests specify capabilities (`modality`, `min_resolution`, `aspect_ratio`, `target_fps`, `max_cost`) rather than specific vendors.
+- The `GenerationRouter` dynamically selects the best available registered model based on project budget and technical constraints.
+- Local mock adapters ensure deterministic, zero-cost unit testing and CI/CD execution without external API dependencies.
+
+---
+
+## ADR-044: Structured Multi-Dimensional Prompt Compilation vs Raw Plain-Text Prompts
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+Different generative models demand fundamentally different prompt syntax for optimal quality. Runway Gen-3 Alpha responds best to bracketed camera directives (`[Camera: pan right]`), Kling 1.5 requires anatomical physics descriptors, while FLUX.1 generates superior results from descriptive prose paragraphs without keyword tagging.
+
+### Decision Outcome
+Chosen option: **Multi-Dimensional Prompt Compiler (`PromptCompiler`)**.
+- Creative agents emit structured prompt dimensions (`StructuredPromptDimensions`: subject, action, environment, camera, lighting, mood, style, technical specs).
+- Dedicated compiler targets translate these dimensions deterministically into model-specific syntax (Runway, Kling, FLUX, Midjourney, AudioCraft).
+- Negative prompts and character-consistency triggers are automatically appended based on bound reference profiles.
+
+---
+
+## ADR-045: Multi-Tier Budget Firewalls & Human-in-the-Loop Approval Gates for Paid APIs
+
+### Status
+Accepted & Implemented (Part 11)
+
+### Context & Problem Statement
+Autonomous AI creative agents operating in iterative loops can inadvertently exhaust project budgets by submitting repeated, unconstrained paid API calls (e.g. 4K high-tier video generation at $0.50-$2.00 per attempt).
+
+### Decision Outcome
+Chosen option: **Multi-Tier Financial Firewall & Cryptographic Idempotency (`GenerationBudgetManager`, `ApprovalGateManager`, `GenerationJobQueue`)**.
+- **Cryptographic Idempotency:** SHA-256 hashing of request parameters prevents duplicate paid generation calls on network retries.
+- **Budget Ceiling Firewall:** Hard project caps ($100 default) and per-shot caps ($5.00 default) halt execution before external charges occur.
+- **Human Approval Gates:** Generation jobs exceeding $1.00 or utilizing unverified biometric voice clones are held in an `ApprovalTicket` queue awaiting human confirmation.
+
 

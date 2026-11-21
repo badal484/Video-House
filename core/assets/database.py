@@ -178,6 +178,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS asset_roles (
                 asset_id TEXT NOT NULL,
                 role TEXT NOT NULL,
@@ -415,6 +445,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS creative_concepts (
                 concept_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -435,6 +495,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS production_scripts (
                 script_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -447,6 +537,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS script_scenes (
                 scene_id TEXT PRIMARY KEY,
@@ -526,6 +646,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS environments (
                 environment_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -538,6 +688,36 @@ class AssetDatabase:
                 reference_asset_ids_json TEXT DEFAULT '[]',
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS editing_blueprints (
                 blueprint_id TEXT PRIMARY KEY,
@@ -556,6 +736,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS production_blueprints (
                 blueprint_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -571,6 +781,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS creative_approvals (
                 approval_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -583,6 +823,36 @@ class AssetDatabase:
                 approved_at TEXT,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             -- Part 03 Multimodal Intelligence Tables
             CREATE TABLE IF NOT EXISTS shots (
@@ -750,6 +1020,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS creative_concepts (
                 concept_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -770,6 +1070,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS production_scripts (
                 script_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -782,6 +1112,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS script_scenes (
                 scene_id TEXT PRIMARY KEY,
@@ -861,6 +1221,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS environments (
                 environment_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -873,6 +1263,36 @@ class AssetDatabase:
                 reference_asset_ids_json TEXT DEFAULT '[]',
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS editing_blueprints (
                 blueprint_id TEXT PRIMARY KEY,
@@ -891,6 +1311,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS production_blueprints (
                 blueprint_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -906,6 +1356,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS creative_approvals (
                 approval_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -918,6 +1398,36 @@ class AssetDatabase:
                 approved_at TEXT,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
             
             -- Part 05 Non-Linear Editing Engine Tables
             CREATE TABLE IF NOT EXISTS editing_projects (
@@ -930,6 +1440,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS timelines (
                 timeline_id TEXT PRIMARY KEY,
@@ -946,6 +1486,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS tracks (
                 track_id TEXT PRIMARY KEY,
@@ -1058,6 +1628,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS vfx_projects (
                 vfx_project_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -1069,6 +1669,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS vfx_shot_tasks (
                 task_id TEXT PRIMARY KEY,
@@ -1087,6 +1717,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS character_identities (
                 character_id TEXT PRIMARY KEY,
@@ -1108,6 +1768,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS animation_projects (
                 animation_project_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -1120,6 +1810,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS animation_assets (
                 asset_id TEXT PRIMARY KEY,
@@ -1134,6 +1854,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS motion_compositions (
                 composition_id TEXT PRIMARY KEY,
@@ -1150,6 +1900,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS vfx_projects (
                 vfx_project_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -1161,6 +1941,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS vfx_shot_tasks (
                 task_id TEXT PRIMARY KEY,
@@ -1179,6 +1989,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS character_identities (
                 character_id TEXT PRIMARY KEY,
@@ -1200,6 +2040,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS animation_projects (
                 animation_project_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -1212,6 +2082,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS animation_assets (
                 asset_id TEXT PRIMARY KEY,
@@ -1227,6 +2127,36 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
+
             CREATE TABLE IF NOT EXISTS audio_sessions (
                 session_id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
@@ -1239,6 +2169,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
 
             CREATE TABLE IF NOT EXISTS audio_tracks (
                 track_id TEXT PRIMARY KEY,
@@ -1279,6 +2239,36 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS generation_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT,
+                modality TEXT NOT NULL,
+                provider_id TEXT NOT NULL,
+                model_id TEXT NOT NULL,
+                prompt TEXT NOT NULL,
+                status TEXT NOT NULL,
+                actual_cost_usd REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS generation_character_profiles (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_project ON generation_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_gen_jobs_status ON generation_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_gen_chars_project ON generation_character_profiles(project_id);
             
             CREATE INDEX IF NOT EXISTS idx_audio_sessions_project ON audio_sessions(project_id);
             CREATE INDEX IF NOT EXISTS idx_audio_tracks_session ON audio_tracks(session_id);
@@ -2879,6 +3869,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -2952,6 +4094,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -3047,6 +4341,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_vfx_shot_task(self, task: Any) -> None:
@@ -3137,6 +4583,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -3210,6 +4808,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -3305,6 +5055,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def update_vfx_shot_task_status(
@@ -3431,6 +5333,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -3504,6 +5558,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -3599,6 +5805,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_animation_project(self, project: Any) -> None:
@@ -3717,6 +6075,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -3790,6 +6300,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -3885,6 +6547,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_motion_composition(self, composition: Any) -> None:
@@ -4004,6 +6818,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -4077,6 +7043,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -4172,6 +7290,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_vfx_shot_task(self, task: Any) -> None:
@@ -4262,6 +7532,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -4335,6 +7757,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -4430,6 +8004,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def update_vfx_shot_task_status(
@@ -4556,6 +8282,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -4629,6 +8507,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -4724,6 +8754,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_animation_project(self, project: Any) -> None:
@@ -4842,6 +9024,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -4915,6 +9249,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -5010,6 +9496,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     # -------------------------------------------------------------
@@ -6280,6 +10918,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -6353,6 +11143,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -6448,6 +11390,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_vfx_shot_task(self, task: Any) -> None:
@@ -6538,6 +11632,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -6611,6 +11857,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -6706,6 +12104,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def update_vfx_shot_task_status(
@@ -6832,6 +12382,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -6905,6 +12607,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -7000,6 +12854,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_animation_project(self, project: Any) -> None:
@@ -7118,6 +13124,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -7191,6 +13349,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -7286,6 +13596,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_motion_composition(self, composition: Any) -> None:
@@ -7405,6 +13867,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -7478,6 +14092,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -7573,6 +14339,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_vfx_shot_task(self, task: Any) -> None:
@@ -7663,6 +14581,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -7736,6 +14806,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -7831,6 +15053,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def update_vfx_shot_task_status(
@@ -7957,6 +15331,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -8030,6 +15556,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -8125,6 +15803,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
 
     def save_animation_project(self, project: Any) -> None:
@@ -8243,6 +16073,158 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_audio_session(self, session: Any) -> None:
         """Persists or updates an AudioSession."""
         now = datetime.now(timezone.utc).isoformat()
@@ -8316,6 +16298,158 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
     def delete_audio_session(self, session_id: str) -> bool:
         """Deletes an AudioSession by ID."""
@@ -8411,4 +16545,156 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_generation_job(self, job: Any) -> None:
+        """Persists or updates a GenerationResult / job."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "to_dict"):
+            data = job.to_dict()
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("job_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        shot_id = data.get("shot_id")
+        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
+        provider_id = str(data.get("provider_id", "unknown"))
+        model_id = str(data.get("model_id", "default"))
+        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
+        status = str(data.get("status", "SUBMITTED"))
+        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_jobs (
+                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                shot_id,
+                modality,
+                provider_id,
+                model_id,
+                prompt,
+                status,
+                actual_cost_usd,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a generation job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "modality": row["modality"],
+                "provider_id": row["provider_id"],
+                "model_id": row["model_id"],
+                "prompt": row["prompt"],
+                "status": row["status"],
+                "actual_cost_usd": row["actual_cost_usd"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all generation jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "modality": r["modality"],
+                    "provider_id": r["provider_id"],
+                    "model_id": r["model_id"],
+                    "prompt": r["prompt"],
+                    "status": r["status"],
+                    "actual_cost_usd": r["actual_cost_usd"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_generation_character_profile(self, profile: Any) -> None:
+        """Persists or updates a CharacterReferenceProfile."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(profile, "to_dict"):
+            data = profile.to_dict()
+        elif isinstance(profile, dict):
+            data = profile
+        else:
+            data = getattr(profile, "__dict__", {})
+
+        char_id = str(data.get("character_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Unnamed Character"))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO generation_character_profiles (
+                    character_id, project_id, name, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                char_id,
+                project_id,
+                name,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_generation_character_profile(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a character reference profile by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE character_id = ?",
+                (str(character_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_generation_character_profiles(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all character profiles for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM generation_character_profiles WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
 
