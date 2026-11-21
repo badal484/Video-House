@@ -134,3 +134,4 @@ class CinematographyShotPlanner:
             shots.append(shot)
 
         return shots
+

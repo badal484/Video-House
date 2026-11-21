@@ -87,3 +87,4 @@ class OCRService:
 
         cap.release()
         return observations
+

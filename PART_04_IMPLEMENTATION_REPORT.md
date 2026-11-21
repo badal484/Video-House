@@ -128,3 +128,4 @@ SQLite schema extended with foreign keys, indexes, and cascades:
 Full regression test executed on 2026-11-21:
 - `tests/unit/test_creative_director.py`: 11 test cases covering all 12 capabilities.
 - Full test suite: **39 unit tests passing across all 4 parts in 4.904s** with 0 errors and 0 failures.
+

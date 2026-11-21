@@ -135,3 +135,4 @@ class ProductionBreakdownService:
             estimated_cost_usd=round(total_estimated_cost, 2),
             technical_risks=risks
         )
+

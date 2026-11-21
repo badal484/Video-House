@@ -73,3 +73,4 @@ In compliance with the studio's 22-department architecture:
 - **Department 07 (Production Planning):** Owns production breakdown, task dependency DAG compilation, editing blueprinting, and hardware/cost feasibility evaluation.
 - **Department 12 (Character Production):** Owns character profiles, wardrobe rules, environment definitions, and spatial/lighting continuity auditing.
 - **Central Asset Registry (`core/assets/database.py`):** Persists all entities with relational integrity across 11 dedicated planning tables.
+

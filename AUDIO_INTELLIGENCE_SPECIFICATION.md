@@ -74,3 +74,4 @@ Extracted acoustic records are stored in SQLite tables:
 - `tempo_bpm`: Detected tempo (e.g. 120.0).
 - `beat_timestamps_json`: JSON array of beat timestamps `[0.0, 0.5, 1.0, 1.5, ...]`.
 - `energy_level`: Normalized acoustic intensity (0.0 to 1.0).
+

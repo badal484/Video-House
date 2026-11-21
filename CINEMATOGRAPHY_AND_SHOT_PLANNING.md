@@ -46,3 +46,4 @@ Each shot explicitly defines lighting setups:
 - **Fill / Ambient:** Shadow density control (e.g. "Low-contrast negative fill camera right").
 - **Back / Rim Light:** Subject separation (e.g. "Strong 3200K tungsten rim accentuating shoulders").
 - **Practical Lights:** In-scene motivated sources (e.g. "Fluorescent tubes", "neon signage").
+

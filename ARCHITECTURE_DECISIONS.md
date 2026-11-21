@@ -279,3 +279,82 @@ Autonomous AI agents can rapidly burn API budgets and generate unaligned content
 Chosen option: **Approval Gatekeeper (`ProductionBlueprintManager`)**.
 - A `ProductionBlueprint` maintains `is_ready_for_production = False` by default.
 - Transitions to `True` only when required milestones (`SCRIPT`, `STORYBOARD`, `BUDGET`) receive explicit `ApprovalStatus.APPROVED` from a human reviewer and no unaddressed rejections remain.
+
+---
+
+## ADR-024: Immutable Rational Time Arithmetic (`RationalTime`)
+
+### Status
+Accepted & Implemented (Part 05)
+
+### Context & Problem Statement
+Floating-point time values accumulate rounding errors across multi-track edits, mixed frame rates (23.976 vs 24 vs 29.97 fps), and audio sample rates (48 kHz). Over long sequences, cuts drift out of synchronization with audio by multiple frames.
+
+### Decision Outcome
+Chosen option: **Immutable Integer Ratio Representation (`core/timeline/time_model.py`)**.
+- All temporal values (in-points, out-points, durations, offsets) are represented strictly as `RationalTime(value: int, rate: float)`.
+- Implements exact dunder arithmetic (`+`, `-`, `*`, `/`) with automatic rate rescaling.
+- Converts bidirectionally to standard SMPTE 12M timecode (`HH:MM:SS:FF`) for non-drop-frame and drop-frame media.
+
+---
+
+## ADR-025: OpenTimelineIO (ASWF) as Primary Editorial Interchange Standard
+
+### Status
+Accepted & Implemented (Part 05)
+
+### Context & Problem Statement
+The studio must interchange timelines with industry-standard commercial NLEs (Adobe Premiere Pro, Apple Final Cut Pro, DaVinci Resolve) without loss of multi-track clip positions, gaps, or transitions.
+
+### Decision Outcome
+Chosen option: **OpenTimelineIO 0.18.1 (`core/timeline/otio_adapter.py`)**.
+- Direct bidirectional serialization between Studio `Timeline` models and `.otio` files.
+- Empty time ranges between non-contiguous clips are preserved explicitly as `otio.schema.Gap` instances.
+- Commercial NLE adapters (`fcpxml`, `xml`, `edl`, `aaf`) operate out-of-the-box over exported `.otio` documents.
+
+---
+
+## ADR-026: Dynamic FFmpeg Complex Filtergraph Compilation for Deterministic Rendering
+
+### Status
+Accepted & Implemented (Part 05)
+
+### Context & Problem Statement
+Concatenating pre-rendered intermediate video clips degrades generation quality, consumes excessive local SSD storage on the Apple M4 workstation, and cannot represent layered compositing or crossfades.
+
+### Decision Outcome
+Chosen option: **Single-Pass `-filter_complex` DAG Compilation (`departments/08_video_editing/render_engine.py`)**.
+- The engine compiles the multi-track timeline DAG directly into an FFmpeg complex filter string containing `trim`, `setpts`, `scale`, `pad`, `xfade`, `overlay`, `atrim`, `volume`, and `amix`.
+- Zero intermediate generation loss; renders directly from source/proxy files to the master container.
+- Real-time progress monitoring via `-progress pipe:1` with cancellation support.
+
+---
+
+## ADR-027: Five-Mode Continuous Keyframe Curve Interpolation
+
+### Status
+Accepted & Implemented (Part 05)
+
+### Context & Problem Statement
+Visual and audio effects (opacity fades, position pans, zooms, volume automation) require smooth, continuous parameter curves between arbitrary keyframe points.
+
+### Decision Outcome
+Chosen option: **Hermite / Cubic / Ease Keyframe Engine (`core/timeline/keyframe_engine.py`)**.
+- Supports 5 canonical easing modes: `HOLD`, `LINEAR`, `EASE_IN` ($\tau^2$), `EASE_OUT` ($1 - (1-\tau)^2$), and `EASE_IN_OUT` ($3\tau^2 - 2\tau^3$ smoothstep).
+- Evaluates parameter values at arbitrary rational time offsets with boundary clamping.
+
+---
+
+## ADR-028: Transactional Snapshot Undo/Redo Architecture for Editorial State
+
+### Status
+Accepted & Implemented (Part 05)
+
+### Context & Problem Statement
+Interactive and automated video editing operations (split, roll edit, ripple delete) modify multiple track and clip records simultaneously. Failure midway leaves the timeline corrupted.
+
+### Decision Outcome
+Chosen option: **Immutable State Snapshots & ACID SQLite Persistence (`TimelineManager`)**.
+- Before applying any mutating edit operation, `TimelineManager` serializes the current timeline state onto an in-memory undo stack.
+- Changes are committed transactionally to the SQLite `timelines`, `tracks`, and `clips` tables.
+- Enables multi-level non-destructive undo and redo across all editorial actions.

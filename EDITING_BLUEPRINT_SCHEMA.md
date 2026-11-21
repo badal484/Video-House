@@ -76,3 +76,4 @@ class EditingBlueprint:
     version: int = 1
     created_at: str = field(default_factory=utc_now_iso)
 ```
+

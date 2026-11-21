@@ -107,3 +107,4 @@ flowchart TD
 - **Format:** WebP (`image/webp`)
 - **Dimensions:** 1920x1920 px max bounding box (scaled down only if original exceeds 1080p/2K).
 - **Compression:** Quality 90. Preserves aspect ratio.
+

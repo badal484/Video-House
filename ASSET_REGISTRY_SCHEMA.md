@@ -148,3 +148,4 @@ Tracks generated auxiliary files (proxies, thumbnails, contact sheets, extracted
 
 ### Table: `processing_jobs`
 Durable tracking for background workers, progress percentage, and retry attempts.
+

@@ -68,3 +68,4 @@ flowchart TD
    Measures cosine similarity of camera movement distributions.
 4. **Actionable Editorial Recommendations:**
    Generates concrete instructions (e.g. *"Pacing in reference is 2.1x faster. Cut source shots at downbeats to tighten rhythm"*).
+

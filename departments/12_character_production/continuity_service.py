@@ -101,3 +101,4 @@ class WorldContinuityService(ICharacterProduction):
                         warnings.append(f"Shot {shot.shot_number}: Missing spatial 180-degree axis constraint ({rule.description})")
 
         return warnings
+

@@ -132,3 +132,4 @@ class ConceptGenerationService:
         concepts.append(c3)
 
         return concepts[:count]
+

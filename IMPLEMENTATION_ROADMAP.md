@@ -92,12 +92,33 @@ flowchart LR
   - 15 new REST API endpoints registered and validated in `departments/01_studio_application/api.py`.
 - **Verification Gate:** 11 automated unit and integration tests passing in 0.354s (39 cumulative studio tests passing in 4.904s).
 
-### Phase 5 (Part 05): 2D/3D Animation, Motion Graphics & VFX Compositing
+### Phase 5 (Part 05): Professional Non-Linear Video Editing Engine [COMPLETED]
+- **Focus Departments:**
+  - Department 08: Video Editing
+  - Department 01: Studio Application (API Gateway)
+  - Department 21: Storage & Asset Management
+- **Key Deliverables Completed:**
+  - Canonical timeline architecture based on immutable rational time arithmetic (`RationalTime(value, rate)`).
+  - Multi-track layering for video (`V1`, `V2`, `V3`) and audio (`A1`, `A2`, `A3`) with mute, solo, and locking.
+  - Complete suite of programmatic editorial operations: append, overwrite, insert (ripple), split, trim in/out, roll edit, slip edit, slide edit, ripple delete, J-cuts, and L-cuts.
+  - Keyframe interpolation engine supporting `LINEAR`, `EASE_IN`, `EASE_OUT`, `EASE_IN_OUT`, and `HOLD` curves.
+  - Transition and effect registry with automated FFmpeg complex filter mapping (`xfade`, `acrossfade`, `overlay`, `amix`, `volume`, `eq`).
+  - Audio-video synchronization engine with drift detection and linked clip pairing.
+  - OpenTimelineIO 0.18.1 bidirectional interchange adapter with gap preservation for DaVinci Resolve, Premiere Pro, and Final Cut Pro.
+  - Execution engine for Part 04's `EditingBlueprint` transforming planning instructions into playable timelines.
+  - Preview engine for low-latency 360p/720p proxy generation and single-frame snapshot scrubbing.
+  - Deterministic rendering pipeline with dynamic `-filter_complex` compilation, progress tracking, and post-render FFprobe verification.
+  - SQLite persistence across 9 relational tables and transactional undo/redo snapshot stack.
+  - 16 new REST API endpoints registered and verified.
+- **Verification Gate:** 12 automated unit and integration tests passing in 1.087s (51 cumulative studio tests passing in 5.931s with 100% success rate).
+
+### Phase 6 (Part 06): Generative Video, Animation & VFX Pipelines
 - **Focus Departments:**
   - Department 09: Motion Graphics (Motion Canvas)
   - Department 10: 2D Animation (Blender Grease Pencil)
   - Department 11: 3D Animation (Blender Headless / OpenUSD)
   - Department 13: VFX & Compositing (SAM 2.1 / OpenColorIO)
+  - Department 15: AI Generation Router
   - Department 16: Color & Restoration
 - **Key Deliverables:**
   - Automated 2D motion graphics generation in Motion Canvas (titles, lower-thirds, data graphics).
@@ -106,7 +127,7 @@ flowchart LR
   - OpenColorIO ACEScg color pipeline and Real-ESRGAN super-resolution upscaler.
 - **Verification Gate:** Transparent alpha-channel title composite overlaid onto a camera-tracked 3D scene with ACEScg color conformance.
 
-### Phase 6 (Part 06): Professional Audio Post-Production & Finishing
+### Phase 7 (Part 07): Professional Audio Post-Production & Finishing
 - **Focus Departments:**
   - Department 14: Audio Production (Spotify Pedalboard)
   - Department 17: Subtitles & Dubbing (WhisperX / ElevenLabs / Kokoro)
@@ -118,7 +139,7 @@ flowchart LR
   - Automated QC inspection: detection of black frames, freeze frames, and audio clipping.
 - **Verification Gate:** Full 64-track audio mix meeting EBU R128 broadcast loudness standards with automated PASS verification from the QC engine.
 
-### Phase 7 (Part 07): Autonomous Agent Orchestration & Studio Application
+### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application
 - **Focus Departments:**
   - Department 01: Studio Application (UI & Streaming Viewport)
   - Department 20: Agent Orchestration (LangGraph + Temporal.io)

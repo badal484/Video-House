@@ -80,3 +80,4 @@ class ProductionBreakdown:
     estimated_cost_usd: float = 0.0
     technical_risks: List[str] = field(default_factory=list)
 ```
+

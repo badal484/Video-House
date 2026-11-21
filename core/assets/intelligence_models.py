@@ -250,3 +250,4 @@ class ReferenceProfile:
     audio_style: Dict[str, Any]        # music_bpm, sound_design_density, dialogue_balance
     narrative_arc: Dict[str, Any]      # opening_hook, progression, climax, resolution
     key_moments: List[Dict[str, Any]]
+

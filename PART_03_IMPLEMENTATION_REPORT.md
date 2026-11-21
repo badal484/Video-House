@@ -89,3 +89,4 @@ Registered and verified 11 intelligence endpoints:
 - **Unit Test Suite:** `tests/unit/test_intelligence.py` (12 tests, 100% pass in 2.610s).
 - **Cumulative Studio Tests:** `test_foundation.py` (4 tests) + `test_ingestion.py` (12 tests) + `test_intelligence.py` (12 tests) = **28 tests passing in 4.667s**.
 - **Memory & Storage:** Zero model weight downloads >2 GB; temporary media scratch directories cleaned up automatically.
+

@@ -46,3 +46,4 @@ In accordance with prime operational instructions:
 - No large model weights (>2 GB) are downloaded to the developer machine.
 - Local inference operates strictly within the 16GB Apple M4 RAM envelope.
 - Temporary files generated during video sampling are cleaned up upon task completion.
+

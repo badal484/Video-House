@@ -95,12 +95,28 @@ flowchart LR
 
 ### 3.1 OpenTimelineIO (OTIO)
 - **Identifier:** `tool.timeline.otio`
-- **Version:** `0.17.0`
+- **Version:** `0.18.1`
 - **License:** Apache 2.0 (Academy Software Foundation)
 - **Role:** Universal editorial interchange format. Represents tracks, clips, gaps, transitions, and markers with rational-time arithmetic (`RationalTime(value, rate)`).
 - **Interchange Adapters:** Final Cut Pro XML (`fcpxml`), DaVinci Resolve, Adobe Premiere (`xml`), Avid AAF, CMX 3600 EDL.
 - **Invocation Method:** Native Python module `opentimelineio`.
 - **Health Check Command:** `python3 -c "import opentimelineio as otio; print(otio.__version__)"`
+
+### 3.2 Canonical Non-Linear Timeline Engine
+- **Identifier:** `tool.timeline.canonical_nle`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Multi-track non-linear video editing engine supporting rational time arithmetic, clip placement (append, insert, overwrite), trimming (trim in/out, split, roll edit, slip edit, slide edit, ripple delete), transitions, and keyframed effects.
+- **Invocation Method:** Python in-process (`TimelineManager`, `TimelineOperations`).
+- **Health Check Command:** `python3 -c "from core.timeline import TimelineManager; print('NLE Timeline Engine OK')"`
+
+### 3.3 Multi-Track FFmpeg Filtergraph Compiler
+- **Identifier:** `tool.render.filtergraph_compiler`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Dynamically compiles multi-track video sequences, transitions (`xfade`), audio mixes (`amix`), and animated spatial/color effects into deterministic FFmpeg `-filter_complex` execution commands with real-time telemetry.
+- **Invocation Method:** Python in-process (`RenderEngine`, `PreviewEngine`).
+- **Health Check Command:** `python3 -c "from departments.video_editing.render_engine import RenderEngine; print('Render Engine OK')"`
 
 ---
 

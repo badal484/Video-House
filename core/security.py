@@ -69,3 +69,4 @@ class MediaSecurityPolicy:
             raise SecurityError(
                 f"File size {byte_size} bytes exceeds maximum allowed {max_allowed} bytes for category {media_category}"
             )
+

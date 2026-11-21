@@ -52,3 +52,4 @@ Media formats ingested into the studio are categorized into distinct operational
 | **3D Asset** | **FBX** (`.fbx`) | `Kaydara FBX Binary` | YES | YES | No | YES | Autodesk DCC exchange format. |
 | **Production** | **Color LUT** (`.cube`) | `LUT_3D_SIZE` or `TITLE` | YES | YES | No | YES | 3D Color grading lookup table. |
 | **Production** | **Typography Font** (`.otf`, `.ttf`) | `OTTO` or `\x00\x01\x00\x00` | YES | Minimal | No | YES | Font files for Motion Canvas & subtitles. |
+

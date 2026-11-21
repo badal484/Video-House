@@ -334,3 +334,4 @@ class MetadataExtractor:
             asset_id=asset_id,
             raw_probe={"file_size": file_path.stat().st_size}
         )
+

@@ -34,3 +34,4 @@ Concepts are persisted to the database and surfaced via the API (`/api/v1/direct
 `POST /api/v1/director/projects/{project_id}/concepts/{concept_id}/select`
 
 Once selected, all downstream screenplay writing, shot planning, and storyboarding align with the chosen concept's visual treatment and pacing.
+

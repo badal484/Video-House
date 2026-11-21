@@ -39,3 +39,4 @@ Every incoming file uploaded or imported into the studio is treated as **untrust
 
 ### 2.5 Magic Signature & Deep Content Inspection
 - Rather than trusting user-provided file extensions, `MediaValidator` checks file headers against verified magic byte signatures (e.g. `ftyp` box for MP4, `EBML` for MKV, `RIFF` for WAV, `PNG` magic bytes). An executable or text document renamed to `.mp4` is rejected.
+

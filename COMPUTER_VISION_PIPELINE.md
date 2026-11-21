@@ -64,3 +64,4 @@ The **OCR Service** detects and categorizes text overlays (titles, subtitles, lo
 Detections are written to the Central Asset Registry:
 - `detected_objects`: Tracks bounding box coordinates, track ID, frame number, timestamp, and confidence.
 - `ocr_observations`: Tracks bounding box, detected text string, spatial category (`TITLE`, `SUBTITLE`, `LOWER_THIRD`), timestamp, and frame index.
+

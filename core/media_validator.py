@@ -572,3 +572,4 @@ class MediaValidator:
             is_external_reference_only=False,
             validation_error=f"Unrecognized or unsupported file format (extension: .{ext})."
         )
+

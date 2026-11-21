@@ -123,3 +123,4 @@ class GeminiProvider(IVideoUnderstandingProvider):
             ],
             "cost_usd": 0.0 if self.offline else 0.0005
         }
+

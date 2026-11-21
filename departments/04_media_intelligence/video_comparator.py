@@ -75,3 +75,4 @@ class MultiVideoComparisonService:
             "reference_editing_pacing": reference_profile.editing_style.get("pacing"),
             "editorial_recommendations": recommendations
         }
+

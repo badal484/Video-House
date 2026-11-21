@@ -157,3 +157,4 @@ class AudioIntelligenceService:
         beat_timestamps = [round(float(p * 0.02), 3) for p in peaks]
 
         return bpm, beat_timestamps
+

@@ -107,3 +107,4 @@ python3 -m unittest tests/unit/test_ingestion.py
 # 3. Start Studio API Server
 python3 -m uvicorn departments.01_studio_application.api:app --host 0.0.0.0 --port 8000 --reload
 ```
+

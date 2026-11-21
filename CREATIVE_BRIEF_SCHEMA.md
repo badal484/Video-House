@@ -112,3 +112,4 @@ When an incoming brief lacks crucial creative or technical parameters:
 1. **Target Duration:** If unspecified, defaults to 30.0s and logs: `"Target duration defaulted to 30.0 seconds."`
 2. **Platform & Aspect Ratio:** If mentioning mobile/TikTok, defaults to 9:16 vertical; otherwise defaults to 16:9 landscape.
 3. **Clarification Trigger:** If the input prompt contains fewer than 10 words or lacks key constraints, the service automatically flags clarification questions to prompt the human director before committing resources.
+

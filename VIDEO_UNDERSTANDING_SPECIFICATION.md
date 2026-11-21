@@ -89,3 +89,4 @@ For high-level narrative summary, character emotion, and stylistic critique, req
 - Uses native multimodal video input with native timestamp grounding (`00:01:23.400`).
 - Strict JSON output mode parsing into structured timeline event lists.
 - Integrated token usage and cost accounting ($0.0000001 per token).
+

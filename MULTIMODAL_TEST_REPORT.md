@@ -53,3 +53,4 @@ OK (Part 01 Foundation: 4 tests, Part 02 Ingestion: 12 tests, Part 03 Intelligen
    Updated all timecode access to use property accessors (`.seconds`, `.frame_num`, `.frame_rate`) eliminating runtime deprecation warnings.
 4. **Hermetic Test Directory Cleanliness:**
    Temporary directory setup (`tempfile.mkdtemp`) ensures complete deletion of synthetic MP4 and WAV artifacts post-test, preserving workstation disk headroom.
+

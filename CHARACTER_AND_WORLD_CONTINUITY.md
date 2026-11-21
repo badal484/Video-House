@@ -62,3 +62,4 @@ The `WorldContinuityService` audits planned shots against active continuity rule
 - **Wardrobe & Appearance:** Verifies that shots including a character explicitly mandate their registered costume in prompt prompts and continuity requirements.
 - **180-Degree Line of Action:** Flags consecutive shots where eye-lines or screen directions cross without motivated camera movement.
 - **Lighting Coherence:** Ensures that consecutive shots within the same scene environment do not specify contradictory key light sources.
+

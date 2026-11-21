@@ -408,3 +408,4 @@ class ProductionBlueprint:
     approvals: List[CreativeApproval] = field(default_factory=list)
     is_ready_for_production: bool = False
     created_at: str = field(default_factory=utc_now_iso)
+

@@ -210,3 +210,4 @@ class ScriptAndNarrativeService:
         pause_sec = (commas * 0.25) + (periods * 0.45)
 
         return round(base_sec + pause_sec, 2)
+

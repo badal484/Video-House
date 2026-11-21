@@ -98,3 +98,4 @@ class TwelveLabsProvider(IVideoUnderstandingProvider, IEmbeddingProvider):
         vec = [(b / 255.0) * 2.0 - 1.0 for b in h]
         full_vec = (vec * (512 // len(vec) + 1))[:512]
         return full_vec
+

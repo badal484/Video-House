@@ -101,3 +101,4 @@ class ReferenceStyleInterpreter:
             "color_grading_lut_target": "Matches reference dominant luminance and contrast curve",
             "ip_compliance": "Style and grammar transferred; source trademark assets quarantined."
         }
+

@@ -42,20 +42,21 @@ flowchart TD
 The editorial timeline is governed exclusively by **OpenTimelineIO (ASWF)**. 
 
 ### Core Timeline Hierarchy
-- `Timeline`: Top-level container representing a complete sequence or reel. Holds global name and global start timecode.
+- `Timeline`: Top-level container representing a complete sequence or reel. Holds global name and global start timebase.
 - `Stack`: A collection of parallel horizontal tracks.
 - `Track`: A temporal sequence of media items. Classified strictly by `TrackKind.Video` or `TrackKind.Audio`.
-- `Clip`: A reference to external media with `source_range` (in-point, duration in rational time) and `target_range`.
-- `Gap`: A temporal empty duration on a track where underlying tracks show through.
-- `Transition`: Mathematical blend between adjacent clips (e.g. `SMPTE_Dissolve`).
+- `Clip`: A reference to external media with `source_in`, `source_out`, `timeline_in`, `timeline_out` in rational time.
+- `Gap`: A temporal empty duration on a track where underlying tracks show through. Preserved via `otio.schema.Gap` during OTIO interchange.
+- `Transition`: Mathematical blend between adjacent clips (e.g. `CROSS_DISSOLVE`, `DIP_TO_BLACK`).
+- `Effect` & `Keyframe`: Static or animated transformations (scale, crop, position, opacity, blur, volume, EQ) with 5-mode interpolation (`LINEAR`, `EASE_IN`, `EASE_OUT`, `EASE_IN_OUT`, `HOLD`).
 - `Marker`: Metadata pinned to an exact rational timepoint (e.g. director notes, beat triggers, dialogue lines).
 
-### Rational Time Arithmetic
-Floating-point timestamps (e.g. `12.34567 seconds`) accumulate fatal rounding errors in multi-track video editing. OTIO strictly uses rational time arithmetic:
+### Rational Time Arithmetic Implementation
+Floating-point timestamps (e.g. `12.34567 seconds`) accumulate fatal rounding errors in multi-track video editing. The studio implements an immutable `RationalTime` class (`core/timeline/time_model.py`):
 
 $$\text{RationalTime}(\text{value}, \text{rate})$$
 
-For example, frame 100 at 24 fps is represented exactly as `RationalTime(100, 24)`. 23.976 fps is represented exactly as `RationalTime(1000, 24000/1001)`.
+For example, frame 100 at 24 fps is represented exactly as `RationalTime(100, 24)`. 23.976 fps is represented exactly as `RationalTime(1001, 24000)`. All timeline operations (trim, split, roll, slip, slide, ripple delete) operate exclusively using exact rational arithmetic.
 
 ---
 

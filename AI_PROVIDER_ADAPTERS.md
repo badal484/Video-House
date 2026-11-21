@@ -49,3 +49,4 @@ To prevent vendor lock-in and enable transparent switching between cloud foundat
   - `LOCAL_ONLY`: Strictly prohibits external network requests (high privacy/offline work).
   - `CLOUD_ONLY`: Directs queries exclusively to Gemini or TwelveLabs.
   - `COST_OPTIMIZED`: Minimizes API expenditures.
+

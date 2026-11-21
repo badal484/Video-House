@@ -40,3 +40,4 @@ for alias, folder in DEPT_MAP.items():
         pass
 
 __all__ = list(DEPT_MAP.keys())
+

@@ -165,3 +165,4 @@
 ### Retry Failed Processing
 - **Method:** `POST /api/v1/projects/{project_id}/assets/{asset_id}/retry`
 - **Response:** `200 OK` with new `job_id`.
+

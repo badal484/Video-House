@@ -51,3 +51,4 @@ Every search hit returns:
 - `headline`: Human-readable summary (e.g. `Spoken Dialogue: "Welcome to the universal AI studio."`).
 - `relevance_score`: Normalized relevance rank (0.0 to 1.0).
 - `evidence`: Raw detection metadata for editorial verification.
+

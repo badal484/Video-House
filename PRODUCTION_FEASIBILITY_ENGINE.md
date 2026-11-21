@@ -57,3 +57,4 @@ class ProductionFeasibility:
     technical_risks: List[str] = field(default_factory=list)
     recommended_alternatives: List[str] = field(default_factory=list)
 ```
+

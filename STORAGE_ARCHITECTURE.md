@@ -60,3 +60,4 @@ With **41 GB of free disk space** on the host workstation (M4 MacBook Pro):
 - **Cache Eviction Strategy:** Least-Recently-Used (LRU) eviction on proxy video files when project storage exceeds thresholds.
 - **Quota Tracking:** `StorageService.get_project_storage_usage(project_id)` calculates total byte footprint on demand.
 - **Original Media Protection:** Proxies and previews can be evicted; originals are never deleted unless the user explicitly requests asset deletion.
+

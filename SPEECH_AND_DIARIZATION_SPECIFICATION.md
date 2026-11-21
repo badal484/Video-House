@@ -74,3 +74,4 @@ CREATE TABLE IF NOT EXISTS transcripts (
 ]
 ```
 These word timestamps directly power the Downstream Subtitling (`17_subtitles_dubbing`) and Motion Graphics (`09_motion_graphics`) departments.
+

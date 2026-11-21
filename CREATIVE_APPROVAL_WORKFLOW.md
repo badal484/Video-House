@@ -62,3 +62,4 @@ A `ProductionBlueprint` is evaluated for production readiness by `ProductionBlue
 - Must have at least one approved master planning entity (`SCRIPT`, `EDITING_BLUEPRINT`, or `PRODUCTION_BLUEPRINT`).
 - Must **NOT** contain any unaddressed rejections or outstanding revision requests (`REJECTED` or `REVISION_REQUESTED`).
 - Only when all conditions are satisfied is `is_ready_for_production` set to `True`, unlocking downstream API calls and Temporal job dispatching.
+

@@ -196,3 +196,4 @@ CREATE TABLE IF NOT EXISTS reference_profiles (
     FOREIGN KEY(asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
 );
 ```
+

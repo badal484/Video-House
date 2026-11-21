@@ -183,3 +183,4 @@ class SemanticSearchService:
         # Sort results by relevance score descending
         results.sort(key=lambda x: x["relevance_score"], reverse=True)
         return results[:limit]
+

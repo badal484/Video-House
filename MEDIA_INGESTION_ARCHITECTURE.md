@@ -64,3 +64,4 @@ flowchart TD
 | **Image Extraction** | **Pillow 12.1.1** | Fast Python image manipulation, EXIF inspection, color profile parsing, WebP/JPEG generation. | `ImageMagick` (heavier binary, historical security vulnerabilities with CVEs). |
 | **Database Registry** | **SQLite 3.50.4 (WAL mode)** | Zero-dependency, file-based, transactional, embedded with Python standard library. Ideal for local and edge project storage. | PostgreSQL (requires background daemon, heavy setup for local workstation dev), MongoDB (schemaless unreliability). |
 | **Job Queue** | **Asyncio Queue with SQLite Persistence** | Non-blocking execution, thread-safe, automated recovery upon server restart, zero external Redis broker requirement. | Celery/Redis (violates Part 01 rule against unnecessary external service dependencies during initial phases). |
+

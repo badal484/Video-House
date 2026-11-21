@@ -46,3 +46,4 @@ Every script is persisted in SQLite with relational foreign keys:
 - `production_scripts`: Top-level script metadata, logline, target duration, and word count.
 - `script_scenes`: Sequential scenes with sluglines (e.g., `EXT. ICELANDIC DESERT - TWILIGHT`), setting (`INTERIOR`/`EXTERIOR`), narrative purpose, character lists, action descriptions, and dialogue entries.
 - `dialogue_entries`: Structured line-by-line speech records with speaker names, text, emotional directions, and calculated durations.
+

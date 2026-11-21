@@ -161,3 +161,4 @@ class CreativeDirectorService(ICreativeDirection):
         if self.db:
             self.db.save_creative_brief(updated)
         return updated
+

@@ -72,3 +72,4 @@ Persists technical cinematography variables, lens focal lengths, camera angles, 
 
 ### 3.2 `storyboard_frames` Table
 Persists prompt specs, composition guidelines, character/environment cross-references, and approval status with foreign key link to `planned_shots(shot_id)`.
+

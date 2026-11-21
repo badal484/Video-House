@@ -83,3 +83,4 @@ To prevent string misspelling and enable type checking, the temporal model defin
 
 5. **`AudioEventType`**:
    `SPEECH`, `MUSIC`, `FOLEY`, `SOUND_EFFECT`, `AMBIENCE`, `SILENCE`, `LAUGHTER`, `APPLAUSE`, `UNKNOWN`.
+

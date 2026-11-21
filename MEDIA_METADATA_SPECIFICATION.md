@@ -58,3 +58,4 @@ The Universal AI Video Production Studio captures **24 distinct technical dimens
   - Dimensions (`w`, `h`), frame rate (`fr`), in-point (`ip`), out-point (`op`), total animation duration in seconds, layer count.
 - **Subtitle Assets:**
   - Format (`SRT`, `VTT`, `ASS`), total dialogue cue count, start timecode of first line, end timecode of last line.
+
