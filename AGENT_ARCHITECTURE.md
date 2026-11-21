@@ -118,3 +118,22 @@ The system enforces three mandatory human-in-the-loop checkpoints:
 - State snapshots are saved to disk / database after every node transition in LangGraph.
 - If a machine reboots, crashes, or loses power during a 2-hour production run, the engine resumes from the exact last verified checkpoint.
 - Completed asset generation jobs are immutable and stored in the Asset Registry (`SHA-256`); tasks are never redundantly re-executed.
+
+---
+
+## 7. AI Director & Production Planning Agent Roles (Part 04)
+
+### 7.1 Creative Director Agent (Department 06)
+- **Role:** Interprets unstructured user briefs, extracts target parameters, infers reasonable defaults, records explicit assumptions, and synthesizes at least 3 materially distinct concepts.
+- **Tools:** `CreativeBriefService`, `ConceptGenerationService`, `ScriptAndNarrativeService`, `CinematographyShotPlanner`, `StoryboardPlanningService`, `ReferenceStyleInterpreter`.
+- **Outputs:** Canonical `CreativeBrief`, selected `CreativeConcept`, `ProductionScript` with speech pacing, `PlannedShot` list, and `StoryboardFrame` prompt specifications.
+
+### 7.2 Production Planning Agent (Department 07)
+- **Role:** Compiles planned shots and scripts into a formal execution dependency DAG, estimates compute costs with uncertainty intervals, validates local Apple M4 hardware feasibility, blueprints Mode B footage editing, and enforces human approval gates.
+- **Tools:** `ProductionBreakdownService`, `EditingBlueprintService`, `ProductionFeasibilityService`, `ProductionBlueprintManager`.
+- **Outputs:** `ProductionBreakdown` (DAG), `EditingBlueprint` (with coverage gaps), `ProductionFeasibility` (cost and hardware bounds), and `ProductionBlueprint`.
+
+### 7.3 World Continuity Agent (Department 12)
+- **Role:** Registers character profiles, environmental geometries, and wardrobe constraints, pre-auditing planned shots for continuity violations (180-degree axis crossing, wardrobe drift, lighting incoherence).
+- **Tools:** `WorldContinuityService`.
+- **Outputs:** `CharacterProfile`, `EnvironmentProfile`, `ContinuityRule`, and automated audit reports.

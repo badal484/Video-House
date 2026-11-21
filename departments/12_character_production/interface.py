@@ -1,6 +1,6 @@
 """
-Interface definition for Department: 12_character_production
-Character consistency, facial blendshapes, voice profiles, LoRA weights.
+Interface definition for Department 12: Character Production.
+Character consistency, world continuity, facial blendshapes, voice profiles, LoRA weights.
 """
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 class CharacterProductionRequest(BaseModel):
     project_id: UUID = Field(..., description="Target project UUID")
+    action: str = Field(default="audit_continuity", description="Action to perform")
     parameters: Dict[str, Any] = Field(default_factory=dict)
 
 class CharacterProductionResponse(BaseModel):
@@ -19,14 +20,12 @@ class CharacterProductionResponse(BaseModel):
 
 class ICharacterProduction(ABC):
     """
-    Abstract contract for Department 12_character_production: CharacterProduction
+    Abstract contract for Department 12: Character Production.
     """
     @abstractmethod
     async def execute(self, request: CharacterProductionRequest) -> CharacterProductionResponse:
-        """Executes the primary task of this department."""
         pass
 
     @abstractmethod
     def health_check(self) -> bool:
-        """Verifies underlying tooling and dependencies are ready."""
         pass

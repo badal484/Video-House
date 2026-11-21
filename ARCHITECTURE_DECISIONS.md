@@ -201,3 +201,81 @@ Chosen option: **Structured Style Deconstruction (`ReferenceAnalysisService`)**.
 - Extracts Average Shot Length (ASL), Cuts Per Minute (CPM), and Pacing Dynamic (`FAST_PACED`, `DYNAMIC`, `CALM_CONTEMPLATIVE`).
 - Clusters video pixel samples via OpenCV K-Means into a dominant 5-color hex palette.
 - Measures camera motion distribution and computes multi-video compatibility scores with actionable editorial recommendations.
+
+---
+
+## ADR-019: Structured Creative Brief Parsing with Explicit Assumption Inferences
+
+### Status
+Accepted & Implemented (Part 04)
+
+### Context & Problem Statement
+User creative briefs range from single vague sentences to dense creative scripts. A production studio cannot execute undefined specifications without assuming reasonable creative baselines (aspect ratio, duration, platform) while logging assumptions transparently.
+
+### Decision Outcome
+Chosen option: **Deterministic Schema Normalization & Clarification Triggers (`CreativeBriefService`)**.
+- Defaults ambiguous target duration to 30.0s, aspect ratio to 16:9 (or 9:16 for vertical platforms), and production type to `COMMERCIAL`.
+- Every inference is explicitly recorded in `CreativeBrief.assumptions`.
+- When prompts lack key narrative specifics or contain fewer than 10 words, targeted clarification questions are surfaced before committing generation resources.
+
+---
+
+## ADR-020: Algorithmic Word-per-Minute & Pause-Model Speech Duration Heuristics
+
+### Status
+Accepted & Implemented (Part 04)
+
+### Context & Problem Statement
+A major defect in generative AI video is dialogue that overflows allocated scene/shot boundaries or causes unnatural cadence when dubbed.
+
+### Decision Outcome
+Chosen option: **Algorithmic WPM + Punctuation Pause Model (`ScriptAndNarrativeService`)**.
+- Standard narration speed set to 140 WPM (~2.33 words/second).
+- Micro-pauses modeled algorithmically: $+0.25$s per comma/semicolon, $+0.45$s per period/exclamation/question mark.
+- Total spoken duration is validated against scene durations during screenplay generation.
+
+---
+
+## ADR-021: Mode B Reference Style Alignment and Coverage Gap Remediations
+
+### Status
+Accepted & Implemented (Part 04)
+
+### Context & Problem Statement
+In Mode B (editing footage with references), naive AI tools hallucinate non-existent timecodes or generate mismatched cuts.
+
+### Decision Outcome
+Chosen option: **Deterministic Mapping against Part 03 Shot Boundaries (`EditingBlueprintService`)**.
+- Ingests verified shot timestamps from `db.get_shots(asset_id)`.
+- Maps source in/out intervals to the timeline sequence within the reference ASL window ($1.2 \times \text{ASL}$).
+- Flags coverage deficits as `MissingCoverageItem` entries with recommended remediations (AI B-Roll, stock footage, motion graphics).
+
+---
+
+## ADR-022: Multi-Entity World Continuity Auditing
+
+### Status
+Accepted & Implemented (Part 04)
+
+### Context & Problem Statement
+Generative image and video models suffer from appearance drift, wardrobe changes, and 180-degree axis crossing across sequential cuts.
+
+### Decision Outcome
+Chosen option: **Entity Continuity Registry & Rule Auditor (`WorldContinuityService`)**.
+- Dedicated SQLite tables for `characters`, `environments`, and `continuity_rules`.
+- Automated pre-generation audit inspecting `PlannedShot` descriptions and requirements against active rules, flagging missing wardrobe constraints, lighting mismatches, and axis crossing.
+
+---
+
+## ADR-023: Mandatory Human Approval Gates for Production Blueprint Readiness
+
+### Status
+Accepted & Implemented (Part 04)
+
+### Context & Problem Statement
+Autonomous AI agents can rapidly burn API budgets and generate unaligned content without human oversight.
+
+### Decision Outcome
+Chosen option: **Approval Gatekeeper (`ProductionBlueprintManager`)**.
+- A `ProductionBlueprint` maintains `is_ready_for_production = False` by default.
+- Transitions to `True` only when required milestones (`SCRIPT`, `STORYBOARD`, `BUDGET`) receive explicit `ApprovalStatus.APPROVED` from a human reviewer and no unaddressed rejections remain.

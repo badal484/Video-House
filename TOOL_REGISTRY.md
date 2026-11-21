@@ -162,3 +162,39 @@ flowchart LR
 - **Role:** Exposes studio capabilities (timeline query, clip slicing, render trigger, asset inspection) as standardized JSON-RPC endpoints for AI coding and operational agents.
 - **Transport:** Standard I/O (`stdio`) and Server-Sent Events (`HTTP-SSE`).
 - **Health Check Command:** `python3 -m core.orchestration.mcp_server --ping`
+
+---
+
+## 7. Creative Planning & AI Director Tools
+
+### 7.1 Creative Brief Interpreter
+- **Identifier:** `tool.creative.brief_interpreter`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Parses natural language prompts, extracts target durations, aspect ratios, and platforms, logs explicit assumptions, and generates clarification questions for ambiguous briefs.
+- **Invocation Method:** Python in-process (`CreativeBriefService`).
+- **Health Check Command:** `python3 -c "from departments.creative_direction.brief_interpreter import CreativeBriefService; print('Brief Interpreter OK')"`
+
+### 7.2 Screenplay & Pacing Engine
+- **Identifier:** `tool.creative.script_engine`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Decomposes concepts into structured screenplay scenes and computes algorithmic speech durations using 140 WPM broadcast baseline plus punctuation pause buffering.
+- **Invocation Method:** Python in-process (`ScriptAndNarrativeService`).
+- **Health Check Command:** `python3 -c "from departments.creative_direction.script_engine import ScriptAndNarrativeService; print('Script Engine OK')"`
+
+### 7.3 Cinematography Shot Planner
+- **Identifier:** `tool.creative.shot_planner`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Translates narrative screenplay scenes into granular `PlannedShot` records with lens focal lengths (18mm-100mm), camera angles, motions, and lighting keys.
+- **Invocation Method:** Python in-process (`CinematographyShotPlanner`).
+- **Health Check Command:** `python3 -c "from departments.creative_direction.shot_planner import CinematographyShotPlanner; print('Shot Planner OK')"`
+
+### 7.4 Production Breakdown & Feasibility Engine
+- **Identifier:** `tool.planning.production_engine`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Generates task dependency DAGs, verifies local Apple M4 hardware compatibility (<2GB weight downloads), routes heavy diffusion to remote GPUs, models compute cost ranges, and enforces human approval gates.
+- **Invocation Method:** Python in-process (`ProductionBreakdownService`, `ProductionFeasibilityService`, `ProductionBlueprintManager`).
+- **Health Check Command:** `python3 -c "from departments.production_planning.planning_service import ProductionPlanningService; print('Planning Engine OK')"`

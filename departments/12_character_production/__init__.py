@@ -1,7 +1,17 @@
 """
-Department: 12_character_production
-Character consistency, facial blendshapes, voice profiles, LoRA weights.
+Department 12: Character Production
+Character consistency, world continuity, reference asset management, and continuity rule auditing.
 """
-from .interface import ICharacterProduction
+from .interface import (
+    CharacterProductionRequest,
+    CharacterProductionResponse,
+    ICharacterProduction
+)
+from .continuity_service import WorldContinuityService
 
-__all__ = ["ICharacterProduction"]
+__all__ = [
+    "CharacterProductionRequest",
+    "CharacterProductionResponse",
+    "ICharacterProduction",
+    "WorldContinuityService"
+]

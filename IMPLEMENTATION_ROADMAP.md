@@ -69,18 +69,28 @@ flowchart LR
   - 11 new REST API endpoints registered and verified.
 - **Verification Gate:** 12 automated unit and integration tests passing in 2.610s (28 cumulative studio tests passing in 4.667s).
 
-### Phase 4 (Part 04): Creative Direction, Storyboarding & Generative AI Pipelines
+### Phase 4 (Part 04): AI Director, Creative Reasoning & Production Planning Engine [COMPLETED]
 - **Focus Departments:**
   - Department 06: Creative Direction
   - Department 07: Production Planning
   - Department 12: Character Production
-  - Department 15: AI Generation
-- **Key Deliverables:**
-  - Structured prompt compiler generating cinematic storyboards and scripts from high-level natural language briefs.
-  - Unified generative video provider interface supporting Runway Gen-3, Kling 1.5, and open-weight Wan2.1.
-  - Character consistency engine using Flux.1-schnell and LoRA references.
-  - Automated shot list DAG compiler with compute cost estimations.
-- **Verification Gate:** User brief automatically compiles into a 6-shot storyboard with estimated render costs and consistent character turnarounds.
+  - Department 01: Studio Application (API Gateway)
+- **Key Deliverables Completed:**
+  - Canonical planning data models and 25 core classes/enums (`core/planning/planning_models.py`).
+  - Relational database schema with 11 specialized planning tables in SQLite (`core/assets/database.py`).
+  - Structured brief parsing with assumption logging and clarification question generation (`departments/06_creative_direction/brief_interpreter.py`).
+  - Multi-concept generation producing at least 3 materially distinct creative concepts with complexity ratings (`departments/06_creative_direction/concept_generator.py`).
+  - Screenplay generation and algorithmic speech duration estimation based on 140 WPM baseline plus punctuation pause buffering (`departments/06_creative_direction/script_engine.py`).
+  - Cinematography shot planning specifying focal lengths (18mm-100mm), camera angles, motions, and lighting (`departments/06_creative_direction/shot_planner.py`).
+  - Storyboard frame generation with prompt specifications and composition guidelines (`departments/06_creative_direction/storyboard_planner.py`).
+  - Reference style transfer integrating Part 03's `ReferenceProfile` while enforcing IP hygiene and trademark guardrails (`departments/06_creative_direction/style_interpreter.py`).
+  - World, character, and environment registry with automated shot continuity auditing (`departments/12_character_production/continuity_service.py`).
+  - Mode B editing blueprinting mapping source footage boundaries to target timeline sequence and flagging coverage gaps (`departments/07_production_planning/edit_planner.py`).
+  - Production breakdown compiling shots into a departmental dependency DAG with compute cost estimates (`departments/07_production_planning/production_breakdown.py`).
+  - Hardware feasibility checking on Apple Silicon M4 with remote GPU routing and cost uncertainty intervals (`departments/07_production_planning/feasibility_evaluator.py`).
+  - Master production blueprint manager enforcing human director approval gates (`departments/07_production_planning/blueprint_manager.py`).
+  - 15 new REST API endpoints registered and validated in `departments/01_studio_application/api.py`.
+- **Verification Gate:** 11 automated unit and integration tests passing in 0.354s (39 cumulative studio tests passing in 4.904s).
 
 ### Phase 5 (Part 05): 2D/3D Animation, Motion Graphics & VFX Compositing
 - **Focus Departments:**

@@ -375,6 +375,214 @@ class AssetDatabase:
                 key_moments_json TEXT NOT NULL,
                 FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
             );
+
+            -- Part 04 AI Director & Production Planning Tables
+            CREATE TABLE IF NOT EXISTS creative_briefs (
+                brief_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                project_name TEXT NOT NULL,
+                production_type TEXT NOT NULL,
+                genre TEXT NOT NULL,
+                target_duration_sec REAL NOT NULL,
+                intended_platform TEXT NOT NULL,
+                aspect_ratio TEXT DEFAULT '16:9',
+                resolution TEXT DEFAULT '1920x1080',
+                fps REAL DEFAULT 24.0,
+                language TEXT DEFAULT 'en',
+                target_audience TEXT DEFAULT '',
+                purpose TEXT DEFAULT '',
+                core_message TEXT DEFAULT '',
+                desired_audience_response TEXT DEFAULT '',
+                call_to_action TEXT,
+                emotional_objective TEXT DEFAULT '',
+                narrative_objective TEXT DEFAULT '',
+                visual_style TEXT DEFAULT '',
+                cinematography TEXT DEFAULT '',
+                lighting_style TEXT DEFAULT '',
+                color_palette_json TEXT DEFAULT '[]',
+                pacing_style TEXT DEFAULT 'DYNAMIC_BALANCED',
+                typography_style TEXT DEFAULT '',
+                sound_design_notes TEXT DEFAULT '',
+                music_direction TEXT DEFAULT '',
+                available_footage_ids_json TEXT DEFAULT '[]',
+                reference_asset_ids_json TEXT DEFAULT '[]',
+                budget_tier TEXT DEFAULT 'STANDARD',
+                model_restrictions_json TEXT DEFAULT '[]',
+                exclusions_json TEXT DEFAULT '[]',
+                assumptions_json TEXT DEFAULT '[]',
+                created_at TEXT NOT NULL,
+                version INTEGER DEFAULT 1,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS creative_concepts (
+                concept_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                creative_premise TEXT NOT NULL,
+                narrative_approach TEXT NOT NULL,
+                visual_treatment TEXT NOT NULL,
+                cinematography_style TEXT NOT NULL,
+                color_direction TEXT NOT NULL,
+                sound_direction TEXT NOT NULL,
+                editing_rhythm TEXT NOT NULL,
+                motion_graphics_style TEXT NOT NULL,
+                production_complexity TEXT NOT NULL,
+                estimated_generation_reqs_json TEXT DEFAULT '{}',
+                risks_and_limitations_json TEXT DEFAULT '[]',
+                is_selected INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS production_scripts (
+                script_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                title TEXT NOT NULL,
+                logline TEXT DEFAULT '',
+                target_duration_sec REAL NOT NULL,
+                estimated_spoken_duration_sec REAL NOT NULL,
+                total_words INTEGER DEFAULT 0,
+                version INTEGER DEFAULT 1,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS script_scenes (
+                scene_id TEXT PRIMARY KEY,
+                script_id TEXT NOT NULL,
+                scene_number INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                slugline TEXT NOT NULL,
+                narrative_purpose TEXT DEFAULT '',
+                location TEXT DEFAULT '',
+                time_of_day TEXT DEFAULT '',
+                characters_json TEXT DEFAULT '[]',
+                action_description TEXT DEFAULT '',
+                dialogue_entries_json TEXT DEFAULT '[]',
+                emotional_tone TEXT DEFAULT '',
+                estimated_duration_sec REAL NOT NULL,
+                continuity_notes TEXT DEFAULT '',
+                FOREIGN KEY (script_id) REFERENCES production_scripts(script_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS planned_shots (
+                shot_id TEXT PRIMARY KEY,
+                scene_id TEXT NOT NULL,
+                shot_number INTEGER NOT NULL,
+                narrative_purpose TEXT DEFAULT '',
+                shot_scale TEXT NOT NULL,
+                camera_angle TEXT NOT NULL,
+                camera_motion TEXT NOT NULL,
+                lens_focal_length TEXT DEFAULT '35mm',
+                camera_position TEXT DEFAULT '',
+                subject_action TEXT DEFAULT '',
+                environment_description TEXT DEFAULT '',
+                lighting_direction TEXT DEFAULT '',
+                composition_notes TEXT DEFAULT '',
+                depth_of_field TEXT DEFAULT '',
+                focus_behavior TEXT DEFAULT '',
+                motion_characteristics TEXT DEFAULT '',
+                start_state TEXT DEFAULT '',
+                end_state TEXT DEFAULT '',
+                estimated_duration_sec REAL NOT NULL,
+                aspect_ratio TEXT DEFAULT '16:9',
+                visual_style TEXT DEFAULT '',
+                continuity_reqs_json TEXT DEFAULT '[]',
+                required_source_assets_json TEXT DEFAULT '[]',
+                generation_requirements TEXT DEFAULT 'AI_VIDEO_GENERATION',
+                FOREIGN KEY (scene_id) REFERENCES script_scenes(scene_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS storyboard_frames (
+                frame_id TEXT PRIMARY KEY,
+                shot_id TEXT NOT NULL,
+                scene_id TEXT NOT NULL,
+                frame_order INTEGER NOT NULL,
+                visual_prompt_spec TEXT NOT NULL,
+                visual_description TEXT DEFAULT '',
+                character_references_json TEXT DEFAULT '[]',
+                environment_references_json TEXT DEFAULT '[]',
+                camera_composition TEXT DEFAULT '',
+                lighting_direction TEXT DEFAULT '',
+                continuity_notes TEXT DEFAULT '',
+                approval_status TEXT DEFAULT 'DRAFT',
+                image_asset_id TEXT,
+                FOREIGN KEY (shot_id) REFERENCES planned_shots(shot_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS characters (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                age_appearance TEXT DEFAULT '',
+                gender TEXT DEFAULT '',
+                physical_description TEXT DEFAULT '',
+                costume_wardrobe TEXT DEFAULT '',
+                personality_traits_json TEXT DEFAULT '[]',
+                reference_asset_ids_json TEXT DEFAULT '[]',
+                voice_profile_id TEXT,
+                continuity_rules_json TEXT DEFAULT '[]',
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS environments (
+                environment_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT DEFAULT '',
+                location_type TEXT DEFAULT 'INTERIOR',
+                lighting_conditions TEXT DEFAULT '',
+                time_of_day TEXT DEFAULT '',
+                spatial_layout TEXT DEFAULT '',
+                reference_asset_ids_json TEXT DEFAULT '[]',
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS editing_blueprints (
+                blueprint_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                target_duration_sec REAL NOT NULL,
+                narrative_order_json TEXT NOT NULL,
+                pacing_style TEXT DEFAULT 'DYNAMIC_BALANCED',
+                transitions_json TEXT DEFAULT '[]',
+                music_placement_json TEXT DEFAULT '[]',
+                dialogue_placement_json TEXT DEFAULT '[]',
+                sound_effects_json TEXT DEFAULT '[]',
+                motion_graphics_json TEXT DEFAULT '[]',
+                missing_coverage_json TEXT DEFAULT '[]',
+                version INTEGER DEFAULT 1,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS production_blueprints (
+                blueprint_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                version INTEGER NOT NULL,
+                brief_json TEXT NOT NULL,
+                concept_json TEXT,
+                script_json TEXT,
+                breakdown_json TEXT,
+                editing_blueprint_json TEXT,
+                feasibility_json TEXT,
+                is_ready_for_production INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS creative_approvals (
+                approval_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                entity_type TEXT NOT NULL,
+                entity_id TEXT NOT NULL,
+                version INTEGER NOT NULL,
+                status TEXT DEFAULT 'PENDING_REVIEW',
+                reviewer_notes TEXT DEFAULT '',
+                approved_by TEXT,
+                approved_at TEXT,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
@@ -388,6 +596,17 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_camera_motion_asset ON camera_movements(asset_id);
             CREATE INDEX IF NOT EXISTS idx_ocr_asset ON ocr_observations(asset_id);
             CREATE INDEX IF NOT EXISTS idx_detected_objects_asset ON detected_objects(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_briefs_project ON creative_briefs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_concepts_project ON creative_concepts(project_id);
+            CREATE INDEX IF NOT EXISTS idx_scripts_project ON production_scripts(project_id);
+            CREATE INDEX IF NOT EXISTS idx_scenes_script ON script_scenes(script_id);
+            CREATE INDEX IF NOT EXISTS idx_shots_scene ON planned_shots(scene_id);
+            CREATE INDEX IF NOT EXISTS idx_frames_shot ON storyboard_frames(shot_id);
+            CREATE INDEX IF NOT EXISTS idx_characters_project ON characters(project_id);
+            CREATE INDEX IF NOT EXISTS idx_environments_project ON environments(project_id);
+            CREATE INDEX IF NOT EXISTS idx_edit_bp_project ON editing_blueprints(project_id);
+            CREATE INDEX IF NOT EXISTS idx_prod_bp_project ON production_blueprints(project_id);
+            CREATE INDEX IF NOT EXISTS idx_approvals_project ON creative_approvals(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -899,3 +1118,586 @@ class AssetDatabase:
                 "narrative_arc": json.loads(row["narrative_json"]),
                 "key_moments": json.loads(row["key_moments_json"])
             }
+
+    # ---------------------------------------------------------
+    # Part 04: Creative Direction & Production Planning Methods
+    # ---------------------------------------------------------
+
+    def save_creative_brief(self, brief: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO creative_briefs (
+                    brief_id, project_id, project_name, production_type, genre,
+                    target_duration_sec, intended_platform, aspect_ratio, resolution,
+                    fps, language, target_audience, purpose, core_message,
+                    desired_audience_response, call_to_action, emotional_objective,
+                    narrative_objective, visual_style, cinematography, lighting_style,
+                    color_palette_json, pacing_style, typography_style, sound_design_notes,
+                    music_direction, available_footage_ids_json, reference_asset_ids_json,
+                    budget_tier, model_restrictions_json, exclusions_json, assumptions_json,
+                    created_at, version
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(brief.brief_id), str(brief.project_id), brief.project_name,
+                getattr(brief.production_type, "value", str(brief.production_type)),
+                brief.genre, float(brief.target_duration_sec), brief.intended_platform,
+                brief.aspect_ratio, brief.resolution, float(brief.fps), brief.language,
+                brief.target_audience, brief.purpose, brief.core_message,
+                brief.desired_audience_response, brief.call_to_action, brief.emotional_objective,
+                brief.narrative_objective, brief.visual_style, brief.cinematography,
+                brief.lighting_style, json.dumps(brief.color_palette),
+                getattr(brief.pacing_style, "value", str(brief.pacing_style)),
+                brief.typography_style, brief.sound_design_notes, brief.music_direction,
+                json.dumps([str(x) for x in brief.available_footage_ids]),
+                json.dumps([str(x) for x in brief.reference_asset_ids]),
+                brief.budget_tier, json.dumps(brief.model_restrictions),
+                json.dumps(brief.exclusions), json.dumps(brief.assumptions),
+                brief.created_at, int(brief.version)
+            ))
+
+    def get_creative_brief(self, project_id: UUID) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM creative_briefs WHERE project_id = ? ORDER BY version DESC LIMIT 1",
+                (str(project_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "brief_id": UUID(row["brief_id"]),
+                "project_id": UUID(row["project_id"]),
+                "project_name": row["project_name"],
+                "production_type": row["production_type"],
+                "genre": row["genre"],
+                "target_duration_sec": row["target_duration_sec"],
+                "intended_platform": row["intended_platform"],
+                "aspect_ratio": row["aspect_ratio"],
+                "resolution": row["resolution"],
+                "fps": row["fps"],
+                "language": row["language"],
+                "target_audience": row["target_audience"],
+                "purpose": row["purpose"],
+                "core_message": row["core_message"],
+                "desired_audience_response": row["desired_audience_response"],
+                "call_to_action": row["call_to_action"],
+                "emotional_objective": row["emotional_objective"],
+                "narrative_objective": row["narrative_objective"],
+                "visual_style": row["visual_style"],
+                "cinematography": row["cinematography"],
+                "lighting_style": row["lighting_style"],
+                "color_palette": json.loads(row["color_palette_json"]),
+                "pacing_style": row["pacing_style"],
+                "typography_style": row["typography_style"],
+                "sound_design_notes": row["sound_design_notes"],
+                "music_direction": row["music_direction"],
+                "available_footage_ids": [UUID(x) for x in json.loads(row["available_footage_ids_json"])],
+                "reference_asset_ids": [UUID(x) for x in json.loads(row["reference_asset_ids_json"])],
+                "budget_tier": row["budget_tier"],
+                "model_restrictions": json.loads(row["model_restrictions_json"]),
+                "exclusions": json.loads(row["exclusions_json"]),
+                "assumptions": json.loads(row["assumptions_json"]),
+                "created_at": row["created_at"],
+                "version": row["version"]
+            }
+
+    def save_creative_concepts(self, concepts: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for c in concepts:
+                conn.execute("""
+                    INSERT OR REPLACE INTO creative_concepts (
+                        concept_id, project_id, name, creative_premise,
+                        narrative_approach, visual_treatment, cinematography_style,
+                        color_direction, sound_direction, editing_rhythm,
+                        motion_graphics_style, production_complexity,
+                        estimated_generation_reqs_json, risks_and_limitations_json,
+                        is_selected, created_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(c.concept_id), str(c.project_id), c.name, c.creative_premise,
+                    c.narrative_approach, c.visual_treatment, c.cinematography_style,
+                    c.color_direction, c.sound_direction, c.editing_rhythm,
+                    c.motion_graphics_style,
+                    getattr(c.production_complexity, "value", str(c.production_complexity)),
+                    json.dumps(c.estimated_generation_requirements),
+                    json.dumps(c.risks_and_limitations), 1 if c.is_selected else 0,
+                    c.created_at
+                ))
+
+    def get_creative_concepts(self, project_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM creative_concepts WHERE project_id = ? ORDER BY created_at ASC",
+                (str(project_id),)
+            ).fetchall()
+            return [{
+                "concept_id": UUID(r["concept_id"]),
+                "project_id": UUID(r["project_id"]),
+                "name": r["name"],
+                "creative_premise": r["creative_premise"],
+                "narrative_approach": r["narrative_approach"],
+                "visual_treatment": r["visual_treatment"],
+                "cinematography_style": r["cinematography_style"],
+                "color_direction": r["color_direction"],
+                "sound_direction": r["sound_direction"],
+                "editing_rhythm": r["editing_rhythm"],
+                "motion_graphics_style": r["motion_graphics_style"],
+                "production_complexity": r["production_complexity"],
+                "estimated_generation_requirements": json.loads(r["estimated_generation_reqs_json"]),
+                "risks_and_limitations": json.loads(r["risks_and_limitations_json"]),
+                "is_selected": bool(r["is_selected"]),
+                "created_at": r["created_at"]
+            } for r in rows]
+
+    def select_concept(self, project_id: UUID, concept_id: UUID) -> None:
+        with self.get_connection() as conn:
+            conn.execute("UPDATE creative_concepts SET is_selected = 0 WHERE project_id = ?", (str(project_id),))
+            conn.execute("UPDATE creative_concepts SET is_selected = 1 WHERE concept_id = ?", (str(concept_id),))
+
+    def save_script(self, script: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO production_scripts (
+                    script_id, project_id, title, logline, target_duration_sec,
+                    estimated_spoken_duration_sec, total_words, version, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(script.script_id), str(script.project_id), script.title, script.logline,
+                float(script.target_duration_sec), float(script.estimated_spoken_duration_sec),
+                int(script.total_words), int(script.version), script.created_at
+            ))
+            for sc in script.scenes:
+                diag_list = []
+                for d in sc.dialogue_entries:
+                    diag_list.append({
+                        "entry_id": str(d.entry_id),
+                        "speaker": d.speaker,
+                        "text": d.text,
+                        "entry_type": getattr(d.entry_type, "value", str(d.entry_type)),
+                        "estimated_duration_sec": d.estimated_duration_sec,
+                        "emotional_direction": d.emotional_direction
+                    })
+                conn.execute("""
+                    INSERT OR REPLACE INTO script_scenes (
+                        scene_id, script_id, scene_number, title, slugline,
+                        narrative_purpose, location, time_of_day, characters_json,
+                        action_description, dialogue_entries_json, emotional_tone,
+                        estimated_duration_sec, continuity_notes
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(sc.scene_id), str(sc.script_id), int(sc.scene_number), sc.title,
+                    sc.slugline, sc.narrative_purpose, sc.location, sc.time_of_day,
+                    json.dumps(sc.characters_present), sc.action_description,
+                    json.dumps(diag_list), sc.emotional_tone, float(sc.estimated_duration_sec),
+                    sc.continuity_notes
+                ))
+
+    def get_script(self, project_id: UUID) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM production_scripts WHERE project_id = ? ORDER BY version DESC LIMIT 1",
+                (str(project_id),)
+            ).fetchone()
+            if not row:
+                return None
+            script_id = row["script_id"]
+            scene_rows = conn.execute(
+                "SELECT * FROM script_scenes WHERE script_id = ? ORDER BY scene_number ASC",
+                (script_id,)
+            ).fetchall()
+            scenes = [{
+                "scene_id": UUID(sc["scene_id"]),
+                "script_id": UUID(sc["script_id"]),
+                "scene_number": sc["scene_number"],
+                "title": sc["title"],
+                "slugline": sc["slugline"],
+                "narrative_purpose": sc["narrative_purpose"],
+                "location": sc["location"],
+                "time_of_day": sc["time_of_day"],
+                "characters_present": json.loads(sc["characters_json"]),
+                "action_description": sc["action_description"],
+                "dialogue_entries": json.loads(sc["dialogue_entries_json"]),
+                "emotional_tone": sc["emotional_tone"],
+                "estimated_duration_sec": sc["estimated_duration_sec"],
+                "continuity_notes": sc["continuity_notes"]
+            } for sc in scene_rows]
+
+            return {
+                "script_id": UUID(row["script_id"]),
+                "project_id": UUID(row["project_id"]),
+                "title": row["title"],
+                "logline": row["logline"],
+                "target_duration_sec": row["target_duration_sec"],
+                "estimated_spoken_duration_sec": row["estimated_spoken_duration_sec"],
+                "total_words": row["total_words"],
+                "version": row["version"],
+                "created_at": row["created_at"],
+                "scenes": scenes
+            }
+
+    def save_planned_shots(self, shots: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for s in shots:
+                conn.execute("""
+                    INSERT OR REPLACE INTO planned_shots (
+                        shot_id, scene_id, shot_number, narrative_purpose,
+                        shot_scale, camera_angle, camera_motion, lens_focal_length,
+                        camera_position, subject_action, environment_description,
+                        lighting_direction, composition_notes, depth_of_field,
+                        focus_behavior, motion_characteristics, start_state, end_state,
+                        estimated_duration_sec, aspect_ratio, visual_style,
+                        continuity_reqs_json, required_source_assets_json,
+                        generation_requirements
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(s.shot_id), str(s.scene_id), int(s.shot_number), s.narrative_purpose,
+                    getattr(s.shot_scale, "value", str(s.shot_scale)),
+                    getattr(s.camera_angle, "value", str(s.camera_angle)),
+                    getattr(s.camera_motion, "value", str(s.camera_motion)),
+                    s.lens_focal_length, s.camera_position, s.subject_action,
+                    s.environment_description, s.lighting_direction, s.composition_notes,
+                    s.depth_of_field, s.focus_behavior, s.motion_characteristics,
+                    s.start_state, s.end_state, float(s.estimated_duration_sec),
+                    s.aspect_ratio, s.visual_style,
+                    json.dumps(s.continuity_requirements),
+                    json.dumps([str(x) for x in s.required_source_assets]),
+                    getattr(s.generation_requirements, "value", str(s.generation_requirements))
+                ))
+
+    def get_planned_shots(self, scene_id: Optional[UUID] = None) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            if scene_id:
+                rows = conn.execute(
+                    "SELECT * FROM planned_shots WHERE scene_id = ? ORDER BY shot_number ASC",
+                    (str(scene_id),)
+                ).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM planned_shots ORDER BY shot_number ASC").fetchall()
+            return [{
+                "shot_id": UUID(r["shot_id"]),
+                "scene_id": UUID(r["scene_id"]),
+                "shot_number": r["shot_number"],
+                "narrative_purpose": r["narrative_purpose"],
+                "shot_scale": r["shot_scale"],
+                "camera_angle": r["camera_angle"],
+                "camera_motion": r["camera_motion"],
+                "lens_focal_length": r["lens_focal_length"],
+                "camera_position": r["camera_position"],
+                "subject_action": r["subject_action"],
+                "environment_description": r["environment_description"],
+                "lighting_direction": r["lighting_direction"],
+                "composition_notes": r["composition_notes"],
+                "depth_of_field": r["depth_of_field"],
+                "focus_behavior": r["focus_behavior"],
+                "motion_characteristics": r["motion_characteristics"],
+                "start_state": r["start_state"],
+                "end_state": r["end_state"],
+                "estimated_duration_sec": r["estimated_duration_sec"],
+                "aspect_ratio": r["aspect_ratio"],
+                "visual_style": r["visual_style"],
+                "continuity_requirements": json.loads(r["continuity_reqs_json"]),
+                "required_source_assets": [UUID(x) for x in json.loads(r["required_source_assets_json"])],
+                "generation_requirements": r["generation_requirements"]
+            } for r in rows]
+
+    def save_storyboard_frames(self, frames: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for f in frames:
+                conn.execute("""
+                    INSERT OR REPLACE INTO storyboard_frames (
+                        frame_id, shot_id, scene_id, frame_order, visual_prompt_spec,
+                        visual_description, character_references_json,
+                        environment_references_json, camera_composition,
+                        lighting_direction, continuity_notes, approval_status,
+                        image_asset_id
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(f.frame_id), str(f.shot_id), str(f.scene_id), int(f.frame_order),
+                    f.visual_prompt_spec, f.visual_description,
+                    json.dumps(f.character_references), json.dumps(f.environment_references),
+                    f.camera_composition, f.lighting_direction, f.continuity_notes,
+                    getattr(f.approval_status, "value", str(f.approval_status)),
+                    str(f.image_asset_id) if f.image_asset_id else None
+                ))
+
+    def get_storyboard_frames(self, shot_id: Optional[UUID] = None) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            if shot_id:
+                rows = conn.execute(
+                    "SELECT * FROM storyboard_frames WHERE shot_id = ? ORDER BY frame_order ASC",
+                    (str(shot_id),)
+                ).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM storyboard_frames ORDER BY frame_order ASC").fetchall()
+            return [{
+                "frame_id": UUID(r["frame_id"]),
+                "shot_id": UUID(r["shot_id"]),
+                "scene_id": UUID(r["scene_id"]),
+                "frame_order": r["frame_order"],
+                "visual_prompt_spec": r["visual_prompt_spec"],
+                "visual_description": r["visual_description"],
+                "character_references": json.loads(r["character_references_json"]),
+                "environment_references": json.loads(r["environment_references_json"]),
+                "camera_composition": r["camera_composition"],
+                "lighting_direction": r["lighting_direction"],
+                "continuity_notes": r["continuity_notes"],
+                "approval_status": r["approval_status"],
+                "image_asset_id": UUID(r["image_asset_id"]) if r["image_asset_id"] else None
+            } for r in rows]
+
+    def save_character(self, character: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO characters (
+                    character_id, project_id, name, age_appearance, gender,
+                    physical_description, costume_wardrobe, personality_traits_json,
+                    reference_asset_ids_json, voice_profile_id, continuity_rules_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(character.character_id), str(character.project_id), character.name,
+                character.age_appearance, character.gender, character.physical_description,
+                character.costume_wardrobe, json.dumps(character.personality_traits),
+                json.dumps([str(x) for x in character.reference_asset_ids]),
+                character.voice_profile_id, json.dumps(character.continuity_rules)
+            ))
+
+    def get_characters(self, project_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM characters WHERE project_id = ?", (str(project_id),)).fetchall()
+            return [{
+                "character_id": UUID(r["character_id"]),
+                "project_id": UUID(r["project_id"]),
+                "name": r["name"],
+                "age_appearance": r["age_appearance"],
+                "gender": r["gender"],
+                "physical_description": r["physical_description"],
+                "costume_wardrobe": r["costume_wardrobe"],
+                "personality_traits": json.loads(r["personality_traits_json"]),
+                "reference_asset_ids": [UUID(x) for x in json.loads(r["reference_asset_ids_json"])],
+                "voice_profile_id": r["voice_profile_id"],
+                "continuity_rules": json.loads(r["continuity_rules_json"])
+            } for r in rows]
+
+    def save_environment(self, env: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO environments (
+                    environment_id, project_id, name, description, location_type,
+                    lighting_conditions, time_of_day, spatial_layout, reference_asset_ids_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(env.environment_id), str(env.project_id), env.name, env.description,
+                env.location_type, env.lighting_conditions, env.time_of_day,
+                env.spatial_layout, json.dumps([str(x) for x in env.reference_asset_ids])
+            ))
+
+    def get_environments(self, project_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM environments WHERE project_id = ?", (str(project_id),)).fetchall()
+            return [{
+                "environment_id": UUID(r["environment_id"]),
+                "project_id": UUID(r["project_id"]),
+                "name": r["name"],
+                "description": r["description"],
+                "location_type": r["location_type"],
+                "lighting_conditions": r["lighting_conditions"],
+                "time_of_day": r["time_of_day"],
+                "spatial_layout": r["spatial_layout"],
+                "reference_asset_ids": [UUID(x) for x in json.loads(r["reference_asset_ids_json"])]
+            } for r in rows]
+
+    def save_editing_blueprint(self, blueprint: Any) -> None:
+        with self.get_connection() as conn:
+            order_list = []
+            for s in blueprint.narrative_order:
+                order_list.append({
+                    "mapping_id": str(s.mapping_id),
+                    "timeline_in_sec": s.timeline_in_sec,
+                    "timeline_out_sec": s.timeline_out_sec,
+                    "source_asset_id": str(s.source_asset_id),
+                    "source_in_sec": s.source_in_sec,
+                    "source_out_sec": s.source_out_sec,
+                    "shot_purpose": s.shot_purpose,
+                    "transition_in": getattr(s.transition_in, "value", str(s.transition_in)),
+                    "transition_out": getattr(s.transition_out, "value", str(s.transition_out)),
+                    "color_treatment": s.color_treatment,
+                    "speed_ratio": s.speed_ratio
+                })
+            missing_list = []
+            for m in blueprint.missing_coverage:
+                missing_list.append({
+                    "item_id": str(m.item_id),
+                    "intended_timeline_sec": m.intended_timeline_sec,
+                    "duration_sec": m.duration_sec,
+                    "description": m.description,
+                    "recommended_solution": getattr(m.recommended_solution, "value", str(m.recommended_solution)),
+                    "suggested_prompt": m.suggested_prompt
+                })
+            conn.execute("""
+                INSERT OR REPLACE INTO editing_blueprints (
+                    blueprint_id, project_id, target_duration_sec, narrative_order_json,
+                    pacing_style, transitions_json, music_placement_json,
+                    dialogue_placement_json, sound_effects_json, motion_graphics_json,
+                    missing_coverage_json, version, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(blueprint.blueprint_id), str(blueprint.project_id),
+                float(blueprint.target_duration_sec), json.dumps(order_list),
+                getattr(blueprint.pacing_style, "value", str(blueprint.pacing_style)),
+                json.dumps(blueprint.transitions), json.dumps(blueprint.music_placement),
+                json.dumps(blueprint.dialogue_placement), json.dumps(blueprint.sound_effects),
+                json.dumps(blueprint.motion_graphics), json.dumps(missing_list),
+                int(blueprint.version), blueprint.created_at
+            ))
+
+    def get_editing_blueprint(self, project_id: UUID) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM editing_blueprints WHERE project_id = ? ORDER BY version DESC LIMIT 1",
+                (str(project_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "blueprint_id": UUID(row["blueprint_id"]),
+                "project_id": UUID(row["project_id"]),
+                "target_duration_sec": row["target_duration_sec"],
+                "narrative_order": json.loads(row["narrative_order_json"]),
+                "pacing_style": row["pacing_style"],
+                "transitions": json.loads(row["transitions_json"]),
+                "music_placement": json.loads(row["music_placement_json"]),
+                "dialogue_placement": json.loads(row["dialogue_placement_json"]),
+                "sound_effects": json.loads(row["sound_effects_json"]),
+                "motion_graphics": json.loads(row["motion_graphics_json"]),
+                "missing_coverage": json.loads(row["missing_coverage_json"]),
+                "version": row["version"],
+                "created_at": row["created_at"]
+            }
+
+    def save_production_blueprint(self, blueprint: Any) -> None:
+        with self.get_connection() as conn:
+            # Serialize blueprint sections
+            brief_dict = {
+                "brief_id": str(blueprint.brief.brief_id),
+                "project_name": blueprint.brief.project_name,
+                "production_type": getattr(blueprint.brief.production_type, "value", str(blueprint.brief.production_type)),
+                "genre": blueprint.brief.genre,
+                "target_duration_sec": blueprint.brief.target_duration_sec
+            }
+            concept_dict = None
+            if blueprint.selected_concept:
+                concept_dict = {
+                    "concept_id": str(blueprint.selected_concept.concept_id),
+                    "name": blueprint.selected_concept.name,
+                    "premise": blueprint.selected_concept.creative_premise
+                }
+            script_dict = None
+            if blueprint.script:
+                script_dict = {
+                    "script_id": str(blueprint.script.script_id),
+                    "title": blueprint.script.title,
+                    "scenes_count": len(blueprint.script.scenes)
+                }
+            breakdown_dict = None
+            if blueprint.breakdown:
+                breakdown_dict = {
+                    "total_shots": blueprint.breakdown.total_shots,
+                    "estimated_cost_usd": blueprint.breakdown.estimated_cost_usd,
+                    "technical_risks": blueprint.breakdown.technical_risks
+                }
+            edit_dict = None
+            if blueprint.editing_blueprint:
+                edit_dict = {
+                    "blueprint_id": str(blueprint.editing_blueprint.blueprint_id),
+                    "target_duration_sec": blueprint.editing_blueprint.target_duration_sec,
+                    "cuts_count": len(blueprint.editing_blueprint.narrative_order)
+                }
+            feasibility_dict = None
+            if blueprint.feasibility:
+                feasibility_dict = {
+                    "feasibility_score": blueprint.feasibility.overall_feasibility_score,
+                    "complexity": getattr(blueprint.feasibility.complexity_category, "value", str(blueprint.feasibility.complexity_category)),
+                    "cost_range": blueprint.feasibility.estimated_cost_range
+                }
+
+            conn.execute("""
+                INSERT OR REPLACE INTO production_blueprints (
+                    blueprint_id, project_id, version, brief_json, concept_json,
+                    script_json, breakdown_json, editing_blueprint_json,
+                    feasibility_json, is_ready_for_production, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(blueprint.blueprint_id), str(blueprint.project_id), int(blueprint.version),
+                json.dumps(brief_dict), json.dumps(concept_dict) if concept_dict else None,
+                json.dumps(script_dict) if script_dict else None,
+                json.dumps(breakdown_dict) if breakdown_dict else None,
+                json.dumps(edit_dict) if edit_dict else None,
+                json.dumps(feasibility_dict) if feasibility_dict else None,
+                1 if blueprint.is_ready_for_production else 0, blueprint.created_at
+            ))
+
+    def get_production_blueprint(self, project_id: UUID, version: Optional[int] = None) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            if version:
+                row = conn.execute(
+                    "SELECT * FROM production_blueprints WHERE project_id = ? AND version = ?",
+                    (str(project_id), version)
+                ).fetchone()
+            else:
+                row = conn.execute(
+                    "SELECT * FROM production_blueprints WHERE project_id = ? ORDER BY version DESC LIMIT 1",
+                    (str(project_id),)
+                ).fetchone()
+            if not row:
+                return None
+            return {
+                "blueprint_id": UUID(row["blueprint_id"]),
+                "project_id": UUID(row["project_id"]),
+                "version": row["version"],
+                "brief": json.loads(row["brief_json"]),
+                "selected_concept": json.loads(row["concept_json"]) if row["concept_json"] else None,
+                "script": json.loads(row["script_json"]) if row["script_json"] else None,
+                "breakdown": json.loads(row["breakdown_json"]) if row["breakdown_json"] else None,
+                "editing_blueprint": json.loads(row["editing_blueprint_json"]) if row["editing_blueprint_json"] else None,
+                "feasibility": json.loads(row["feasibility_json"]) if row["feasibility_json"] else None,
+                "is_ready_for_production": bool(row["is_ready_for_production"]),
+                "created_at": row["created_at"]
+            }
+
+    def save_creative_approval(self, approval: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO creative_approvals (
+                    approval_id, project_id, entity_type, entity_id, version,
+                    status, reviewer_notes, approved_by, approved_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(approval.approval_id), str(approval.project_id),
+                getattr(approval.entity_type, "value", str(approval.entity_type)),
+                str(approval.entity_id), int(approval.version),
+                getattr(approval.status, "value", str(approval.status)),
+                approval.reviewer_notes, approval.approved_by, approval.approved_at
+            ))
+
+    def get_creative_approvals(self, project_id: UUID, entity_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            if entity_type:
+                rows = conn.execute(
+                    "SELECT * FROM creative_approvals WHERE project_id = ? AND entity_type = ? ORDER BY version DESC",
+                    (str(project_id), entity_type)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT * FROM creative_approvals WHERE project_id = ? ORDER BY version DESC",
+                    (str(project_id),)
+                ).fetchall()
+            return [{
+                "approval_id": UUID(r["approval_id"]),
+                "project_id": UUID(r["project_id"]),
+                "entity_type": r["entity_type"],
+                "entity_id": UUID(r["entity_id"]),
+                "version": r["version"],
+                "status": r["status"],
+                "reviewer_notes": r["reviewer_notes"],
+                "approved_by": r["approved_by"],
+                "approved_at": r["approved_at"]
+            } for r in rows]

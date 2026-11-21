@@ -40,6 +40,15 @@ from core.assets.intelligence_models import (
 )
 from departments.media_intelligence.service import MediaIntelligenceService
 from departments.multimodal_providers.router import MultimodalProviderRouter
+from departments.creative_direction.director_service import CreativeDirectorService
+from departments.production_planning.planning_service import ProductionPlanningService
+from departments.character_production.continuity_service import WorldContinuityService
+from core.planning.planning_models import (
+    ApprovalStatus,
+    PlanningEntityType,
+    ProductionType,
+    PacingStyle
+)
 
 # ---------------------------------------------------------
 # Lifecycle & Dependency Wiring
@@ -50,6 +59,9 @@ job_queue = IngestionJobQueue(db, max_concurrent_workers=4)
 ingestion_service = MediaIngestionService(db, storage, job_queue)
 intelligence_service = MediaIntelligenceService(db)
 provider_router = MultimodalProviderRouter()
+creative_director = CreativeDirectorService(db)
+production_planner = ProductionPlanningService(db)
+continuity_service = WorldContinuityService(db)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -103,6 +115,37 @@ class CompareAssetsRequest(BaseModel):
 class SearchMediaRequest(BaseModel):
     query: str = Field(..., min_length=1)
     limit: int = Field(default=20, ge=1, le=100)
+
+class CreateBriefRequest(BaseModel):
+    prompt: str = Field(..., min_length=1)
+    project_name: Optional[str] = None
+    production_type: Optional[str] = None
+    target_duration_sec: Optional[float] = None
+    intended_platform: Optional[str] = None
+    genre: Optional[str] = None
+    visual_style: Optional[str] = None
+    aspect_ratio: Optional[str] = None
+
+class CreateScriptRequest(BaseModel):
+    selected_concept_id: Optional[UUID] = None
+    notes: Optional[str] = None
+
+class PlanShotsRequest(BaseModel):
+    visual_style: Optional[str] = "Cinematic Realism"
+
+class CreateEditPlanRequest(BaseModel):
+    target_duration_sec: float = Field(..., gt=0.0)
+    source_asset_ids: List[UUID] = Field(default_factory=list)
+    reference_asset_id: Optional[UUID] = None
+    instructions: Optional[str] = ""
+
+class SubmitApprovalRequest(BaseModel):
+    entity_type: PlanningEntityType
+    entity_id: UUID
+    version: int = 1
+    status: ApprovalStatus
+    reviewer_notes: Optional[str] = ""
+    approved_by: Optional[str] = "human_director"
 
 class UpdateAssetRequest(BaseModel):
     display_name: Optional[str] = None
@@ -509,4 +552,253 @@ async def compare_assets_endpoint(project_id: UUID, req: CompareAssetsRequest):
 async def search_media_endpoint(project_id: UUID, req: SearchMediaRequest):
     results = intelligence_service.search(project_id, req.query, limit=req.limit)
     return {"success": True, "query": req.query, "results_count": len(results), "results": results}
+
+# ---------------------------------------------------------
+# Part 04: AI Director & Creative Production Planning
+# ---------------------------------------------------------
+
+@app.post("/api/v1/projects/{project_id}/creative/brief")
+async def create_or_parse_brief(project_id: UUID, req: CreateBriefRequest):
+    proj = db.get_project(project_id)
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found.")
+    raw_dict = req.model_dump()
+    brief, questions = creative_director.parse_brief(project_id, raw_dict)
+    return {
+        "success": True,
+        "brief_id": str(brief.brief_id),
+        "project_name": brief.project_name,
+        "production_type": brief.production_type.value,
+        "target_duration_sec": brief.target_duration_sec,
+        "assumptions": brief.assumptions,
+        "clarification_questions": questions
+    }
+
+@app.get("/api/v1/projects/{project_id}/creative/brief")
+async def get_creative_brief_endpoint(project_id: UUID):
+    brief_dict = db.get_creative_brief(project_id)
+    if not brief_dict:
+        raise HTTPException(status_code=404, detail="Creative brief not found for this project.")
+    return {"success": True, "brief": brief_dict}
+
+@app.post("/api/v1/projects/{project_id}/creative/concepts")
+async def generate_creative_concepts(project_id: UUID):
+    brief_dict = db.get_creative_brief(project_id)
+    if not brief_dict:
+        raise HTTPException(status_code=400, detail="Please create a creative brief first.")
+    from core.planning.planning_models import CreativeBrief, PacingStyle, ProductionType
+    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
+    concepts = creative_director.generate_concepts(brief, count=3)
+    return {"success": True, "concepts_count": len(concepts), "concepts": [
+        {"concept_id": str(c.concept_id), "name": c.name, "premise": c.creative_premise, "complexity": c.production_complexity.value, "is_selected": c.is_selected}
+        for c in concepts
+    ]}
+
+@app.get("/api/v1/projects/{project_id}/creative/concepts")
+async def get_creative_concepts_endpoint(project_id: UUID):
+    concepts = db.get_creative_concepts(project_id)
+    return {"success": True, "concepts": concepts}
+
+@app.post("/api/v1/projects/{project_id}/creative/concepts/{concept_id}/select")
+async def select_concept_endpoint(project_id: UUID, concept_id: UUID):
+    db.select_concept(project_id, concept_id)
+    return {"success": True, "message": f"Concept {concept_id} selected as active direction."}
+
+@app.post("/api/v1/projects/{project_id}/creative/script")
+async def develop_script_endpoint(project_id: UUID, req: CreateScriptRequest):
+    brief_dict = db.get_creative_brief(project_id)
+    if not brief_dict:
+        raise HTTPException(status_code=400, detail="Creative brief required before script generation.")
+    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
+    
+    selected_concept = None
+    if req.selected_concept_id:
+        concepts = db.get_creative_concepts(project_id)
+        matching = [c for c in concepts if c["concept_id"] == req.selected_concept_id]
+        if matching:
+            from core.planning.planning_models import CreativeConcept, ComplexityCategory
+            m = matching[0]
+            selected_concept = CreativeConcept(
+                concept_id=m["concept_id"], project_id=project_id, name=m["name"],
+                creative_premise=m["creative_premise"], narrative_approach=m["narrative_approach"],
+                visual_treatment=m["visual_treatment"], cinematography_style=m["cinematography_style"],
+                color_direction=m["color_direction"], sound_direction=m["sound_direction"],
+                editing_rhythm=m["editing_rhythm"], motion_graphics_style=m["motion_graphics_style"],
+                production_complexity=ComplexityCategory(m["production_complexity"]), is_selected=True
+            )
+    
+    script = creative_director.develop_script(brief, selected_concept)
+    return {
+        "success": True,
+        "script_id": str(script.script_id),
+        "title": script.title,
+        "scenes_count": len(script.scenes),
+        "estimated_spoken_duration_sec": script.estimated_spoken_duration_sec,
+        "total_words": script.total_words
+    }
+
+@app.get("/api/v1/projects/{project_id}/creative/script")
+async def get_script_endpoint(project_id: UUID):
+    script = db.get_script(project_id)
+    if not script:
+        raise HTTPException(status_code=404, detail="Script not found for this project.")
+    return {"success": True, "script": script}
+
+@app.post("/api/v1/projects/{project_id}/creative/shots")
+async def plan_shots_endpoint(project_id: UUID, req: PlanShotsRequest):
+    script_dict = db.get_script(project_id)
+    if not script_dict:
+        raise HTTPException(status_code=400, detail="Script required before shot planning.")
+    
+    from core.planning.planning_models import ProductionScript, ScriptScene, DialogueEntry, DialogueType
+    scenes = []
+    for sc in script_dict["scenes"]:
+        diag = [DialogueEntry(
+            entry_id=UUID(d["entry_id"]), speaker=d["speaker"], text=d["text"],
+            entry_type=DialogueType(d["entry_type"]), estimated_duration_sec=d["estimated_duration_sec"]
+        ) for d in sc["dialogue_entries"]]
+        scenes.append(ScriptScene(
+            scene_id=sc["scene_id"], script_id=sc["script_id"], scene_number=sc["scene_number"],
+            title=sc["title"], slugline=sc["slugline"], narrative_purpose=sc["narrative_purpose"],
+            location=sc["location"], time_of_day=sc["time_of_day"], characters_present=sc["characters_present"],
+            action_description=sc["action_description"], dialogue_entries=diag,
+            emotional_tone=sc["emotional_tone"], estimated_duration_sec=sc["estimated_duration_sec"]
+        ))
+    script = ProductionScript(
+        script_id=script_dict["script_id"], project_id=project_id, title=script_dict["title"],
+        logline=script_dict["logline"], target_duration_sec=script_dict["target_duration_sec"],
+        estimated_spoken_duration_sec=script_dict["estimated_spoken_duration_sec"],
+        total_words=script_dict["total_words"], scenes=scenes
+    )
+    shots = creative_director.plan_shots(script, visual_style=req.visual_style or "Cinematic Realism")
+    return {"success": True, "planned_shots_count": len(shots), "shots": [
+        {"shot_number": s.shot_number, "scale": s.shot_scale.value, "camera_motion": s.camera_motion.value, "duration_sec": s.estimated_duration_sec}
+        for s in shots
+    ]}
+
+@app.get("/api/v1/projects/{project_id}/creative/shots")
+async def get_planned_shots_endpoint(project_id: UUID):
+    shots = db.get_planned_shots()
+    return {"success": True, "shots": shots}
+
+@app.post("/api/v1/projects/{project_id}/creative/storyboard")
+async def plan_storyboard_endpoint(project_id: UUID):
+    shot_dicts = db.get_planned_shots()
+    if not shot_dicts:
+        raise HTTPException(status_code=400, detail="Planned shots required before storyboard generation.")
+    from core.planning.planning_models import PlannedShot
+    from core.assets.intelligence_models import ShotScale, CameraAngle, CameraMotionType
+    from core.planning.planning_models import ProductionTaskType
+    shots = []
+    for s in shot_dicts:
+        shots.append(PlannedShot(
+            shot_id=s["shot_id"], scene_id=s["scene_id"], shot_number=s["shot_number"],
+            narrative_purpose=s["narrative_purpose"], shot_scale=ShotScale(s["shot_scale"]),
+            camera_angle=CameraAngle(s["camera_angle"]), camera_motion=CameraMotionType(s["camera_motion"]),
+            lens_focal_length=s["lens_focal_length"], camera_position=s["camera_position"],
+            subject_action=s["subject_action"], environment_description=s["environment_description"],
+            lighting_direction=s["lighting_direction"], composition_notes=s["composition_notes"],
+            depth_of_field=s["depth_of_field"], focus_behavior=s["focus_behavior"],
+            motion_characteristics=s["motion_characteristics"], start_state=s["start_state"],
+            end_state=s["end_state"], estimated_duration_sec=s["estimated_duration_sec"],
+            aspect_ratio=s["aspect_ratio"], visual_style=s["visual_style"],
+            continuity_requirements=s["continuity_requirements"], required_source_assets=s["required_source_assets"],
+            generation_requirements=ProductionTaskType(s["generation_requirements"])
+        ))
+    frames = creative_director.plan_storyboard(shots)
+    return {"success": True, "frames_count": len(frames), "frames": [
+        {"frame_order": f.frame_order, "prompt_spec": f.visual_prompt_spec, "approval_status": f.approval_status.value}
+        for f in frames
+    ]}
+
+@app.get("/api/v1/projects/{project_id}/creative/storyboard")
+async def get_storyboard_endpoint(project_id: UUID):
+    frames = db.get_storyboard_frames()
+    return {"success": True, "storyboard_frames": frames}
+
+@app.post("/api/v1/projects/{project_id}/creative/edit-plan")
+async def create_edit_plan_endpoint(project_id: UUID, req: CreateEditPlanRequest):
+    # Retrieve shots from source assets
+    source_shots = []
+    for aid in req.source_asset_ids:
+        s_list = db.get_shots(aid)
+        source_shots.extend(s_list)
+    
+    ref_profile = None
+    if req.reference_asset_id:
+        rp_dict = db.get_reference_profile(req.reference_asset_id)
+        if rp_dict:
+            from core.assets.intelligence_models import ReferenceProfile
+            ref_profile = ReferenceProfile(**rp_dict)
+            
+    blueprint = production_planner.create_edit_blueprint(
+        project_id=project_id,
+        target_duration_sec=req.target_duration_sec,
+        source_shots=source_shots,
+        ref_profile=ref_profile,
+        instructions=req.instructions or ""
+    )
+    return {
+        "success": True,
+        "blueprint_id": str(blueprint.blueprint_id),
+        "target_duration_sec": blueprint.target_duration_sec,
+        "cuts_count": len(blueprint.narrative_order),
+        "missing_coverage_count": len(blueprint.missing_coverage),
+        "missing_coverage": [{"duration_sec": m.duration_sec, "solution": m.recommended_solution.value} for m in blueprint.missing_coverage]
+    }
+
+@app.get("/api/v1/projects/{project_id}/creative/edit-plan")
+async def get_edit_plan_endpoint(project_id: UUID):
+    plan = db.get_editing_blueprint(project_id)
+    if not plan:
+        raise HTTPException(status_code=404, detail="Editing blueprint not found.")
+    return {"success": True, "editing_blueprint": plan}
+
+@app.post("/api/v1/projects/{project_id}/creative/blueprint")
+async def compile_production_blueprint_endpoint(project_id: UUID):
+    brief_dict = db.get_creative_brief(project_id)
+    if not brief_dict:
+        raise HTTPException(status_code=400, detail="Creative brief required.")
+    from core.planning.planning_models import CreativeBrief
+    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
+    
+    blueprint = production_planner.compile_blueprint(project_id=project_id, brief=brief)
+    return {
+        "success": True,
+        "blueprint_id": str(blueprint.blueprint_id),
+        "version": blueprint.version,
+        "is_ready_for_production": blueprint.is_ready_for_production,
+        "approvals_count": len(blueprint.approvals)
+    }
+
+@app.get("/api/v1/projects/{project_id}/creative/blueprint")
+async def get_production_blueprint_endpoint(project_id: UUID):
+    bp = db.get_production_blueprint(project_id)
+    if not bp:
+        raise HTTPException(status_code=404, detail="Production blueprint not found.")
+    return {"success": True, "production_blueprint": bp}
+
+@app.post("/api/v1/projects/{project_id}/creative/approve")
+async def submit_creative_approval(project_id: UUID, req: SubmitApprovalRequest):
+    approval = production_planner.submit_approval(
+        project_id=project_id,
+        entity_type=req.entity_type,
+        entity_id=req.entity_id,
+        version=req.version,
+        status=req.status,
+        reviewer_notes=req.reviewer_notes or "",
+        approved_by=req.approved_by or "human_director"
+    )
+    return {
+        "success": True,
+        "approval_id": str(approval.approval_id),
+        "status": approval.status.value,
+        "entity_type": approval.entity_type.value
+    }
+
+@app.get("/api/v1/projects/{project_id}/creative/approvals")
+async def get_creative_approvals_endpoint(project_id: UUID):
+    approvals = db.get_creative_approvals(project_id)
+    return {"success": True, "approvals": approvals}
+
 
