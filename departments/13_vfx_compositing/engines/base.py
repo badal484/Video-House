@@ -38,3 +38,4 @@ class ICompositorEngine(ABC):
         Renders a full frame sequence or video file.
         """
         pass
+

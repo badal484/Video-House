@@ -54,3 +54,4 @@ When objects (wires, microphones, logos, blemishes, unwanted pedestrians) must b
   - OpenCV Navier-Stokes: models fluid equations to continue isophotes (lines of equal luminance) into the inpainting zone.
 - **Remote GPU Dispatch:**
   - Generates optical flow across consecutive frames to borrow missing pixels from unoccluded past/future frames before synthesizing residual missing textures.
+

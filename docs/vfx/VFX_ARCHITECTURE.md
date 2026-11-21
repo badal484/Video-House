@@ -68,3 +68,4 @@ Department 13 (`13_vfx_compositing`) provides the studio with a production-grade
 ### 2.5 Pipeline Integration Bridges (`integration/`)
 - **TimelineBridge:** Exports rendered VFX shot sequences and seamlessly integrates them back into the Department 08 OpenTimelineIO NLE timeline as replacement clips on track `V1` or composited overlays on track `V2`.
 - **DirectorBridge:** Ingests Department 04 `PlannedShot` records, identifies `vfx_notes` or `required_vfx`, and schedules corresponding `VFXShotTask` items in the database.
+

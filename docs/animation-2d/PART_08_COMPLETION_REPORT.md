@@ -87,3 +87,4 @@ Visual artifacts rendered into `test_artifacts/animation_2d/`:
 
 - **Hardware Feasibility:** Apple Silicon M4 (16GB RAM, ~41GB free disk). All operations execute locally with zero network dependency and zero multi-gigabyte weight downloads.
 - **Licensing Hygiene:** Exclusively utilizes Apache 2.0, BSD-3-Clause, and MIT libraries. Blender execution is cleanly isolated to out-of-process CLI scripts.
+

@@ -59,3 +59,4 @@ This audit assesses the state of the Universal AI Video Production Studio across
 - **Workstation:** Apple Silicon M4 (16GB RAM, ~41GB free disk space).
 - **Rule:** Never download heavy diffusion/transformer model weights (>2GB) to the local disk. Provide fast, deterministic local CPU/Metal implementations for vector rendering, bone transforms, IK solvers, and cut-out compositing. AI generation and heavy neural in-betweening must be isolated behind pluggable provider adapters with remote GPU worker manifests.
 - **Licensing:** Zero AGPL-3.0 in core runtime. No non-commercial (CC-BY-NC) assets or weights. All character assets, model sheets, and brush engines must be 100% commercially clear.
+

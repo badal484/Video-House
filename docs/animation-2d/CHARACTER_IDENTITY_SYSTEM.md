@@ -52,3 +52,4 @@ A production-ready model sheet package contains 5 standardized views rendered at
 3. **Profile View ($90^\circ$):** Pure side view detailing nose bridge angle, lip protrusion, and posture curve.
 4. **Back View ($180^\circ$):** Complete rear view showing hair parting, collar back, cape/coat draping, and spine alignment.
 5. **Facial Expression Array:** 8 standardized emotional keyframes demonstrating eye opening, pupil contraction, and mouth shape.
+

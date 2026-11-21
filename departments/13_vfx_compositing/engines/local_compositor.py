@@ -344,3 +344,4 @@ class LocalCompositorEngine(ICompositorEngine):
             "frame_count": len(rendered_frames),
             "output_path": output_path,
         }
+

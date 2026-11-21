@@ -51,3 +51,4 @@ class CameraSolver:
             "camera_intrinsics": K.tolist(),
             "inlier_count": int(np.sum(inlier_mask)),
         }
+

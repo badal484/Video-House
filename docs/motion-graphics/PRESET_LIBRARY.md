@@ -55,3 +55,4 @@ Each preset implements automatic layout adaptation:
 - **16:9 (Landscape Standard):** Horizontal arrangement, wide safe margins, lower thirds anchored at bottom-left.
 - **9:16 (Vertical Social):** Centered vertical stack, larger typography for mobile screens, margins buffered against UI overlays (like, share, comment bars).
 - **1:1 (Square Feed):** Balanced center composition with symmetrical margins.
+

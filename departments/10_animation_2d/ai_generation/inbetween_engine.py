@@ -67,3 +67,4 @@ class InBetweenEngine:
 
         sequence.append(key_poses[-1])
         return sequence
+

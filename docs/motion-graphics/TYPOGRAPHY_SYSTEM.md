@@ -47,3 +47,4 @@ The engine implements **Unicode Standard Annex #29 Grapheme Cluster Boundaries**
    - Scales font down automatically if constrained by vertical container height.
 3. **Contrast Validation:**
    - WCAG 2.1 AA luminance ratio checking: Enforces $\ge 4.5:1$ contrast between text fill color and background plate.
+

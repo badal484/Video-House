@@ -50,3 +50,4 @@ class InpaintingEngine:
         if not is_uint8:
             return out.astype(np.float32) / 255.0
         return out
+

@@ -46,3 +46,4 @@
 | **OpenCV Navier-Stokes** | Fluid Dynamics PDE | 4ms/frame | Smooth gradients, water/sky | Deterministic | **Local Texture Inpainter** |
 | **ProPainter / E2FGVI** | Optical Flow Guided Video AI | 2-5 sec/frame (GPU) | Photorealistic, handles large moving objects | Excellent | **Remote GPU Cleanup Pass** |
 | **LaMa (Large Mask Inpainting)** | Fourier Convolution Network | 500ms/frame | High static fidelity | Moderate temporal jitter | **Single Frame Patch Inpainter** |
+

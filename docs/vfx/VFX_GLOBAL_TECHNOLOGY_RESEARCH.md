@@ -73,3 +73,4 @@ In high-end visual effects and post-production, compositing systems fall into th
 
 ### 3.2 Linear vs. Non-linear Color
 All optical and light-summation math (blurring, glows, motion blur, layering) must be executed in **linear radiance space**. Calculating glows or blurs in gamma-encoded Rec.709 sRGB yields unnaturally dark boundaries and clipped highlight physics.
+

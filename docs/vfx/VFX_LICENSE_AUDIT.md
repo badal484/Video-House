@@ -41,3 +41,4 @@
 ## 4. Verification Sign-Off
 
 Department 13 (`13_vfx_compositing`) maintains 100% compliance with commercial studio licensing requirements. All local in-process modules rely exclusively on Apache 2.0, BSD-3-Clause, and MIT licensed foundations.
+

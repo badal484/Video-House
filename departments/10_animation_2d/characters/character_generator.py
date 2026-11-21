@@ -288,3 +288,4 @@ class CharacterGenerator:
             ),
         ]
         return poses
+

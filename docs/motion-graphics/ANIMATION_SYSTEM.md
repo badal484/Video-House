@@ -52,3 +52,4 @@ $$t_{\text{start}, i} = t_{\text{base}} + i \times \Delta t_{\text{stagger}}$$
 - **Word Stagger:** $\Delta t \approx 0.08\text{s} - 0.15\text{s}$ for natural cadence.
 - **Character Stagger:** $\Delta t \approx 0.02\text{s} - 0.05\text{s}$ for typewriter or ripple reveals.
 - **Chart Bar Stagger:** $\Delta t \approx 0.10\text{s}$ for dynamic data growth.
+

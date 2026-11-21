@@ -114,3 +114,4 @@ class VFXQualityChecker:
                 "edge_halos": e_check,
             },
         }
+

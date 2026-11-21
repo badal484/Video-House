@@ -75,3 +75,4 @@ flowchart LR
 2. **Do NOT Duplicate Storage or Asset Tracking:** All exported media files must route through `StorageService` and register in `AssetDatabase`.
 3. **Do NOT Build Full 3D or VFX:** Full 3D world creation belongs to Department 11 (Blender/OpenUSD), and neural segmentation / deep VFX belongs to Department 13 (SAM 2.1 / Compositing). Department 09 is strictly 2D/2.5D procedural motion graphics and typography.
 4. **Hardware Awareness:** Apple MacBook Pro M4 (16GB RAM, ~41GB free disk). Render pipelines must write intermediate frames directly to pipe or cleanup frame caches immediately post-encoding.
+

@@ -138,3 +138,4 @@ class CharacterRig:
         for b_id, b_data in data.get("bones", {}).items():
             rig.add_bone(BoneNode.from_dict(b_data))
         return rig
+

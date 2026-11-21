@@ -52,3 +52,4 @@ When color screens are absent, rotoscoping isolates arbitrary objects:
    - Morphological dilation (`cv2.dilate`) bridges small pinholes.
    - Bilateral or Guided Filter preserves high-contrast edge boundaries while smoothing noise.
    - Sub-pixel Gaussian blur creates natural edge feathering.
+

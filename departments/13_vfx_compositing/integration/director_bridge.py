@@ -60,3 +60,4 @@ class DirectorVFXBridge:
             tasks.append(task)
 
         return tasks
+

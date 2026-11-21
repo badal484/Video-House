@@ -64,3 +64,4 @@ To prevent proprietary software lock-in, Department 10 adopts an **Application-O
   - Ingests reference motion vectors and character identity embeddings.
   - Dispatches tasks to remote GPU workers (LivePortrait, ControlNet OpenPose, RIFE).
   - Provides deterministic local fallback using skeletal retargeting.
+

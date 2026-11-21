@@ -280,3 +280,4 @@ class AIVFXSupervisor:
         graph.add_edge("node_inpaint", "output", "node_out", "source")
 
         return graph
+

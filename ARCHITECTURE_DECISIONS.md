@@ -525,3 +525,188 @@ Chosen option: **Dedicated Anime Production Subsystems (`AnimeCelShader`, `Multi
 - 5-angle Settei turnaround model sheets with horizontal guide alignments.
 - 3-tier cel shading (flat base, core shadow, specular rim highlight) with directional lighting.
 - Multiplane parallax backgrounds with depth-scaled camera scrolling velocities ($V = V_{cam} / (1 + Z)$).
+
+---
+
+## ADR-040: In-Process C++ DSP Acceleration via Spotify Pedalboard with SciPy Fallback
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Audio processing via CLI subprocess wrappers (e.g. repeated FFmpeg invocations per clip) introduces significant process spawn overhead and file I/O bottlenecks. Conversely, launching external DAW GUI applications prevents headless automation.
+
+### Decision Outcome
+Chosen option: **In-Memory C++ JUCE DSP Processing via Spotify Pedalboard & SciPy Fallbacks**.
+- Native Apple Silicon M4 ARM64 execution with sub-millisecond per-block latency.
+- Full studio-grade parametric EQ, dynamic compression, brickwall limiting, algorithmic reverb, and VST3/AU hosting directly in Python.
+- 100% pure NumPy/SciPy fallback topologies ensure zero platform lock-in.
+
+---
+
+## ADR-041: Strict ITU-R BS.1770-4 / EBU R128 Gated Loudness Normalization
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Un-normalized audio causes jarring volume fluctuations across scenes and triggers aggressive, unpredictable platform compression on YouTube, Spotify, and broadcast networks.
+
+### Decision Outcome
+Chosen option: **Standardized Gated Integrated Loudness (LUFS) & 4x Oversampled True Peak Metering**.
+- Target profiles: YouTube (-14.0 LUFS, -1.0 dBTP), Apple Podcasts (-16.0 LUFS, -1.0 dBTP), EBU R128 (-23.0 LUFS, -1.0 dBTP).
+- 2-pass normalization eliminates digital inter-sample clipping on consumer DACs without sacrificing dynamic range.
+
+---
+
+## ADR-042: Automated Dialogue-Driven Sidechain Ducking & Procedural Foley Synthesis
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Background music and sound effects frequently mask dialogue intelligibility. Furthermore, external royalty-free sound libraries introduce storage overhead and potential licensing copyright claims.
+
+### Decision Outcome
+Chosen option: **Automatic Sidechain Ducking & Deterministic Procedural SFX Synthesis**.
+- Sidechain ducking dynamically reduces background music gain (by -14 dB) with 120ms attack and 750ms release during speech activity.
+- Pure procedural synthesis generates sub-bass impacts, swept whooshes, tension risers, and ambient drones purely from mathematical equations, providing 100% royalty-free commercial safety.
+
+
+---
+
+## ADR-034: Directed Acyclic Graph (DAG) for Node-Based Compositing
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+OpenTimelineIO and NLE timeline tracks are designed for sequential horizontal editorial cuts, not for complex multi-branch 2D pixel transformations, planar tracking corner pins, and matte extractions.
+
+### Decision Outcome
+Chosen option: **Explicit Directed Acyclic Graph (DAG) Compositing Schema (`CompositingGraph`)**.
+- Nodes possess typed input/output sockets (`IMAGE_RGBA`, `IMAGE_RGB`, `MASK_ALPHA`, `TRANSFORM_MATRIX`, `TRACK_DATA`).
+- Cycle detection enforces acyclic topology, executed strictly in topological sort order via Kahn's algorithm.
+
+---
+
+## ADR-035: Dual-Engine Compositing Architecture (LocalCompositorEngine + BlenderCompositorEngine)
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+Local Apple Silicon M4 hardware constraints require instant, zero-network, sub-millisecond 2D compositing without heavy 3D rendering overhead, while preserving future headless 3D OpenUSD/Cycles multi-pass rendering.
+
+### Decision Outcome
+Chosen option: **Hybrid Dual-Engine Architecture with Dynamic Router (`VFXEngineRouter`)**.
+- `LocalCompositorEngine`: Pure Python + NumPy + OpenCV 5.0 for deterministic local execution of chroma keying, planar perspective warping, inpainting, and alpha merges.
+- `BlenderCompositorEngine`: Standalone Python script generator for headless Blender compositor node trees and multi-pass OpenEXR compositing.
+
+---
+
+## ADR-036: Premultiplied Alpha Math & Linear Color Space Conformance
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+Evaluating blurs, glows, and alpha merges in gamma-encoded sRGB produces dark fringing, muddy edges, and unphysical light summation.
+
+### Decision Outcome
+Chosen option: **Linear Radiance Space Processing with Premultiplied Alpha Blending**.
+- All merge operations evaluate $C_{out} = C_{fg} + C_{bg} \times (1.0 - \alpha_{fg})$ in premultiplied linear float32 space before converting back to sRGB.
+- Built-in color difference despill suppresses green/blue edge reflection on foreground subjects.
+
+---
+
+## ADR-037: Application-Owned Canonical 2D Animation Project Model
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Proprietary 2D animation tools (Live2D, Spine, Rive) introduce vendor lock-in and non-permissive runtime licenses, while simple video renders eliminate the ability to edit timing or swap character parts.
+
+### Decision Outcome
+Chosen option: **Engine-Agnostic Canonical Animation Project Schema (`AnimationProject`)**.
+- Application-owned models for projects, scenes, shots, tracks, drawing exposures, keyframes, cameras, and character instances.
+- Stepped exposure holds on 1s (24 fps), 2s (12 fps), and 3s (8 fps) preserve authentic animation cadence.
+
+---
+
+## ADR-038: Quantitative Multi-Vector Character Identity Verification
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Diffusion and generative AI models frequently suffer from character drift (altering face shapes, eye colors, hair volume, and costume details across seeds).
+
+### Decision Outcome
+Chosen option: **Quantitative Character DNA & Multi-Vector Validation (`IdentityValidator`)**.
+- Enforces strict anatomical proportion tolerance ($\Delta_{prop} \le 5\%$) and CIE Lab color distance ($\Delta E \le 8.0$).
+- Automatically discards drifting candidate frames before committing to the studio asset store.
+
+---
+
+## ADR-039: Authentic Japanese Anime Pipeline Standards (Settei, Genga, Doga, Shiage)
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Treating anime as a generic image filter produces unconvincing results without the disciplined cadence, clean line cleanup, and multiplane depth characteristic of professional anime studios.
+
+### Decision Outcome
+Chosen option: **Dedicated Anime Production Subsystems (`AnimeCelShader`, `MultiplaneBackgroundEngine`)**.
+- 5-angle Settei turnaround model sheets with horizontal guide alignments.
+- 3-tier cel shading (flat base, core shadow, specular rim highlight) with directional lighting.
+- Multiplane parallax backgrounds with depth-scaled camera scrolling velocities ($V = V_{cam} / (1 + Z)$).
+
+---
+
+## ADR-040: In-Process C++ DSP Acceleration via Spotify Pedalboard with SciPy Fallback
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Audio processing via CLI subprocess wrappers (e.g. repeated FFmpeg invocations per clip) introduces significant process spawn overhead and file I/O bottlenecks. Conversely, launching external DAW GUI applications prevents headless automation.
+
+### Decision Outcome
+Chosen option: **In-Memory C++ JUCE DSP Processing via Spotify Pedalboard & SciPy Fallbacks**.
+- Native Apple Silicon M4 ARM64 execution with sub-millisecond per-block latency.
+- Full studio-grade parametric EQ, dynamic compression, brickwall limiting, algorithmic reverb, and VST3/AU hosting directly in Python.
+- 100% pure NumPy/SciPy fallback topologies ensure zero platform lock-in.
+
+---
+
+## ADR-041: Strict ITU-R BS.1770-4 / EBU R128 Gated Loudness Normalization
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Un-normalized audio causes jarring volume fluctuations across scenes and triggers aggressive, unpredictable platform compression on YouTube, Spotify, and broadcast networks.
+
+### Decision Outcome
+Chosen option: **Standardized Gated Integrated Loudness (LUFS) & 4x Oversampled True Peak Metering**.
+- Target profiles: YouTube (-14.0 LUFS, -1.0 dBTP), Apple Podcasts (-16.0 LUFS, -1.0 dBTP), EBU R128 (-23.0 LUFS, -1.0 dBTP).
+- 2-pass normalization eliminates digital inter-sample clipping on consumer DACs without sacrificing dynamic range.
+
+---
+
+## ADR-042: Automated Dialogue-Driven Sidechain Ducking & Procedural Foley Synthesis
+
+### Status
+Accepted & Implemented (Part 10)
+
+### Context & Problem Statement
+Background music and sound effects frequently mask dialogue intelligibility. Furthermore, external royalty-free sound libraries introduce storage overhead and potential licensing copyright claims.
+
+### Decision Outcome
+Chosen option: **Automatic Sidechain Ducking & Deterministic Procedural SFX Synthesis**.
+- Sidechain ducking dynamically reduces background music gain (by -14 dB) with 120ms attack and 750ms release during speech activity.
+- Pure procedural synthesis generates sub-bass impacts, swept whooshes, tension risers, and ambient drones purely from mathematical equations, providing 100% royalty-free commercial safety.
+

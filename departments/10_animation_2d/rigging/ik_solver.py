@@ -78,3 +78,4 @@ class IKSolver2D:
             "elbow_pos": (float(elbow_x), float(elbow_y)),
             "clamped": is_clamped,
         }
+

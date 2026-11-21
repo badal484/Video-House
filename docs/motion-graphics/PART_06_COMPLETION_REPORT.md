@@ -96,3 +96,4 @@ python3 -m unittest discover -s tests/unit -p "test_*.py"
 # Inspect rendered visual artifacts
 ls -la test_artifacts/motion_graphics/
 ```
+

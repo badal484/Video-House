@@ -228,3 +228,4 @@ class CompositingGraph:
             edges=[GraphEdge.from_dict(e) for e in data.get("edges", [])],
             metadata=data.get("metadata", {}),
         )
+

@@ -182,3 +182,4 @@ class ModelSheet:
             close_up=data.get("close_up", {}),
             alignment_guides=data.get("alignment_guides", {}),
         )
+

@@ -57,3 +57,4 @@ class VectorAnimationRenderer:
         svg_lines.append("  </g>")
         svg_lines.append("</svg>")
         return "\n".join(svg_lines)
+

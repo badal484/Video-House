@@ -73,3 +73,4 @@ class TimelineVFXBridge:
             "track_id": str(track.track_id),
             "clip_id": str(clip.clip_id) if hasattr(clip, "clip_id") else str(vfx_asset_id),
         }
+

@@ -74,3 +74,4 @@ class CinematicEffects:
         if is_uint8:
             return (out * 255.0).astype(np.uint8)
         return out
+

@@ -66,3 +66,4 @@ class AnimeCelShader:
         cv2.circle(out, center, radius, (30, 30, 35, 255), 2, cv2.LINE_AA)
 
         return out
+

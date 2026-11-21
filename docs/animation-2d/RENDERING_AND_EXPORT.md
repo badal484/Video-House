@@ -25,3 +25,4 @@ When an animation scene or character pass finishes rendering:
    - Full scenes (with background) are placed on track `V1` as primary cuts.
    - Transparent character actions or overlays are placed on track `V3` over existing footage.
    - Rational time duration (`RationalTime(frame_count, fps)`) guarantees zero floating-point accumulation drift.
+

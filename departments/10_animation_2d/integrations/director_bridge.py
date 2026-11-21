@@ -61,3 +61,4 @@ class DirectorAnimationBridge:
             tracks=tracks,
             layout_notes=planned_shot.get("visual_prompt", ""),
         )
+

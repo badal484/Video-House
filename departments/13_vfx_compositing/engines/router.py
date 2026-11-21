@@ -59,3 +59,4 @@ class VFXEngineRouter(ICompositorEngine):
             output_path=output_path,
             inputs=inputs,
         )
+

@@ -46,3 +46,4 @@ class MatteRefiner:
         ksize = int(np.ceil(blur_radius * 4.0)) | 1
         feathered = cv2.GaussianBlur(alpha_mask.astype(np.float32), (ksize, ksize), blur_radius)
         return np.clip(feathered, 0.0, 1.0)
+

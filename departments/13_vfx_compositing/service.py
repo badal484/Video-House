@@ -106,3 +106,4 @@ class VFXCompositingService(IVFXCompositing):
                 success=False,
                 message=f"VFX compositing failed: {str(e)}",
             )
+

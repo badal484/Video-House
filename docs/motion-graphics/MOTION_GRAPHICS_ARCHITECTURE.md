@@ -98,3 +98,4 @@ Decoupled from any proprietary tool, the composition is defined using structured
 - Renders motion graphics compositions directly into project-partitioned storage: `assets/{project_id}/derivatives/motion_graphics/`.
 - Registers the output media file in the SQLite `AssetDatabase` with cryptographic SHA-256 hash and stream metadata.
 - Automatically inserts a corresponding `Clip` onto the target `Timeline` on Track `V2` (overlays/b-roll) or Track `V3` (titles/lower-thirds).
+

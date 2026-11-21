@@ -118,3 +118,4 @@ class ChromaKeyer:
         if is_uint8:
             return np.clip(rgba * 255.0, 0, 255).astype(np.uint8)
         return rgba
+

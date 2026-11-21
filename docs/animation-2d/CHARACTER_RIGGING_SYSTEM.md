@@ -62,3 +62,4 @@ In 2D cut-out animation, character body parts are illustrated as independent gra
 - Head: Pivot at base of neck.
 
 Sprites are mapped directly to corresponding bone transforms and drawn in strict Z-depth order (e.g. Back Arm $\to$ Torso $\to$ Head $\to$ Front Arm) to prevent self-intersection visual bugs.
+

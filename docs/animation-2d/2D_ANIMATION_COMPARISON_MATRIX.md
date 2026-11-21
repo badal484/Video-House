@@ -48,3 +48,4 @@
 | **LivePortrait** | Full Face + Eyes + Head | Reference still + Driving video | Photorealistic / Expressive | High | Requires Cloud GPU / MPS | Remote AI Facial Puppeteer |
 | **AnimateDiff / AnimatedEngine** | Full Body Animation | Prompt + Motion LoRA | Cinematic Anime | Moderate (flicker) | Remote GPU (8GB+ VRAM) | Remote AI Video Router |
 | **RIFE Frame Interpolation** | In-Betweening | Frame A + Frame B | Smooth intermediate frames | High on continuous motion | Fast on local Metal | Selective Anime In-Betweening Pass |
+

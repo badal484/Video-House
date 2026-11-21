@@ -115,3 +115,4 @@ The Japanese anime industry (governed by Association of Japanese Animations - AJ
 5. **Color Design & Cel Painting (Shiage):** Flat digital color fills with strict palette charts (tokusyoku) for normal daylight, night, and special lighting conditions.
 6. **Background Art (Bijutsu):** High-detail painted environments separated into foreground, midground, and background plates for multiplane parallax.
 7. **Photography / Compositing (Satsuei):** Multi-layer compositing, camera pans, depth of field blur, lighting flares, and atmosphere integration.
+

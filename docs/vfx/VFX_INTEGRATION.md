@@ -38,3 +38,4 @@
 ## 4. Integration with Department 21 (Storage & Asset Management)
 
 - All rendered composites, tracking JSON caches, and alpha matte masks are registered in `core/assets/database.py` with unique SHA-256 checksums, enabling zero-duplication caching across re-renders.
+

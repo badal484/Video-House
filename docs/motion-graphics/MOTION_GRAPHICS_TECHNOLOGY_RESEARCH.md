@@ -126,3 +126,4 @@ Motion graphics in modern video production bridge narrative live-action footage 
 #### 2. NLE Track Conformance
 - Motion graphics overlays render with identical frame rate (`24.0`, `25.0`, `30.0` fps) and resolution (`1920x1080`, `1080x1920`, `3840x2160`) as the destination project.
 - Placed on track `V2` (overlays/b-roll) or `V3` (graphics) with zero audio degradation.
+

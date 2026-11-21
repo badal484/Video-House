@@ -57,3 +57,4 @@ The `VFXEngineRouter` inspects the node types in any incoming `CompositingGraph`
 1. If all nodes belong to the 2D standard library (`INPUT`, `KEYER`, `MERGE`, `TRANSFORM`, `WARP`, `INPAINT`, `BLUR`, `COLOR`, `OUTPUT`), route directly to `LocalCompositorEngine`.
 2. If any node requires 3D camera projections, OpenUSD scene integration, or multi-layer EXR Cryptomattes, generate a Blender script package and dispatch to `BlenderCompositorEngine`.
 3. If an AI video model pass (SAM 2.1 video tracking or ProPainter inpainting) is specified, the router generates an AI task manifest for Department 15/20 remote dispatch with a local fallback using OpenCV GrabCut/Telea.
+

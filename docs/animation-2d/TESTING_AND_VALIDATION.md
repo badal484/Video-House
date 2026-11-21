@@ -28,3 +28,4 @@ To guarantee production readiness, Department 10 and Department 12 must pass 12 
 - **Proportion Drift:** Maximum deviation across poses must not exceed 5%.
 - **Color Palette Drift:** Euclidean distance $\Delta E$ in Lab space must be $< 8.0$.
 - **Temporal Stability:** Zero single-frame flicker or limb popping.
+

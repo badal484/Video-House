@@ -59,3 +59,4 @@ class MotionRetargeter:
             angles["shin_l"] = get_angle(joint_points["knee_l"], joint_points["ankle_l"])
 
         return angles
+

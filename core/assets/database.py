@@ -1134,6 +1134,157 @@ class AssetDatabase:
                 created_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS motion_compositions (
+                composition_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                duration_frames INTEGER NOT NULL,
+                duration_rate REAL NOT NULL,
+                composition_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS vfx_projects (
+                vfx_project_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                metadata_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS vfx_shot_tasks (
+                task_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                vfx_type TEXT NOT NULL,
+                description TEXT NOT NULL,
+                status TEXT NOT NULL,
+                input_assets_json TEXT NOT NULL,
+                output_asset_id TEXT,
+                compositing_graph_id TEXT,
+                tracking_data_json TEXT NOT NULL,
+                qc_report_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS character_identities (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                visual_style TEXT NOT NULL,
+                head_ratio REAL NOT NULL,
+                age_appearance TEXT NOT NULL,
+                personality TEXT NOT NULL,
+                palette_json TEXT NOT NULL,
+                features_json TEXT NOT NULL,
+                costume_json TEXT NOT NULL,
+                model_sheets_json TEXT NOT NULL,
+                version INTEGER NOT NULL,
+                status TEXT NOT NULL,
+                metadata_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS animation_projects (
+                animation_project_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                project_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS animation_assets (
+                asset_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                category TEXT NOT NULL,
+                version TEXT NOT NULL,
+                license_type TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                preview_path TEXT,
+                tags_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS audio_sessions (
+                session_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                sample_rate INTEGER NOT NULL,
+                channel_layout TEXT NOT NULL,
+                tempo_bpm REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS audio_tracks (
+                track_id TEXT PRIMARY KEY,
+                session_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                track_type TEXT NOT NULL,
+                gain_db REAL NOT NULL,
+                pan REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (session_id) REFERENCES audio_sessions(session_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS audio_clips (
+                clip_id TEXT PRIMARY KEY,
+                track_id TEXT NOT NULL,
+                asset_id TEXT,
+                name TEXT NOT NULL,
+                start_time_sec REAL NOT NULL,
+                duration_sec REAL NOT NULL,
+                gain_db REAL NOT NULL,
+                data_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (track_id) REFERENCES audio_tracks(track_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS audio_assets (
+                asset_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                category TEXT NOT NULL,
+                sample_rate INTEGER NOT NULL,
+                channels INTEGER NOT NULL,
+                duration_sec REAL NOT NULL,
+                loudness_lufs REAL,
+                file_path TEXT,
+                metadata_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_audio_sessions_project ON audio_sessions(project_id);
+            CREATE INDEX IF NOT EXISTS idx_audio_tracks_session ON audio_tracks(session_id);
+            CREATE INDEX IF NOT EXISTS idx_audio_clips_track ON audio_clips(track_id);
+            CREATE INDEX IF NOT EXISTS idx_audio_assets_project ON audio_assets(project_id);
+            CREATE INDEX IF NOT EXISTS idx_audio_assets_cat ON audio_assets(category);
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
@@ -1166,6 +1317,13 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_keyframes_parent ON keyframes(parent_entity_id);
             CREATE INDEX IF NOT EXISTS idx_markers_timeline ON timeline_markers(timeline_id);
             CREATE INDEX IF NOT EXISTS idx_renders_timeline ON render_jobs(timeline_id);
+            CREATE INDEX IF NOT EXISTS idx_mograph_project ON motion_compositions(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_proj_project ON vfx_projects(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_tasks_project ON vfx_shot_tasks(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_tasks_shot ON vfx_shot_tasks(shot_id);
+            CREATE INDEX IF NOT EXISTS idx_char_ident_project ON character_identities(project_id);
+            CREATE INDEX IF NOT EXISTS idx_anim_proj_project ON animation_projects(project_id);
+            CREATE INDEX IF NOT EXISTS idx_anim_asset_cat ON animation_assets(category);
             CREATE INDEX IF NOT EXISTS idx_mograph_project ON motion_compositions(project_id);
             CREATE INDEX IF NOT EXISTS idx_vfx_proj_project ON vfx_projects(project_id);
             CREATE INDEX IF NOT EXISTS idx_vfx_tasks_project ON vfx_shot_tasks(project_id);
@@ -2721,6 +2879,176 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_vfx_shot_task(self, task: Any) -> None:
         """Saves or updates a VFXShotTask."""
         now = utc_now_iso()
@@ -2808,6 +3136,176 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
 
     def update_vfx_shot_task_status(
         self,
@@ -2933,6 +3431,176 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_animation_project(self, project: Any) -> None:
         """Saves or updates an AnimationProject."""
         now = utc_now_iso()
@@ -3048,6 +3716,1301 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_motion_composition(self, composition: Any) -> None:
+        """Saves or updates a MotionComposition in the database."""
+        now = utc_now_iso()
+        comp_dict = composition.to_dict() if hasattr(composition, "to_dict") else composition
+        comp_id = comp_dict.get("composition_id")
+        project_id = comp_dict.get("project_id", "default")
+        name = comp_dict.get("name", "Motion Composition")
+        res = comp_dict.get("resolution", [1920, 1080])
+        fps = float(comp_dict.get("fps", 24.0))
+        dur_raw = comp_dict.get("duration", {"value": 120, "rate": 24.0})
+        frames = int(dur_raw.get("value", 120))
+        rate = float(dur_raw.get("rate", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO motion_compositions (
+                    composition_id, project_id, name, resolution_w, resolution_h,
+                    fps, duration_frames, duration_rate, composition_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(comp_id),
+                str(project_id),
+                name,
+                int(res[0]),
+                int(res[1]),
+                fps,
+                frames,
+                rate,
+                json.dumps(comp_dict),
+                now,
+                now
+            ))
+
+    def get_motion_composition(self, composition_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM motion_compositions WHERE composition_id = ?", (str(composition_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["composition_json"])
+
+    def list_motion_compositions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all MotionCompositions for a given project_id."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM motion_compositions WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["composition_json"]) for r in rows]
+
+    def delete_motion_composition(self, composition_id: str) -> bool:
+        """Deletes a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
+            return cur.rowcount > 0
+
+    def save_vfx_project(self, project: Any) -> None:
+        """Saves or updates a VFXProject in the database."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        vfx_proj_id = p_dict.get("vfx_project_id")
+        project_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "VFX Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+        meta = p_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_projects (
+                    vfx_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(vfx_proj_id),
+                str(project_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(meta),
+                now,
+            ))
+
+    def get_vfx_project(self, vfx_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXProject record."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_projects WHERE vfx_project_id = ?", (str(vfx_project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "vfx_project_id": row["vfx_project_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "resolution_w": row["resolution_w"],
+                "resolution_h": row["resolution_h"],
+                "fps": row["fps"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_vfx_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "vfx_project_id": r["vfx_project_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "resolution_w": r["resolution_w"],
+                    "resolution_h": r["resolution_h"],
+                    "fps": r["fps"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_vfx_shot_task(self, task: Any) -> None:
+        """Saves or updates a VFXShotTask."""
+        now = utc_now_iso()
+        t_dict = task.to_dict() if hasattr(task, "to_dict") else task
+        task_id = t_dict.get("task_id")
+        project_id = t_dict.get("project_id", "default")
+        shot_id = t_dict.get("shot_id", "shot_0")
+        name = t_dict.get("name", "VFX Shot Task")
+        vfx_type = t_dict.get("vfx_type", "MULTI_LAYER_COMPOSITE")
+        desc = t_dict.get("description", "")
+        status = t_dict.get("status", "PENDING")
+        input_assets = t_dict.get("input_assets", [])
+        output_asset_id = t_dict.get("output_asset_id")
+        comp_graph_id = t_dict.get("compositing_graph_id")
+        tracking_data = t_dict.get("tracking_data", {})
+        qc_report = t_dict.get("qc_report", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_shot_tasks (
+                    task_id, project_id, shot_id, name, vfx_type, description,
+                    status, input_assets_json, output_asset_id, compositing_graph_id,
+                    tracking_data_json, qc_report_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(task_id),
+                str(project_id),
+                str(shot_id),
+                name,
+                str(vfx_type),
+                desc,
+                str(status),
+                json.dumps(input_assets),
+                str(output_asset_id) if output_asset_id else None,
+                str(comp_graph_id) if comp_graph_id else None,
+                json.dumps(tracking_data),
+                json.dumps(qc_report),
+                now,
+                now,
+            ))
+
+    def get_vfx_shot_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXShotTask by task_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_shot_tasks WHERE task_id = ?", (str(task_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "task_id": row["task_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "name": row["name"],
+                "vfx_type": row["vfx_type"],
+                "description": row["description"],
+                "status": row["status"],
+                "input_assets": json.loads(row["input_assets_json"]),
+                "output_asset_id": row["output_asset_id"],
+                "compositing_graph_id": row["compositing_graph_id"],
+                "tracking_data": json.loads(row["tracking_data_json"]),
+                "qc_report": json.loads(row["qc_report_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_vfx_shot_tasks(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXShotTasks for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_shot_tasks WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "task_id": r["task_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "name": r["name"],
+                    "vfx_type": r["vfx_type"],
+                    "description": r["description"],
+                    "status": r["status"],
+                    "input_assets": json.loads(r["input_assets_json"]),
+                    "output_asset_id": r["output_asset_id"],
+                    "compositing_graph_id": r["compositing_graph_id"],
+                    "tracking_data": json.loads(r["tracking_data_json"]),
+                    "qc_report": json.loads(r["qc_report_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def update_vfx_shot_task_status(
+        self,
+        task_id: str,
+        status: str,
+        output_asset_id: Optional[str] = None,
+        qc_report: Optional[Dict[str, Any]] = None,
+    ) -> bool:
+        """Updates status, output asset, and QC report for a VFXShotTask."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            cur = conn.execute("""
+                UPDATE vfx_shot_tasks
+                SET status = ?,
+                    output_asset_id = COALESCE(?, output_asset_id),
+                    qc_report_json = CASE WHEN ? IS NOT NULL THEN ? ELSE qc_report_json END,
+                    updated_at = ?
+                WHERE task_id = ?
+            """, (
+                status,
+                str(output_asset_id) if output_asset_id else None,
+                json.dumps(qc_report) if qc_report else None,
+                json.dumps(qc_report) if qc_report else None,
+                now,
+                str(task_id),
+            ))
+            return cur.rowcount > 0
+
+    def save_character_identity(self, character: Any) -> None:
+        """Saves or updates a CharacterIdentity record."""
+        now = utc_now_iso()
+        c_dict = character.to_dict() if hasattr(character, "to_dict") else character
+        c_id = c_dict.get("character_id")
+        project_id = c_dict.get("project_id", "default")
+        name = c_dict.get("name", "Unnamed Character")
+        style = c_dict.get("visual_style", "ANIME_CEL")
+        ratio = float(c_dict.get("head_ratio", 7.0))
+        age = c_dict.get("age_appearance", "")
+        pers = c_dict.get("personality", "")
+        palette = c_dict.get("color_palette", {})
+        features = c_dict.get("distinctive_features", [])
+        costume = c_dict.get("costume_layers", {})
+        model_sheets = c_dict.get("approved_model_sheet_ids", [])
+        version = int(c_dict.get("version", 1))
+        status = c_dict.get("status", "DRAFT")
+        meta = c_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO character_identities (
+                    character_id, project_id, name, visual_style, head_ratio,
+                    age_appearance, personality, palette_json, features_json,
+                    costume_json, model_sheets_json, version, status, metadata_json,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(c_id),
+                str(project_id),
+                name,
+                style,
+                ratio,
+                age,
+                pers,
+                json.dumps(palette),
+                json.dumps(features),
+                json.dumps(costume),
+                json.dumps(model_sheets),
+                version,
+                str(status),
+                json.dumps(meta),
+                now,
+                now,
+            ))
+
+    def get_character_identity(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a CharacterIdentity by character_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM character_identities WHERE character_id = ?", (str(character_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "visual_style": row["visual_style"],
+                "head_ratio": row["head_ratio"],
+                "age_appearance": row["age_appearance"],
+                "personality": row["personality"],
+                "color_palette": json.loads(row["palette_json"]),
+                "distinctive_features": json.loads(row["features_json"]),
+                "costume_layers": json.loads(row["costume_json"]),
+                "approved_model_sheet_ids": json.loads(row["model_sheets_json"]),
+                "version": row["version"],
+                "status": row["status"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_character_identities(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all CharacterIdentities for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM character_identities WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "visual_style": r["visual_style"],
+                    "head_ratio": r["head_ratio"],
+                    "age_appearance": r["age_appearance"],
+                    "personality": r["personality"],
+                    "color_palette": json.loads(r["palette_json"]),
+                    "distinctive_features": json.loads(r["features_json"]),
+                    "costume_layers": json.loads(r["costume_json"]),
+                    "approved_model_sheet_ids": json.loads(r["model_sheets_json"]),
+                    "version": r["version"],
+                    "status": r["status"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_animation_project(self, project: Any) -> None:
+        """Saves or updates an AnimationProject."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        proj_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "Animation Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_projects (
+                    animation_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, project_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(proj_id),
+                str(proj_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(p_dict),
+                now,
+                now,
+            ))
+
+    def get_animation_project(self, animation_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationProject."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_projects WHERE animation_project_id = ?", (str(animation_project_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["project_json"])
+
+    def list_animation_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AnimationProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM animation_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["project_json"]) for r in rows]
+
+    def save_animation_asset(self, asset: Any, project_id: str = "default") -> None:
+        """Saves or updates an AnimationAsset."""
+        now = utc_now_iso()
+        a_dict = asset.to_dict() if hasattr(asset, "to_dict") else asset
+        a_id = a_dict.get("asset_id")
+        name = a_dict.get("name", "Asset")
+        cat = a_dict.get("category", "PROP")
+        ver = a_dict.get("version", "1.0.0")
+        lic = a_dict.get("license_type", "PROPRIETARY_STUDIO")
+        data = a_dict.get("data", {})
+        prev = a_dict.get("preview_path")
+        tags = a_dict.get("tags", [])
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_assets (
+                    asset_id, project_id, name, category, version, license_type,
+                    data_json, preview_path, tags_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(a_id),
+                str(project_id),
+                name,
+                str(cat),
+                ver,
+                lic,
+                json.dumps(data),
+                prev,
+                json.dumps(tags),
+                now,
+            ))
+
+    def get_animation_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationAsset."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "version": row["version"],
+                "license_type": row["license_type"],
+                "data": json.loads(row["data_json"]),
+                "preview_path": row["preview_path"],
+                "tags": json.loads(row["tags_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_animation_assets(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists all AnimationAssets optionally filtered by category."""
+        with self.get_connection() as conn:
+            if category:
+                rows = conn.execute("SELECT * FROM animation_assets WHERE category = ? ORDER BY created_at DESC", (str(category),)).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM animation_assets ORDER BY created_at DESC").fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "version": r["version"],
+                    "license_type": r["license_type"],
+                    "data": json.loads(r["data_json"]),
+                    "preview_path": r["preview_path"],
+                    "tags": json.loads(r["tags_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
 
     # -------------------------------------------------------------
     # Multimodal Intelligence Persistence Methods (Part 03)
@@ -4317,6 +6280,176 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_vfx_shot_task(self, task: Any) -> None:
         """Saves or updates a VFXShotTask."""
         now = utc_now_iso()
@@ -4404,6 +6537,176 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
 
     def update_vfx_shot_task_status(
         self,
@@ -4529,6 +6832,176 @@ class AssetDatabase:
                 for r in rows
             ]
 
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
     def save_animation_project(self, project: Any) -> None:
         """Saves or updates an AnimationProject."""
         now = utc_now_iso()
@@ -4644,3 +7117,1298 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_motion_composition(self, composition: Any) -> None:
+        """Saves or updates a MotionComposition in the database."""
+        now = utc_now_iso()
+        comp_dict = composition.to_dict() if hasattr(composition, "to_dict") else composition
+        comp_id = comp_dict.get("composition_id")
+        project_id = comp_dict.get("project_id", "default")
+        name = comp_dict.get("name", "Motion Composition")
+        res = comp_dict.get("resolution", [1920, 1080])
+        fps = float(comp_dict.get("fps", 24.0))
+        dur_raw = comp_dict.get("duration", {"value": 120, "rate": 24.0})
+        frames = int(dur_raw.get("value", 120))
+        rate = float(dur_raw.get("rate", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO motion_compositions (
+                    composition_id, project_id, name, resolution_w, resolution_h,
+                    fps, duration_frames, duration_rate, composition_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(comp_id),
+                str(project_id),
+                name,
+                int(res[0]),
+                int(res[1]),
+                fps,
+                frames,
+                rate,
+                json.dumps(comp_dict),
+                now,
+                now
+            ))
+
+    def get_motion_composition(self, composition_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM motion_compositions WHERE composition_id = ?", (str(composition_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["composition_json"])
+
+    def list_motion_compositions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all MotionCompositions for a given project_id."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM motion_compositions WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["composition_json"]) for r in rows]
+
+    def delete_motion_composition(self, composition_id: str) -> bool:
+        """Deletes a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
+            return cur.rowcount > 0
+
+    def save_vfx_project(self, project: Any) -> None:
+        """Saves or updates a VFXProject in the database."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        vfx_proj_id = p_dict.get("vfx_project_id")
+        project_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "VFX Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+        meta = p_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_projects (
+                    vfx_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(vfx_proj_id),
+                str(project_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(meta),
+                now,
+            ))
+
+    def get_vfx_project(self, vfx_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXProject record."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_projects WHERE vfx_project_id = ?", (str(vfx_project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "vfx_project_id": row["vfx_project_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "resolution_w": row["resolution_w"],
+                "resolution_h": row["resolution_h"],
+                "fps": row["fps"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_vfx_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "vfx_project_id": r["vfx_project_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "resolution_w": r["resolution_w"],
+                    "resolution_h": r["resolution_h"],
+                    "fps": r["fps"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_vfx_shot_task(self, task: Any) -> None:
+        """Saves or updates a VFXShotTask."""
+        now = utc_now_iso()
+        t_dict = task.to_dict() if hasattr(task, "to_dict") else task
+        task_id = t_dict.get("task_id")
+        project_id = t_dict.get("project_id", "default")
+        shot_id = t_dict.get("shot_id", "shot_0")
+        name = t_dict.get("name", "VFX Shot Task")
+        vfx_type = t_dict.get("vfx_type", "MULTI_LAYER_COMPOSITE")
+        desc = t_dict.get("description", "")
+        status = t_dict.get("status", "PENDING")
+        input_assets = t_dict.get("input_assets", [])
+        output_asset_id = t_dict.get("output_asset_id")
+        comp_graph_id = t_dict.get("compositing_graph_id")
+        tracking_data = t_dict.get("tracking_data", {})
+        qc_report = t_dict.get("qc_report", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_shot_tasks (
+                    task_id, project_id, shot_id, name, vfx_type, description,
+                    status, input_assets_json, output_asset_id, compositing_graph_id,
+                    tracking_data_json, qc_report_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(task_id),
+                str(project_id),
+                str(shot_id),
+                name,
+                str(vfx_type),
+                desc,
+                str(status),
+                json.dumps(input_assets),
+                str(output_asset_id) if output_asset_id else None,
+                str(comp_graph_id) if comp_graph_id else None,
+                json.dumps(tracking_data),
+                json.dumps(qc_report),
+                now,
+                now,
+            ))
+
+    def get_vfx_shot_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXShotTask by task_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_shot_tasks WHERE task_id = ?", (str(task_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "task_id": row["task_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "name": row["name"],
+                "vfx_type": row["vfx_type"],
+                "description": row["description"],
+                "status": row["status"],
+                "input_assets": json.loads(row["input_assets_json"]),
+                "output_asset_id": row["output_asset_id"],
+                "compositing_graph_id": row["compositing_graph_id"],
+                "tracking_data": json.loads(row["tracking_data_json"]),
+                "qc_report": json.loads(row["qc_report_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_vfx_shot_tasks(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXShotTasks for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_shot_tasks WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "task_id": r["task_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "name": r["name"],
+                    "vfx_type": r["vfx_type"],
+                    "description": r["description"],
+                    "status": r["status"],
+                    "input_assets": json.loads(r["input_assets_json"]),
+                    "output_asset_id": r["output_asset_id"],
+                    "compositing_graph_id": r["compositing_graph_id"],
+                    "tracking_data": json.loads(r["tracking_data_json"]),
+                    "qc_report": json.loads(r["qc_report_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def update_vfx_shot_task_status(
+        self,
+        task_id: str,
+        status: str,
+        output_asset_id: Optional[str] = None,
+        qc_report: Optional[Dict[str, Any]] = None,
+    ) -> bool:
+        """Updates status, output asset, and QC report for a VFXShotTask."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            cur = conn.execute("""
+                UPDATE vfx_shot_tasks
+                SET status = ?,
+                    output_asset_id = COALESCE(?, output_asset_id),
+                    qc_report_json = CASE WHEN ? IS NOT NULL THEN ? ELSE qc_report_json END,
+                    updated_at = ?
+                WHERE task_id = ?
+            """, (
+                status,
+                str(output_asset_id) if output_asset_id else None,
+                json.dumps(qc_report) if qc_report else None,
+                json.dumps(qc_report) if qc_report else None,
+                now,
+                str(task_id),
+            ))
+            return cur.rowcount > 0
+
+    def save_character_identity(self, character: Any) -> None:
+        """Saves or updates a CharacterIdentity record."""
+        now = utc_now_iso()
+        c_dict = character.to_dict() if hasattr(character, "to_dict") else character
+        c_id = c_dict.get("character_id")
+        project_id = c_dict.get("project_id", "default")
+        name = c_dict.get("name", "Unnamed Character")
+        style = c_dict.get("visual_style", "ANIME_CEL")
+        ratio = float(c_dict.get("head_ratio", 7.0))
+        age = c_dict.get("age_appearance", "")
+        pers = c_dict.get("personality", "")
+        palette = c_dict.get("color_palette", {})
+        features = c_dict.get("distinctive_features", [])
+        costume = c_dict.get("costume_layers", {})
+        model_sheets = c_dict.get("approved_model_sheet_ids", [])
+        version = int(c_dict.get("version", 1))
+        status = c_dict.get("status", "DRAFT")
+        meta = c_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO character_identities (
+                    character_id, project_id, name, visual_style, head_ratio,
+                    age_appearance, personality, palette_json, features_json,
+                    costume_json, model_sheets_json, version, status, metadata_json,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(c_id),
+                str(project_id),
+                name,
+                style,
+                ratio,
+                age,
+                pers,
+                json.dumps(palette),
+                json.dumps(features),
+                json.dumps(costume),
+                json.dumps(model_sheets),
+                version,
+                str(status),
+                json.dumps(meta),
+                now,
+                now,
+            ))
+
+    def get_character_identity(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a CharacterIdentity by character_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM character_identities WHERE character_id = ?", (str(character_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "visual_style": row["visual_style"],
+                "head_ratio": row["head_ratio"],
+                "age_appearance": row["age_appearance"],
+                "personality": row["personality"],
+                "color_palette": json.loads(row["palette_json"]),
+                "distinctive_features": json.loads(row["features_json"]),
+                "costume_layers": json.loads(row["costume_json"]),
+                "approved_model_sheet_ids": json.loads(row["model_sheets_json"]),
+                "version": row["version"],
+                "status": row["status"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_character_identities(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all CharacterIdentities for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM character_identities WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "visual_style": r["visual_style"],
+                    "head_ratio": r["head_ratio"],
+                    "age_appearance": r["age_appearance"],
+                    "personality": r["personality"],
+                    "color_palette": json.loads(r["palette_json"]),
+                    "distinctive_features": json.loads(r["features_json"]),
+                    "costume_layers": json.loads(r["costume_json"]),
+                    "approved_model_sheet_ids": json.loads(r["model_sheets_json"]),
+                    "version": r["version"],
+                    "status": r["status"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+
+    def save_animation_project(self, project: Any) -> None:
+        """Saves or updates an AnimationProject."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        proj_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "Animation Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_projects (
+                    animation_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, project_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(proj_id),
+                str(proj_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(p_dict),
+                now,
+                now,
+            ))
+
+    def get_animation_project(self, animation_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationProject."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_projects WHERE animation_project_id = ?", (str(animation_project_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["project_json"])
+
+    def list_animation_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AnimationProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM animation_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["project_json"]) for r in rows]
+
+    def save_animation_asset(self, asset: Any, project_id: str = "default") -> None:
+        """Saves or updates an AnimationAsset."""
+        now = utc_now_iso()
+        a_dict = asset.to_dict() if hasattr(asset, "to_dict") else asset
+        a_id = a_dict.get("asset_id")
+        name = a_dict.get("name", "Asset")
+        cat = a_dict.get("category", "PROP")
+        ver = a_dict.get("version", "1.0.0")
+        lic = a_dict.get("license_type", "PROPRIETARY_STUDIO")
+        data = a_dict.get("data", {})
+        prev = a_dict.get("preview_path")
+        tags = a_dict.get("tags", [])
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_assets (
+                    asset_id, project_id, name, category, version, license_type,
+                    data_json, preview_path, tags_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(a_id),
+                str(project_id),
+                name,
+                str(cat),
+                ver,
+                lic,
+                json.dumps(data),
+                prev,
+                json.dumps(tags),
+                now,
+            ))
+
+    def get_animation_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationAsset."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "version": row["version"],
+                "license_type": row["license_type"],
+                "data": json.loads(row["data_json"]),
+                "preview_path": row["preview_path"],
+                "tags": json.loads(row["tags_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_animation_assets(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists all AnimationAssets optionally filtered by category."""
+        with self.get_connection() as conn:
+            if category:
+                rows = conn.execute("SELECT * FROM animation_assets WHERE category = ? ORDER BY created_at DESC", (str(category),)).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM animation_assets ORDER BY created_at DESC").fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "version": r["version"],
+                    "license_type": r["license_type"],
+                    "data": json.loads(r["data_json"]),
+                    "preview_path": r["preview_path"],
+                    "tags": json.loads(r["tags_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_audio_session(self, session: Any) -> None:
+        """Persists or updates an AudioSession."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(session, "to_dict"):
+            data = session.to_dict()
+        elif isinstance(session, dict):
+            data = session
+        else:
+            data = getattr(session, "__dict__", {})
+
+        session_id = str(data.get("session_id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        name = str(data.get("name", "Untitled Audio Session"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channel_layout = str(data.get("channel_layout", "STEREO"))
+        tempo_bpm = float(data.get("tempo_bpm", 120.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_sessions (
+                    session_id, project_id, name, sample_rate, channel_layout, tempo_bpm, data_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                session_id,
+                project_id,
+                name,
+                sample_rate,
+                channel_layout,
+                tempo_bpm,
+                json.dumps(data),
+                now,
+                now,
+            ))
+
+    def get_audio_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AudioSession by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_sessions WHERE session_id = ?", (str(session_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "session_id": row["session_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "sample_rate": row["sample_rate"],
+                "channel_layout": row["channel_layout"],
+                "tempo_bpm": row["tempo_bpm"],
+                "data": json.loads(row["data_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_audio_sessions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AudioSessions belonging to a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_sessions WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "session_id": r["session_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "sample_rate": r["sample_rate"],
+                    "channel_layout": r["channel_layout"],
+                    "tempo_bpm": r["tempo_bpm"],
+                    "data": json.loads(r["data_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def delete_audio_session(self, session_id: str) -> bool:
+        """Deletes an AudioSession by ID."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM audio_sessions WHERE session_id = ?", (str(session_id),))
+            return cur.rowcount > 0
+
+    def save_audio_asset(self, asset: Any, project_id: str = "default_project") -> None:
+        """Persists or updates an Audio Asset record."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(asset, "to_dict"):
+            data = asset.to_dict()
+        elif isinstance(asset, dict):
+            data = asset
+        else:
+            data = getattr(asset, "__dict__", {})
+
+        asset_id = str(data.get("asset_id", data.get("sfx_id", uuid4())))
+        name = str(data.get("name", "Untitled Audio Asset"))
+        category = str(data.get("category", "SFX"))
+        sample_rate = int(data.get("sample_rate", 48000))
+        channels = int(data.get("channels", 2))
+        duration_sec = float(data.get("duration_sec", 0.0))
+        loudness_lufs = data.get("loudness_lufs")
+        file_path = data.get("file_path")
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO audio_assets (
+                    asset_id, project_id, name, category, sample_rate, channels, duration_sec, loudness_lufs, file_path, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                asset_id,
+                project_id,
+                name,
+                category,
+                sample_rate,
+                channels,
+                duration_sec,
+                loudness_lufs,
+                file_path,
+                json.dumps(data),
+                now,
+            ))
+
+    def get_audio_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an Audio Asset by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM audio_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "sample_rate": row["sample_rate"],
+                "channels": row["channels"],
+                "duration_sec": row["duration_sec"],
+                "loudness_lufs": row["loudness_lufs"],
+                "file_path": row["file_path"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_audio_assets(self, project_id: Optional[str] = None, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists audio assets filtered by project or category."""
+        query = "SELECT * FROM audio_assets WHERE 1=1"
+        params: List[Any] = []
+        if project_id:
+            query += " AND project_id = ?"
+            params.append(str(project_id))
+        if category:
+            query += " AND category = ?"
+            params.append(str(category))
+        query += " ORDER BY created_at DESC"
+
+        with self.get_connection() as conn:
+            rows = conn.execute(query, tuple(params)).fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "sample_rate": r["sample_rate"],
+                    "channels": r["channels"],
+                    "duration_sec": r["duration_sec"],
+                    "loudness_lufs": r["loudness_lufs"],
+                    "file_path": r["file_path"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+

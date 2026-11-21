@@ -303,3 +303,4 @@ class AnimationProject:
             character_ids=data.get("character_ids", []),
             metadata=data.get("metadata", {}),
         )
+

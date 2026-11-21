@@ -81,3 +81,4 @@ class Animation2DService(IAnimation2D):
                 success=False,
                 message=f"Animation task failed: {str(e)}",
             )
+

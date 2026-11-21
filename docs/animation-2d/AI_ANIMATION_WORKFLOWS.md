@@ -47,3 +47,4 @@ In 2D animation, facial performance comprises three decoupled layers:
    - `L_TH`: Tongue tip touching upper teeth (alveolar/dental L, TH).
 
 The system maps Whisper speech word boundaries to corresponding mouth visemes, automatically switching mouth shapes in sync with dialogue audio.
+

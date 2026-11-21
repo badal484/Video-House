@@ -123,3 +123,4 @@ class VFXProject:
             metadata=data.get("metadata", {}),
             created_at=data.get("created_at", datetime.now(timezone.utc).isoformat()),
         )
+

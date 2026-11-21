@@ -116,3 +116,4 @@ class Transform2D:
    - `shape_type`: `"RECTANGLE"`, `"CIRCLE"`, `"LINE"`, `"POLYGON"`.
    - `width`, `height`, `radius`, `points`.
    - `fill_color`, `stroke_color`, `stroke_width`.
+

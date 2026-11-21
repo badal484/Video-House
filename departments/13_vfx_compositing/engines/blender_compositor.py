@@ -94,3 +94,4 @@ class BlenderCompositorEngine(ICompositorEngine):
             "script_path": manifest_path,
             "output_path": output_path,
         }
+

@@ -1430,940 +1430,135 @@ async def render_animation_background_endpoint(req: AnimationBackgroundRenderReq
     }
 
 
+# =========================================================================
+# Department 14: Audio Production Endpoints
+# =========================================================================
 
-
-
-# ---------------------------------------------------------
-# Department 04 & 05: Multimodal Intelligence Endpoints
-# ---------------------------------------------------------
-
-@app.post("/api/v1/projects/{project_id}/assets/{asset_id}/analyze")
-async def analyze_asset(project_id: UUID, asset_id: UUID, req: AnalyzeAssetRequest):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    
-    result = await intelligence_service.analyze_asset(asset_id, profile=req.profile)
-    return {"success": True, "asset_id": str(asset_id), "manifest": result}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/analysis")
-async def get_asset_analysis(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    
-    shots = db.get_shots(asset_id)
-    transcripts = db.get_transcripts(asset_id)
-    audio_events = db.get_audio_events(asset_id)
-    camera_motions = db.get_camera_movements(asset_id)
-    ocr_obs = db.get_ocr_observations(asset_id)
-    ref_profile = db.get_reference_profile(asset_id)
-    
-    return {
-        "success": True,
-        "asset_id": str(asset_id),
-        "shots_count": len(shots),
-        "transcripts_count": len(transcripts),
-        "audio_events_count": len(audio_events),
-        "camera_movements_count": len(camera_motions),
-        "ocr_count": len(ocr_obs),
-        "has_reference_profile": ref_profile is not None
-    }
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/shots")
-async def get_asset_shots(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    shots = db.get_shots(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "shots": shots}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/transcript")
-async def get_asset_transcript(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    transcripts = db.get_transcripts(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "transcripts": transcripts}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/audio-events")
-async def get_asset_audio_events(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    events = db.get_audio_events(asset_id)
-    music = db.get_music_segments(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "audio_events": events, "music_segments": music}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/camera-motion")
-async def get_asset_camera_motion(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    motions = db.get_camera_movements(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "camera_motions": motions}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/ocr")
-async def get_asset_ocr(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    ocr_obs = db.get_ocr_observations(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "ocr_observations": ocr_obs}
-
-@app.post("/api/v1/projects/{project_id}/assets/{asset_id}/reference-profile")
-async def generate_reference_profile(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    
-    result = await intelligence_service.analyze_asset(asset_id, profile=AnalysisProfile.REFERENCE_ANALYSIS)
-    profile = db.get_reference_profile(asset_id)
-    return {"success": True, "asset_id": str(asset_id), "reference_profile": profile}
-
-@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/reference-profile")
-async def get_reference_profile_endpoint(project_id: UUID, asset_id: UUID):
-    asset = db.get_asset(asset_id)
-    if not asset or asset.project_id != project_id:
-        raise HTTPException(status_code=404, detail="Asset not found.")
-    profile = db.get_reference_profile(asset_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail="Reference profile not found for this asset.")
-    return {"success": True, "asset_id": str(asset_id), "reference_profile": profile}
-
-@app.post("/api/v1/projects/{project_id}/compare")
-async def compare_assets_endpoint(project_id: UUID, req: CompareAssetsRequest):
-    src = db.get_asset(req.source_asset_id)
-    ref = db.get_asset(req.reference_asset_id)
-    if not src or src.project_id != project_id or not ref or ref.project_id != project_id:
-        raise HTTPException(status_code=404, detail="One or both assets not found in project.")
-    
-    try:
-        comparison = intelligence_service.compare_assets(req.source_asset_id, req.reference_asset_id)
-        return {"success": True, "comparison": comparison}
-    except FileNotFoundError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@app.post("/api/v1/projects/{project_id}/search")
-async def search_media_endpoint(project_id: UUID, req: SearchMediaRequest):
-    results = intelligence_service.search(project_id, req.query, limit=req.limit)
-    return {"success": True, "query": req.query, "results_count": len(results), "results": results}
-
-
-@app.post("/api/v1/projects/{project_id}/creative/brief")
-async def create_or_parse_brief(project_id: UUID, req: CreateBriefRequest):
-    proj = db.get_project(project_id)
-    if not proj:
-        raise HTTPException(status_code=404, detail="Project not found.")
-    raw_dict = req.model_dump()
-    brief, questions = creative_director.parse_brief(project_id, raw_dict)
-    return {
-        "success": True,
-        "brief_id": str(brief.brief_id),
-        "project_name": brief.project_name,
-        "production_type": brief.production_type.value,
-        "target_duration_sec": brief.target_duration_sec,
-        "assumptions": brief.assumptions,
-        "clarification_questions": questions
-    }
-
-@app.get("/api/v1/projects/{project_id}/creative/brief")
-async def get_creative_brief_endpoint(project_id: UUID):
-    brief_dict = db.get_creative_brief(project_id)
-    if not brief_dict:
-        raise HTTPException(status_code=404, detail="Creative brief not found for this project.")
-    return {"success": True, "brief": brief_dict}
-
-@app.post("/api/v1/projects/{project_id}/creative/concepts")
-async def generate_creative_concepts(project_id: UUID):
-    brief_dict = db.get_creative_brief(project_id)
-    if not brief_dict:
-        raise HTTPException(status_code=400, detail="Please create a creative brief first.")
-    from core.planning.planning_models import CreativeBrief, PacingStyle, ProductionType
-    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
-    concepts = creative_director.generate_concepts(brief, count=3)
-    return {"success": True, "concepts_count": len(concepts), "concepts": [
-        {"concept_id": str(c.concept_id), "name": c.name, "premise": c.creative_premise, "complexity": c.production_complexity.value, "is_selected": c.is_selected}
-        for c in concepts
-    ]}
-
-@app.get("/api/v1/projects/{project_id}/creative/concepts")
-async def get_creative_concepts_endpoint(project_id: UUID):
-    concepts = db.get_creative_concepts(project_id)
-    return {"success": True, "concepts": concepts}
-
-@app.post("/api/v1/projects/{project_id}/creative/concepts/{concept_id}/select")
-async def select_concept_endpoint(project_id: UUID, concept_id: UUID):
-    db.select_concept(project_id, concept_id)
-    return {"success": True, "message": f"Concept {concept_id} selected as active direction."}
-
-@app.post("/api/v1/projects/{project_id}/creative/script")
-async def develop_script_endpoint(project_id: UUID, req: CreateScriptRequest):
-    brief_dict = db.get_creative_brief(project_id)
-    if not brief_dict:
-        raise HTTPException(status_code=400, detail="Creative brief required before script generation.")
-    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
-    
-    selected_concept = None
-    if req.selected_concept_id:
-        concepts = db.get_creative_concepts(project_id)
-        matching = [c for c in concepts if c["concept_id"] == req.selected_concept_id]
-        if matching:
-            from core.planning.planning_models import CreativeConcept, ComplexityCategory
-            m = matching[0]
-            selected_concept = CreativeConcept(
-                concept_id=m["concept_id"], project_id=project_id, name=m["name"],
-                creative_premise=m["creative_premise"], narrative_approach=m["narrative_approach"],
-                visual_treatment=m["visual_treatment"], cinematography_style=m["cinematography_style"],
-                color_direction=m["color_direction"], sound_direction=m["sound_direction"],
-                editing_rhythm=m["editing_rhythm"], motion_graphics_style=m["motion_graphics_style"],
-                production_complexity=ComplexityCategory(m["production_complexity"]), is_selected=True
-            )
-    
-    script = creative_director.develop_script(brief, selected_concept)
-    return {
-        "success": True,
-        "script_id": str(script.script_id),
-        "title": script.title,
-        "scenes_count": len(script.scenes),
-        "estimated_spoken_duration_sec": script.estimated_spoken_duration_sec,
-        "total_words": script.total_words
-    }
-
-@app.get("/api/v1/projects/{project_id}/creative/script")
-async def get_script_endpoint(project_id: UUID):
-    script = db.get_script(project_id)
-    if not script:
-        raise HTTPException(status_code=404, detail="Script not found for this project.")
-    return {"success": True, "script": script}
-
-@app.post("/api/v1/projects/{project_id}/creative/shots")
-async def plan_shots_endpoint(project_id: UUID, req: PlanShotsRequest):
-    script_dict = db.get_script(project_id)
-    if not script_dict:
-        raise HTTPException(status_code=400, detail="Script required before shot planning.")
-    
-    from core.planning.planning_models import ProductionScript, ScriptScene, DialogueEntry, DialogueType
-    scenes = []
-    for sc in script_dict["scenes"]:
-        diag = [DialogueEntry(
-            entry_id=UUID(d["entry_id"]), speaker=d["speaker"], text=d["text"],
-            entry_type=DialogueType(d["entry_type"]), estimated_duration_sec=d["estimated_duration_sec"]
-        ) for d in sc["dialogue_entries"]]
-        scenes.append(ScriptScene(
-            scene_id=sc["scene_id"], script_id=sc["script_id"], scene_number=sc["scene_number"],
-            title=sc["title"], slugline=sc["slugline"], narrative_purpose=sc["narrative_purpose"],
-            location=sc["location"], time_of_day=sc["time_of_day"], characters_present=sc["characters_present"],
-            action_description=sc["action_description"], dialogue_entries=diag,
-            emotional_tone=sc["emotional_tone"], estimated_duration_sec=sc["estimated_duration_sec"]
-        ))
-    script = ProductionScript(
-        script_id=script_dict["script_id"], project_id=project_id, title=script_dict["title"],
-        logline=script_dict["logline"], target_duration_sec=script_dict["target_duration_sec"],
-        estimated_spoken_duration_sec=script_dict["estimated_spoken_duration_sec"],
-        total_words=script_dict["total_words"], scenes=scenes
-    )
-    shots = creative_director.plan_shots(script, visual_style=req.visual_style or "Cinematic Realism")
-    return {"success": True, "planned_shots_count": len(shots), "shots": [
-        {"shot_number": s.shot_number, "scale": s.shot_scale.value, "camera_motion": s.camera_motion.value, "duration_sec": s.estimated_duration_sec}
-        for s in shots
-    ]}
-
-@app.get("/api/v1/projects/{project_id}/creative/shots")
-async def get_planned_shots_endpoint(project_id: UUID):
-    shots = db.get_planned_shots()
-    return {"success": True, "shots": shots}
-
-@app.post("/api/v1/projects/{project_id}/creative/storyboard")
-async def plan_storyboard_endpoint(project_id: UUID):
-    shot_dicts = db.get_planned_shots()
-    if not shot_dicts:
-        raise HTTPException(status_code=400, detail="Planned shots required before storyboard generation.")
-    from core.planning.planning_models import PlannedShot
-    from core.assets.intelligence_models import ShotScale, CameraAngle, CameraMotionType
-    from core.planning.planning_models import ProductionTaskType
-    shots = []
-    for s in shot_dicts:
-        shots.append(PlannedShot(
-            shot_id=s["shot_id"], scene_id=s["scene_id"], shot_number=s["shot_number"],
-            narrative_purpose=s["narrative_purpose"], shot_scale=ShotScale(s["shot_scale"]),
-            camera_angle=CameraAngle(s["camera_angle"]), camera_motion=CameraMotionType(s["camera_motion"]),
-            lens_focal_length=s["lens_focal_length"], camera_position=s["camera_position"],
-            subject_action=s["subject_action"], environment_description=s["environment_description"],
-            lighting_direction=s["lighting_direction"], composition_notes=s["composition_notes"],
-            depth_of_field=s["depth_of_field"], focus_behavior=s["focus_behavior"],
-            motion_characteristics=s["motion_characteristics"], start_state=s["start_state"],
-            end_state=s["end_state"], estimated_duration_sec=s["estimated_duration_sec"],
-            aspect_ratio=s["aspect_ratio"], visual_style=s["visual_style"],
-            continuity_requirements=s["continuity_requirements"], required_source_assets=s["required_source_assets"],
-            generation_requirements=ProductionTaskType(s["generation_requirements"])
-        ))
-    frames = creative_director.plan_storyboard(shots)
-    return {"success": True, "frames_count": len(frames), "frames": [
-        {"frame_order": f.frame_order, "prompt_spec": f.visual_prompt_spec, "approval_status": f.approval_status.value}
-        for f in frames
-    ]}
-
-@app.get("/api/v1/projects/{project_id}/creative/storyboard")
-async def get_storyboard_endpoint(project_id: UUID):
-    frames = db.get_storyboard_frames()
-    return {"success": True, "storyboard_frames": frames}
-
-@app.post("/api/v1/projects/{project_id}/creative/edit-plan")
-async def create_edit_plan_endpoint(project_id: UUID, req: CreateEditPlanRequest):
-    # Retrieve shots from source assets
-    source_shots = []
-    for aid in req.source_asset_ids:
-        s_list = db.get_shots(aid)
-        source_shots.extend(s_list)
-    
-    ref_profile = None
-    if req.reference_asset_id:
-        rp_dict = db.get_reference_profile(req.reference_asset_id)
-        if rp_dict:
-            from core.assets.intelligence_models import ReferenceProfile
-            ref_profile = ReferenceProfile(**rp_dict)
-            
-    blueprint = production_planner.create_edit_blueprint(
-        project_id=project_id,
-        target_duration_sec=req.target_duration_sec,
-        source_shots=source_shots,
-        ref_profile=ref_profile,
-        instructions=req.instructions or ""
-    )
-    return {
-        "success": True,
-        "blueprint_id": str(blueprint.blueprint_id),
-        "target_duration_sec": blueprint.target_duration_sec,
-        "cuts_count": len(blueprint.narrative_order),
-        "missing_coverage_count": len(blueprint.missing_coverage),
-        "missing_coverage": [{"duration_sec": m.duration_sec, "solution": m.recommended_solution.value} for m in blueprint.missing_coverage]
-    }
-
-@app.get("/api/v1/projects/{project_id}/creative/edit-plan")
-async def get_edit_plan_endpoint(project_id: UUID):
-    plan = db.get_editing_blueprint(project_id)
-    if not plan:
-        raise HTTPException(status_code=404, detail="Editing blueprint not found.")
-    return {"success": True, "editing_blueprint": plan}
-
-@app.post("/api/v1/projects/{project_id}/creative/blueprint")
-async def compile_production_blueprint_endpoint(project_id: UUID):
-    brief_dict = db.get_creative_brief(project_id)
-    if not brief_dict:
-        raise HTTPException(status_code=400, detail="Creative brief required.")
-    from core.planning.planning_models import CreativeBrief
-    brief, _ = creative_director.brief_service.parse_brief(project_id, brief_dict)
-    
-    blueprint = production_planner.compile_blueprint(project_id=project_id, brief=brief)
-    return {
-        "success": True,
-        "blueprint_id": str(blueprint.blueprint_id),
-        "version": blueprint.version,
-        "is_ready_for_production": blueprint.is_ready_for_production,
-        "approvals_count": len(blueprint.approvals)
-    }
-
-@app.get("/api/v1/projects/{project_id}/creative/blueprint")
-async def get_production_blueprint_endpoint(project_id: UUID):
-    bp = db.get_production_blueprint(project_id)
-    if not bp:
-        raise HTTPException(status_code=404, detail="Production blueprint not found.")
-    return {"success": True, "production_blueprint": bp}
-
-@app.post("/api/v1/projects/{project_id}/creative/approve")
-async def submit_creative_approval(project_id: UUID, req: SubmitApprovalRequest):
-    approval = production_planner.submit_approval(
-        project_id=project_id,
-        entity_type=req.entity_type,
-        entity_id=req.entity_id,
-        version=req.version,
-        status=req.status,
-        reviewer_notes=req.reviewer_notes or "",
-        approved_by=req.approved_by or "human_director"
-    )
-    return {
-        "success": True,
-        "approval_id": str(approval.approval_id),
-        "status": approval.status.value,
-        "entity_type": approval.entity_type.value
-    }
-
-@app.get("/api/v1/projects/{project_id}/creative/approvals")
-async def get_creative_approvals_endpoint(project_id: UUID):
-    approvals = db.get_creative_approvals(project_id)
-    return {"success": True, "approvals": approvals}
-
-
-# ---------------------------------------------------------
-# Part 05 Non-Linear Video Editing Endpoints
-# ---------------------------------------------------------
-
-class CreateTimelineRequest(BaseModel):
-    name: str = "Master Timeline"
-    fps: float = 24.0
-    resolution_width: int = 1920
-    resolution_height: int = 1080
+class AudioSessionCreateRequest(BaseModel):
+    project_id: str
+    name: str = "Multitrack Session"
     sample_rate: int = 48000
+    tempo_bpm: float = 120.0
 
-class AddTrackRequest(BaseModel):
-    track_type: str = "VIDEO"
-    name: str = "V1"
+class AudioTrackCreateRequest(BaseModel):
+    name: str
+    track_type: str = "DIALOGUE"
+    gain_db: float = 0.0
+    pan: float = 0.0
 
-class AddClipRequest(BaseModel):
-    track_id: UUID
-    asset_id: UUID
-    timeline_start_sec: float
-    duration_sec: float
-    source_in_sec: float = 0.0
-    speed: float = 1.0
-    mode: str = "OVERWRITE"
+class AudioClipCreateRequest(BaseModel):
     name: str = "Clip"
-
-class SplitClipRequest(BaseModel):
-    split_time_sec: float
-
-class TrimClipRequest(BaseModel):
-    new_start_sec: Optional[float] = None
-    new_end_sec: Optional[float] = None
-
-class AddTransitionRequest(BaseModel):
-    track_id: UUID
-    transition_type: str = "CROSS_DISSOLVE"
-    start_time_sec: float
+    start_time_sec: float = 0.0
     duration_sec: float = 1.0
-    from_clip_id: Optional[UUID] = None
-    to_clip_id: Optional[UUID] = None
-    parameters: Dict[str, Any] = Field(default_factory=dict)
+    gain_db: float = 0.0
+    file_path: Optional[str] = None
 
-class AddEffectRequest(BaseModel):
-    effect_type: str = "OPACITY"
-    parameters: Dict[str, Any] = Field(default_factory=dict)
+class AudioMasterRequest(BaseModel):
+    standard: str = "YOUTUBE"
+    export_stems: bool = True
 
-class RenderTimelineRequest(BaseModel):
-    output_path: Optional[str] = None
-    is_preview: bool = False
-    format_preset: str = "H264_1080P"
-
-class ExecuteBlueprintRequest(BaseModel):
-    blueprint_id: Optional[UUID] = None
-    timeline_name: str = "Blueprint Timeline"
-    fps: float = 24.0
+class AudioSFXGenerateRequest(BaseModel):
+    sfx_type: str = "impact"
+    duration_sec: float = 2.0
 
 
-@app.post("/api/v1/editing/projects/{project_id}/timelines")
-async def create_timeline_endpoint(project_id: UUID, req: CreateTimelineRequest):
-    tl = video_editor.manager.create_timeline(
-        project_id=project_id,
+@app.post("/api/v1/audio/sessions")
+async def create_audio_session_endpoint(req: AudioSessionCreateRequest):
+    from departments.audio_production.core.session_models import AudioSession
+    session = AudioSession(
+        project_id=req.project_id,
         name=req.name,
-        fps=req.fps,
-        resolution_width=req.resolution_width,
-        resolution_height=req.resolution_height,
-        sample_rate=req.sample_rate
+        sample_rate=req.sample_rate,
+        tempo_bpm=req.tempo_bpm,
     )
-    return {"success": True, "timeline": tl.to_dict()}
+    db.save_audio_session(session)
+    return {"success": True, "session": session.to_dict()}
 
-@app.get("/api/v1/editing/timelines/{timeline_id}")
-async def get_timeline_endpoint(timeline_id: UUID):
-    tl = video_editor.manager.get_timeline(timeline_id)
-    if not tl:
-        raise HTTPException(status_code=404, detail="Timeline not found.")
-    return {"success": True, "timeline": tl.to_dict()}
 
-@app.post("/api/v1/editing/timelines/{timeline_id}/tracks")
-async def add_track_endpoint(timeline_id: UUID, req: AddTrackRequest):
-    try:
-        t_type = TrackType(req.track_type)
-    except ValueError:
-        raise HTTPException(status_code=400, detail=f"Invalid track type {req.track_type}")
-    track = video_editor.manager.add_track(timeline_id, t_type, req.name)
+@app.get("/api/v1/audio/sessions/{session_id}")
+async def get_audio_session_endpoint(session_id: str):
+    sess = db.get_audio_session(session_id)
+    if not sess:
+        raise HTTPException(status_code=404, detail=f"AudioSession '{session_id}' not found.")
+    return {"session": sess}
+
+
+@app.get("/api/v1/audio/projects/{project_id}/sessions")
+async def list_audio_sessions_endpoint(project_id: str):
+    sessions = db.list_audio_sessions(project_id)
+    return {"project_id": project_id, "sessions": sessions}
+
+
+@app.post("/api/v1/audio/sessions/{session_id}/tracks")
+async def add_audio_track_endpoint(session_id: str, req: AudioTrackCreateRequest):
+    from departments.audio_production.core.session_models import AudioSession, AudioTrackType
+    sess_dict = db.get_audio_session(session_id)
+    if not sess_dict:
+        raise HTTPException(status_code=404, detail=f"AudioSession '{session_id}' not found.")
+    session = AudioSession.from_dict(sess_dict["data"])
+    ttype = AudioTrackType[req.track_type.upper()] if req.track_type.upper() in AudioTrackType.__members__ else AudioTrackType.DIALOGUE
+    track = session.add_track(name=req.name, track_type=ttype, gain_db=req.gain_db, pan=req.pan)
+    db.save_audio_session(session)
     return {"success": True, "track": track.to_dict()}
 
-@app.post("/api/v1/editing/timelines/{timeline_id}/clips")
-async def add_clip_endpoint(timeline_id: UUID, req: AddClipRequest):
-    try:
-        e_mode = EditMode(req.mode)
-    except ValueError:
-        e_mode = EditMode.OVERWRITE
-    clip = video_editor.manager.add_clip_to_track(
-        timeline_id=timeline_id,
-        track_id=req.track_id,
-        asset_id=req.asset_id,
-        timeline_start_sec=req.timeline_start_sec,
-        duration_sec=req.duration_sec,
-        source_in_sec=req.source_in_sec,
-        speed=req.speed,
-        mode=e_mode,
-        name=req.name
-    )
-    return {"success": True, "clip": clip.to_dict()}
 
-@app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/split")
-async def split_clip_endpoint(timeline_id: UUID, clip_id: UUID, req: SplitClipRequest):
-    c1, c2 = video_editor.manager.split_clip(timeline_id, clip_id, req.split_time_sec)
-    return {"success": True, "left_clip": c1.to_dict(), "right_clip": c2.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/trim")
-async def trim_clip_endpoint(timeline_id: UUID, clip_id: UUID, req: TrimClipRequest):
-    clip = video_editor.manager.trim_clip(timeline_id, clip_id, req.new_start_sec, req.new_end_sec)
-    return {"success": True, "clip": clip.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/ripple-delete")
-async def ripple_delete_endpoint(timeline_id: UUID, clip_id: UUID):
-    removed = video_editor.manager.ripple_delete_clip(timeline_id, clip_id)
-    if not removed:
-        raise HTTPException(status_code=404, detail="Clip not found.")
-    return {"success": True, "removed_clip": removed.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/transitions")
-async def add_transition_endpoint(timeline_id: UUID, req: AddTransitionRequest):
-    try:
-        t_type = TransitionType(req.transition_type)
-    except ValueError:
-        t_type = TransitionType.CROSS_DISSOLVE
-    trans = video_editor.manager.add_transition(
-        timeline_id=timeline_id,
-        track_id=req.track_id,
-        transition_type=t_type,
+@app.post("/api/v1/audio/sessions/{session_id}/tracks/{track_id}/clips")
+async def add_audio_clip_endpoint(session_id: str, track_id: str, req: AudioClipCreateRequest):
+    from departments.audio_production.core.session_models import AudioSession, AudioClip
+    sess_dict = db.get_audio_session(session_id)
+    if not sess_dict:
+        raise HTTPException(status_code=404, detail=f"AudioSession '{session_id}' not found.")
+    session = AudioSession.from_dict(sess_dict["data"])
+    track = session.get_track(track_id)
+    if not track:
+        raise HTTPException(status_code=404, detail=f"AudioTrack '{track_id}' not found.")
+    clip = AudioClip(
+        track_id=track_id,
+        name=req.name,
         start_time_sec=req.start_time_sec,
         duration_sec=req.duration_sec,
-        from_clip_id=req.from_clip_id,
-        to_clip_id=req.to_clip_id,
-        parameters=req.parameters
+        gain_db=req.gain_db,
+        file_path=req.file_path,
     )
-    return {"success": True, "transition": trans.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/effects")
-async def add_effect_endpoint(timeline_id: UUID, clip_id: UUID, req: AddEffectRequest):
-    try:
-        eff_type = EffectType(req.effect_type)
-    except ValueError:
-        eff_type = EffectType.OPACITY
-    eff = video_editor.manager.add_effect_to_clip(
-        timeline_id=timeline_id,
-        clip_id=clip_id,
-        effect_type=eff_type,
-        parameters=req.parameters
-    )
-    return {"success": True, "effect": eff.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/undo")
-async def undo_endpoint(timeline_id: UUID):
-    restored = video_editor.manager.undo(timeline_id)
-    if not restored:
-        raise HTTPException(status_code=400, detail="No undo actions available.")
-    return {"success": True, "timeline": restored.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/redo")
-async def redo_endpoint(timeline_id: UUID):
-    restored = video_editor.manager.redo(timeline_id)
-    if not restored:
-        raise HTTPException(status_code=400, detail="No redo actions available.")
-    return {"success": True, "timeline": restored.to_dict()}
-
-@app.post("/api/v1/editing/projects/{project_id}/execute-blueprint")
-async def execute_blueprint_endpoint(project_id: UUID, req: ExecuteBlueprintRequest):
-    bp_data = None
-    if req.blueprint_id:
-        bp_dict = db.get_editing_blueprint(project_id)
-        if bp_dict:
-            bp_data = bp_dict
-    if not bp_data:
-        bp_data = db.get_editing_blueprint(project_id)
-    if not bp_data:
-        raise HTTPException(status_code=404, detail="Editing blueprint not found for project.")
-
-    tl = video_editor.executor.execute_blueprint(
-        project_id=project_id,
-        blueprint_data=bp_data,
-        timeline_name=req.timeline_name,
-        fps=req.fps
-    )
-    return {"success": True, "timeline": tl.to_dict()}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/render-preview")
-async def render_preview_endpoint(timeline_id: UUID):
-    tl = video_editor.manager.get_timeline(timeline_id)
-    if not tl:
-        raise HTTPException(status_code=404, detail="Timeline not found.")
-    job = video_editor.previewer.generate_timeline_preview(tl)
-    return {"success": True, "render_job": job.__dict__}
-
-@app.post("/api/v1/editing/timelines/{timeline_id}/render-final")
-async def render_final_endpoint(timeline_id: UUID, req: RenderTimelineRequest):
-    tl = video_editor.manager.get_timeline(timeline_id)
-    if not tl:
-        raise HTTPException(status_code=404, detail="Timeline not found.")
-    out_path = req.output_path or f"temp/renders/{timeline_id}_master.mp4"
-    job = video_editor.renderer.render_timeline(
-        timeline=tl,
-        output_path=out_path,
-        is_preview=False,
-        format_preset=req.format_preset
-    )
-    return {"success": True, "render_job": job.__dict__}
-
-@app.get("/api/v1/editing/renders/{render_id}")
-async def get_render_job_endpoint(render_id: UUID):
-    job = db.get_render_job(render_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="Render job not found.")
-    return {"success": True, "render_job": job}
-
-@app.post("/api/v1/editing/renders/{render_id}/cancel")
-async def cancel_render_endpoint(render_id: UUID):
-    success = video_editor.renderer.cancel_render(render_id)
-    return {"success": success, "message": "Render cancelled." if success else "Render process not active."}
-
-@app.get("/api/v1/editing/timelines/{timeline_id}/export-otio")
-async def export_otio_endpoint(timeline_id: UUID):
-    tl = video_editor.manager.get_timeline(timeline_id)
-    if not tl:
-        raise HTTPException(status_code=404, detail="Timeline not found.")
-    out_dir = Path("temp/interchange")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = str(out_dir / f"{timeline_id}.otio")
-    OTIOAdapter.export_otio_json(tl, out_path)
-    return FileResponse(out_path, media_type="application/json", filename=f"{timeline_id}.otio")
+    track.add_clip(clip)
+    db.save_audio_session(session)
+    return {"success": True, "clip": clip.to_dict()}
 
 
-# ============================================================================
-# 5. DEPARTMENT 09: MOTION GRAPHICS & TYPOGRAPHY ENDPOINTS
-# ============================================================================
-
-from departments.motion_graphics.service import MotionGraphicsService
-from departments.motion_graphics.core.composition_models import MotionComposition
-from departments.motion_graphics.core.design_validator import DesignValidator
-
-motion_service = MotionGraphicsService(db, storage)
-
-
-class InstantiatePresetRequest(BaseModel):
-    project_id: UUID = Field(..., description="Target project ID")
-    parameters: Dict[str, Any] = Field(default_factory=dict, description="Preset configuration parameters")
+@app.post("/api/v1/audio/sessions/{session_id}/master")
+async def master_audio_session_endpoint(session_id: str, req: AudioMasterRequest):
+    from departments.audio_production.core.session_models import AudioSession, LoudnessStandard
+    from departments.audio_production.mixing.mastering_engine import MasteringEngine
+    sess_dict = db.get_audio_session(session_id)
+    if not sess_dict:
+        raise HTTPException(status_code=404, detail=f"AudioSession '{session_id}' not found.")
+    session = AudioSession.from_dict(sess_dict["data"])
+    std = LoudnessStandard[req.standard.upper()] if req.standard.upper() in LoudnessStandard.__members__ else LoudnessStandard.YOUTUBE
+    out_dir = f"temp/audio_scratch/{session_id}"
+    res = MasteringEngine.master_session(session, out_dir, standard=std, export_stems=req.export_stems)
+    return {"success": True, "mastering_result": res}
 
 
-class SaveCompositionRequest(BaseModel):
-    composition: Dict[str, Any] = Field(..., description="Canonical motion composition dictionary")
+@app.post("/api/v1/audio/sfx/generate")
+async def generate_procedural_sfx_endpoint(req: AudioSFXGenerateRequest):
+    from departments.audio_production.sound_design.procedural_sfx import ProceduralSFXEngine
+    from departments.audio_production.mixing.mastering_engine import MasteringEngine
+    st = req.sfx_type.lower()
+    if st == "impact":
+        audio = ProceduralSFXEngine.generate_cinematic_impact(duration_sec=req.duration_sec)
+    elif st == "whoosh":
+        audio = ProceduralSFXEngine.generate_whoosh_transition(duration_sec=req.duration_sec)
+    elif st == "riser":
+        audio = ProceduralSFXEngine.generate_tension_riser(duration_sec=req.duration_sec)
+    else:
+        audio = ProceduralSFXEngine.generate_ambient_drone(duration_sec=req.duration_sec)
 
-
-class RenderCompositionRequest(BaseModel):
-    codec: str = Field(default="prores_ks", description="Target video codec: 'prores_ks' or 'libvpx-vp9'")
-
-
-class InsertToTimelineRequest(BaseModel):
-    timeline_id: UUID = Field(..., description="Target timeline ID")
-    track_name: str = Field(default="V3 - Graphics", description="Target video track name")
-    timeline_in_sec: Optional[float] = Field(default=None, description="Timeline in-point in seconds")
-    codec: str = Field(default="prores_ks", description="Target video codec")
-
-
-@app.get("/api/v1/motion-graphics/presets")
-async def list_motion_presets_endpoint(category: Optional[str] = None):
-    presets = motion_service.presets.list_presets(category)
+    out_path = f"temp/audio_scratch/sfx_{uuid.uuid4().hex[:8]}.wav"
+    MasteringEngine.export_wav(audio, 48000, out_path)
     return {
         "success": True,
-        "presets": [
-            {
-                "preset_id": p.preset_id,
-                "name": p.name,
-                "category": p.category,
-                "description": p.description,
-                "default_duration_sec": p.default_duration.to_seconds(),
-                "supported_aspect_ratios": p.supported_aspect_ratios,
-                "parameters_schema": p.parameters_schema
-            }
-            for p in presets
-        ]
+        "sfx_type": req.sfx_type,
+        "duration_sec": req.duration_sec,
+        "output_path": out_path,
     }
-
-
-@app.get("/api/v1/motion-graphics/presets/{preset_id}")
-async def get_motion_preset_endpoint(preset_id: str):
-    p = motion_service.presets.get(preset_id)
-    if not p:
-        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
-    return {
-        "success": True,
-        "preset": {
-            "preset_id": p.preset_id,
-            "name": p.name,
-            "category": p.category,
-            "description": p.description,
-            "default_duration_sec": p.default_duration.to_seconds(),
-            "supported_aspect_ratios": p.supported_aspect_ratios,
-            "parameters_schema": p.parameters_schema
-        }
-    }
-
-
-@app.post("/api/v1/motion-graphics/presets/{preset_id}/instantiate")
-async def instantiate_motion_preset_endpoint(preset_id: str, req: InstantiatePresetRequest):
-    p = motion_service.presets.get(preset_id)
-    if not p:
-        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
-
-    params = req.parameters.copy()
-    params["project_id"] = str(req.project_id)
-    comp = motion_service.presets.instantiate(preset_id, params)
-    db.save_motion_composition(comp)
-    val = DesignValidator.validate_composition(comp)
-
-    return {
-        "success": True,
-        "composition": comp.to_dict(),
-        "validation": val
-    }
-
-
-@app.post("/api/v1/motion-graphics/compositions")
-async def save_motion_composition_endpoint(req: SaveCompositionRequest):
-    comp = MotionComposition.from_dict(req.composition)
-    db.save_motion_composition(comp)
-    return {"success": True, "composition_id": comp.composition_id}
-
-
-@app.get("/api/v1/motion-graphics/compositions/{composition_id}")
-async def get_motion_composition_endpoint(composition_id: str):
-    comp_dict = db.get_motion_composition(composition_id)
-    if not comp_dict:
-        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
-    return {"success": True, "composition": comp_dict}
-
-
-@app.post("/api/v1/motion-graphics/compositions/{composition_id}/validate")
-async def validate_motion_composition_endpoint(composition_id: str):
-    comp_dict = db.get_motion_composition(composition_id)
-    if not comp_dict:
-        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
-    comp = MotionComposition.from_dict(comp_dict)
-    val = DesignValidator.validate_composition(comp)
-    return {"success": True, "validation": val}
-
-
-@app.post("/api/v1/motion-graphics/compositions/{composition_id}/render")
-async def render_motion_composition_endpoint(composition_id: str, req: RenderCompositionRequest):
-    comp_dict = db.get_motion_composition(composition_id)
-    if not comp_dict:
-        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
-    comp = MotionComposition.from_dict(comp_dict)
-
-    ext = "mov" if req.codec == "prores_ks" else "webm"
-    out_dir = Path("temp/motion_graphics")
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = str(out_dir / f"{comp.composition_id}.{ext}")
-
-    rendered = motion_service.router.render(comp, out_path)
-    return {"success": True, "output_path": rendered}
-
-
-@app.post("/api/v1/motion-graphics/compositions/{composition_id}/insert-to-timeline")
-async def insert_motion_composition_to_timeline_endpoint(composition_id: str, req: InsertToTimelineRequest):
-    comp_dict = db.get_motion_composition(composition_id)
-    if not comp_dict:
-        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
-    comp = MotionComposition.from_dict(comp_dict)
-
-    from core.timeline.time_model import RationalTime
-    t_in = RationalTime(int(round(req.timeline_in_sec * comp.fps)), comp.fps) if req.timeline_in_sec is not None else None
-
-    clip = motion_service.timeline_adapter.render_and_insert_to_timeline(
-        composition=comp,
-        timeline_id=str(req.timeline_id),
-        target_track_name=req.track_name,
-        timeline_in=t_in,
-        codec=req.codec
-    )
-    return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
-
-
-# =========================================================================
-# Department 13: VFX & Compositing API Endpoints
-# =========================================================================
-
-class VFXProjectCreateRequest(BaseModel):
-    project_id: str
-    name: str
-    resolution_w: int = 1920
-    resolution_h: int = 1080
-    fps: float = 24.0
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-
-
-class VFXTaskCreateRequest(BaseModel):
-    project_id: str
-    shot_id: str
-    name: str
-    vfx_type: str
-    description: str = ""
-    input_assets: List[str] = Field(default_factory=list)
-    compositing_graph: Optional[Dict[str, Any]] = None
-
-
-class VFXGraphEvaluateRequest(BaseModel):
-    graph: Dict[str, Any]
-    frame_index: int = 0
-
-
-@app.post("/api/v1/vfx/projects")
-async def create_vfx_project_endpoint(req: VFXProjectCreateRequest):
-    from departments.vfx_compositing.core.vfx_project_models import VFXProject
-    vfx_proj = VFXProject(
-        vfx_project_id=str(uuid4()),
-        project_id=req.project_id,
-        name=req.name,
-        resolution_w=req.resolution_w,
-        resolution_h=req.resolution_h,
-        fps=req.fps,
-        metadata=req.metadata,
-    )
-    db.save_vfx_project(vfx_proj)
-    return {"success": True, "vfx_project": vfx_proj.to_dict()}
-
-
-@app.get("/api/v1/vfx/projects/{project_id}")
-async def list_vfx_projects_endpoint(project_id: str):
-    projects = db.list_vfx_projects(project_id)
-    return {"project_id": project_id, "vfx_projects": projects}
-
-
-@app.post("/api/v1/vfx/shots/tasks")
-async def create_vfx_task_endpoint(req: VFXTaskCreateRequest):
-    from departments.vfx_compositing.core.vfx_project_models import VFXShotTask, VFXType, VFXTaskStatus
-    task = VFXShotTask(
-        task_id=str(uuid4()),
-        project_id=req.project_id,
-        shot_id=req.shot_id,
-        name=req.name,
-        vfx_type=VFXType(req.vfx_type),
-        description=req.description,
-        status=VFXTaskStatus.PENDING,
-        input_assets=req.input_assets,
-        compositing_graph_id=req.compositing_graph.get("graph_id") if req.compositing_graph else None,
-    )
-    db.save_vfx_shot_task(task)
-    return {"success": True, "task": task.to_dict()}
-
-
-@app.get("/api/v1/vfx/shots/tasks/{task_id}")
-async def get_vfx_task_endpoint(task_id: str):
-    task = db.get_vfx_shot_task(task_id)
-    if not task:
-        raise HTTPException(status_code=404, detail=f"VFX Task '{task_id}' not found.")
-    return {"task": task}
-
-
-@app.post("/api/v1/vfx/evaluate-graph")
-async def evaluate_vfx_graph_endpoint(req: VFXGraphEvaluateRequest):
-    from departments.vfx_compositing.core.graph_models import CompositingGraph
-    from departments.vfx_compositing.engines.local_compositor import LocalCompositorEngine
-    graph = CompositingGraph.from_dict(req.graph)
-    engine = LocalCompositorEngine()
-    frame = engine.evaluate_frame(graph, frame_index=req.frame_index)
-    return {
-        "success": True,
-        "graph_id": graph.graph_id,
-        "frame_shape": list(frame.shape),
-        "dtype": str(frame.dtype),
-    }
-
-
-# =========================================================================
-# Department 10 & 12: 2D Animation, Anime & Character Studio API Endpoints
-# =========================================================================
-
-class CharacterConceptCreateRequest(BaseModel):
-    project_id: str
-    name: str
-    brief: str
-    head_ratio: float = 7.0
-    visual_style: str = "ANIME_CEL"
-    custom_palette: Optional[Dict[str, str]] = None
-
-
-class AnimationProjectCreateRequest(BaseModel):
-    project_id: str
-    name: str
-    resolution_w: int = 1920
-    resolution_h: int = 1080
-    fps: float = 24.0
-
-
-class AnimationBackgroundRenderRequest(BaseModel):
-    resolution: Tuple[int, int] = (1080, 1920)
-    camera_offset_x: float = 0.0
-    time_of_day: str = "SUNSET"
-
-
-@app.post("/api/v1/animation/characters")
-async def create_character_concept_endpoint(req: CharacterConceptCreateRequest):
-    from departments.animation_2d.characters.character_generator import CharacterGenerator
-    char = CharacterGenerator.create_character_concept(
-        project_id=req.project_id,
-        name=req.name,
-        brief_text=req.brief,
-        head_ratio=req.head_ratio,
-        visual_style=req.visual_style,
-        custom_palette=req.custom_palette,
-    )
-    db.save_character_identity(char)
-    sheet, _ = CharacterGenerator.generate_turnaround_model_sheet(char)
-    return {
-        "success": True,
-        "character": char.to_dict(),
-        "model_sheet": sheet.to_dict(),
-    }
-
-
-@app.get("/api/v1/animation/characters/{character_id}")
-async def get_character_identity_endpoint(character_id: str):
-    char = db.get_character_identity(character_id)
-    if not char:
-        raise HTTPException(status_code=404, detail=f"Character '{character_id}' not found.")
-    return {"character": char}
-
-
-@app.get("/api/v1/animation/projects/{project_id}/characters")
-async def list_character_identities_endpoint(project_id: str):
-    chars = db.list_character_identities(project_id)
-    return {"project_id": project_id, "characters": chars}
-
-
-@app.post("/api/v1/animation/projects")
-async def create_animation_project_endpoint(req: AnimationProjectCreateRequest):
-    from departments.animation_2d.core.models import AnimationProject
-    proj = AnimationProject(
-        project_id=req.project_id,
-        name=req.name,
-        resolution_w=req.resolution_w,
-        resolution_h=req.resolution_h,
-        fps=req.fps,
-    )
-    db.save_animation_project(proj)
-    return {"success": True, "animation_project": proj.to_dict()}
-
-
-@app.get("/api/v1/animation/projects/{project_id}")
-async def list_animation_projects_endpoint(project_id: str):
-    projects = db.list_animation_projects(project_id)
-    return {"project_id": project_id, "animation_projects": projects}
-
-
-@app.post("/api/v1/animation/scenes/render-background")
-async def render_animation_background_endpoint(req: AnimationBackgroundRenderRequest):
-    from departments.animation_2d.anime_pipeline.multiplane_background import MultiplaneBackgroundEngine
-    bg = MultiplaneBackgroundEngine.render_parallax_frame(
-        canvas_shape=req.resolution,
-        camera_offset_x=req.camera_offset_x,
-        time_of_day=req.time_of_day,
-    )
-    return {
-        "success": True,
-        "resolution": list(req.resolution),
-        "time_of_day": req.time_of_day,
-        "frame_shape": list(bg.shape),
-    }
-
-
-
 

@@ -48,3 +48,4 @@
 | **Devanagari / Indic Complex Scripts** | Syllable & Grapheme cluster aware | Often breaks conjuncts/matras | Native HarfBuzz shaping |
 | **Text Reveal Effects** | Character, Word, Line, Typewriter | None (manual code) | CSS keyframes / clip-path |
 | **Selection Decision** | **Adopted as Core Typography Engine** | **Internal Primitive** | **Fallback for Complex Web Layout** |
+

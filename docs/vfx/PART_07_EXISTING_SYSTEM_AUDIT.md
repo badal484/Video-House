@@ -45,3 +45,4 @@ The studio's workstation operates on:
 1. **Node Graph Representation:** OpenTimelineIO is an editorial container, not a 2D compositing DAG. Compositing must be modeled as an explicit Directed Acyclic Graph (DAG) with typed nodes, input/output sockets, and execution dependencies.
 2. **Deterministic Local Fallback:** All core VFX operations (keying, despill, 4-point planar track, object removal, atmospheric glow, camera shake, alpha compositing) must function deterministically on the local machine without requiring cloud connectivity.
 3. **OpenEXR & Color Space Conformance:** Compositing calculations must occur in linear color space (linear Rec.709 / ACEScg) with explicit support for straight vs premultiplied alpha channels.
+

@@ -70,3 +70,4 @@ class SpriteSheetPackager:
         out_json.write_text(json.dumps(atlas_manifest, indent=2))
 
         return atlas_manifest
+

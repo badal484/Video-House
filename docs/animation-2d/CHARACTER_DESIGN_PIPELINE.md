@@ -68,3 +68,4 @@ Before any character design is transitioned to high-cost production animation:
 1. **Design Review:** Director inspects front, 3/4, side, and back turnaround alignment.
 2. **Palette Review:** Color chips are approved for daylight, interior, and night scene lighting.
 3. **Approval Status:** State transitions from `DRAFT` $\to$ `APPROVED` $\to$ `LOCKED`. Locked characters cannot be mutated without a major version increment.
+

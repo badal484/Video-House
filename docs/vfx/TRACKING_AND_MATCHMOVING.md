@@ -43,3 +43,4 @@ For placing 3D objects (Blender USD assets, 3D text) into live footage:
    $$x_2^T E x_1 = 0$$
 3. Singular Value Decomposition of $E$ recovers the relative camera rotation $R$ and translation $t$.
 4. Camera intrinsics (focal length, principal point) and extrinsic trajectories are exported for headless Blender rendering.
+

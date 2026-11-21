@@ -100,3 +100,4 @@ class AnimeLayout:
             light_direction_deg=float(data.get("light_direction_deg", 45.0)),
             notes=data.get("notes", ""),
         )
+

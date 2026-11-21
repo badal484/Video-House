@@ -334,3 +334,221 @@ flowchart LR
 - **Role:** Generates 8 dialogue-synced mouth visemes (`REST`, `AI_A`, `E_EE`, `O_OH`, `U_OO`, `M_B_P`, `F_V`, `L_TH`) and natural eye blinks.
 - **Invocation Method:** Python in-process (`FacialAnimator`).
 - **Health Check Command:** `python3 -c "from departments.animation_2d import FacialAnimator; print('Facial Animator OK')"`
+
+---
+
+## 10. Department 14 & 17: Audio Production & Dubbing Tools
+
+### 10.1 In-Process DSP Engine (Spotify Pedalboard & SciPy)
+- **Identifier:** `tool.audio.dsp_engine`
+- **Version:** `0.9.26` / `1.0.0`
+- **License:** Apache 2.0 / BSD-3-Clause
+- **Role:** Executes high-speed C++ JUCE parametric EQ, dynamic compression, brickwall limiting, algorithmic reverb, and delay in memory.
+- **Invocation Method:** Python in-process (`EqualizerEngine`, `DynamicsEngine`, `EffectsEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dsp import EqualizerEngine; print('DSP Engine OK')"`
+
+### 10.2 ITU-R BS.1770-4 & EBU R128 Loudness Meter & Normalizer
+- **Identifier:** `tool.audio.loudness_meter`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** K-weighting gated integrated loudness (LUFS), true peak (dBTP) oversampling, and 2-pass mastering normalization.
+- **Invocation Method:** Python in-process (`LoudnessMeter`, `MasteringEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dsp import LoudnessMeter; print('Loudness Meter OK')"`
+
+### 10.3 Dialogue Restoration & De-Esser Engine
+- **Identifier:** `tool.audio.dialogue_restoration`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Attenuates 50Hz/60Hz mains hum, removes low rumble, performs spectral subtraction gating, and compresses sibilance.
+- **Invocation Method:** Python in-process (`DialogueCleaner`, `DeEsser`, `RoomToneGenerator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dialogue import DialogueCleaner; print('Dialogue Cleaner OK')"`
+
+### 10.4 Procedural Foley & Cinematic SFX Synthesizer
+- **Identifier:** `tool.audio.procedural_sfx`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Mathematically synthesizes cinematic sub-impacts, swept whoosh transitions, exponential tension risers, and ambient drones without media files.
+- **Invocation Method:** Python in-process (`ProceduralSFXEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.sound_design import ProceduralSFXEngine; print('Procedural SFX OK')"`
+
+### 10.5 Multitrack Mixer & Sidechain Dialogue Ducker
+- **Identifier:** `tool.audio.multitrack_mixer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** 32-bit floating point multitrack summing, equal-power clip crossfading, parameter automation, and dialogue-triggered music ducking.
+- **Invocation Method:** Python in-process (`MultitrackMixer`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.mixing import MultitrackMixer; print('Multitrack Mixer OK')"`
+
+### 10.6 4-Stem Source Separation Engine
+- **Identifier:** `tool.audio.source_separator`
+- **Version:** `1.0.0`
+- **License:** BSD-3-Clause / MIT
+- **Role:** Separates mixed audio into 4 isolated stems (`vocals`, `drums`, `bass`, `other`) using harmonic-percussive STFT median filtering.
+- **Invocation Method:** Python in-process (`SourceSeparator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.separation import SourceSeparator; print('Source Separator OK')"`
+
+### 10.7 Voice Talent Dubbing & Consent Verifier
+- **Identifier:** `tool.audio.voice_producer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Synthesizes emotional, character-consistent speech with word timestamps and verifies biometric talent commercial consent.
+- **Invocation Method:** Python in-process (`VoiceProducer`, `SubtitlesDubbingService`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.voice import VoiceProducer; print('Voice Producer OK')"`
+
+
+---
+
+## 8. VFX & Compositing Tools (Department 13)
+
+### 8.1 Local Node Compositor Engine
+- **Identifier:** `tool.vfx.local_compositor`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 / BSD-3-Clause (Studio Core)
+- **Role:** Topological DAG node graph evaluator executing chroma keying, perspective warping, inpainting, and multi-layer premultiplied alpha merges.
+- **Invocation Method:** Python in-process (`LocalCompositorEngine`, `VFXEngineRouter`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import LocalCompositorEngine; print('Local Compositor OK')"`
+
+### 8.2 Chroma Keying & Despill Engine
+- **Identifier:** `tool.vfx.chroma_keyer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Extracts alpha mattes from green and blue screens using color difference metrics with despill suppression and morphological edge feathering.
+- **Invocation Method:** Python in-process (`ChromaKeyer`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import ChromaKeyer; print('Chroma Keyer OK')"`
+
+### 8.3 Planar Tracking & Perspective Warper
+- **Identifier:** `tool.vfx.planar_tracker`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (OpenCV / Studio Core)
+- **Role:** 4-point perspective homography estimation and Lanczos4 warping for screen and billboard replacements.
+- **Invocation Method:** Python in-process (`PlanarTracker`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import PlanarTracker; print('Planar Tracker OK')"`
+
+### 8.4 Video Cleanup & Inpainting Engine
+- **Identifier:** `tool.vfx.inpainting_engine`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (OpenCV / Studio Core)
+- **Role:** Wire, rig, logo, and blemish removal using Telea fast marching and Navier-Stokes differential equations.
+- **Invocation Method:** Python in-process (`InpaintingEngine`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import InpaintingEngine; print('Inpainting Engine OK')"`
+
+### 8.5 Automated VFX Quality Auditor
+- **Identifier:** `tool.vfx.quality_checker`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Automatically inspects composite frames for matte pinholes, green/blue spill leakage, and edge transition halos.
+- **Invocation Method:** Python in-process (`VFXQualityChecker`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import VFXQualityChecker; print('VFX QC OK')"`
+
+---
+
+## 9. 2D Animation & Character Production Tools (Departments 10 & 12)
+
+### 9.1 Character Generator & Settei Model Sheet Engine
+- **Identifier:** `tool.animation.character_generator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Generates persistent character DNA, 5-view Settei turnaround sheets with alignment guides, expression matrices, and pose presets.
+- **Invocation Method:** Python in-process (`CharacterGenerator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import CharacterGenerator; print('Character Generator OK')"`
+
+### 9.2 Quantitative Character Identity Validator
+- **Identifier:** `tool.animation.identity_validator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Programmatically checks candidate character frames for proportion drift ($\Delta_{prop} \le 5\%$) and CIE Lab color distance ($\Delta E \le 8.0$), rejecting inconsistent generations.
+- **Invocation Method:** Python in-process (`IdentityValidator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import IdentityValidator; print('Identity Validator OK')"`
+
+### 9.3 2D Skeletal Puppet & IK Engine
+- **Identifier:** `tool.animation.puppet_animator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Evaluates hierarchical 2D bone trees, solves analytical 2-bone Inverse Kinematics, maps cut-out sprites, and renders walk cycles.
+- **Invocation Method:** Python in-process (`PuppetAnimator`, `IKSolver2D`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import PuppetAnimator; print('Puppet Animator OK')"`
+
+### 9.4 Anime Cel Shading Engine
+- **Identifier:** `tool.animation.cel_shader`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Renders 3-tier anime shading (flat base, core shadow, specular rim highlight) with directional lighting.
+- **Invocation Method:** Python in-process (`AnimeCelShader`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import AnimeCelShader; print('Anime Cel Shader OK')"`
+
+### 9.5 Multiplane Parallax Background Engine
+- **Identifier:** `tool.animation.multiplane_background`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Renders multiplane layered anime environments (sky, distant skyline, midground buildings, foreground railing) with depth-scaled scrolling velocities.
+- **Invocation Method:** Python in-process (`MultiplaneBackgroundEngine`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import MultiplaneBackgroundEngine; print('Multiplane BG OK')"`
+
+### 9.6 Facial Dialogue Lip-Sync & Viseme Engine
+- **Identifier:** `tool.animation.facial_animator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Generates 8 dialogue-synced mouth visemes (`REST`, `AI_A`, `E_EE`, `O_OH`, `U_OO`, `M_B_P`, `F_V`, `L_TH`) and natural eye blinks.
+- **Invocation Method:** Python in-process (`FacialAnimator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import FacialAnimator; print('Facial Animator OK')"`
+
+---
+
+## 10. Department 14 & 17: Audio Production & Dubbing Tools
+
+### 10.1 In-Process DSP Engine (Spotify Pedalboard & SciPy)
+- **Identifier:** `tool.audio.dsp_engine`
+- **Version:** `0.9.26` / `1.0.0`
+- **License:** Apache 2.0 / BSD-3-Clause
+- **Role:** Executes high-speed C++ JUCE parametric EQ, dynamic compression, brickwall limiting, algorithmic reverb, and delay in memory.
+- **Invocation Method:** Python in-process (`EqualizerEngine`, `DynamicsEngine`, `EffectsEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dsp import EqualizerEngine; print('DSP Engine OK')"`
+
+### 10.2 ITU-R BS.1770-4 & EBU R128 Loudness Meter & Normalizer
+- **Identifier:** `tool.audio.loudness_meter`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** K-weighting gated integrated loudness (LUFS), true peak (dBTP) oversampling, and 2-pass mastering normalization.
+- **Invocation Method:** Python in-process (`LoudnessMeter`, `MasteringEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dsp import LoudnessMeter; print('Loudness Meter OK')"`
+
+### 10.3 Dialogue Restoration & De-Esser Engine
+- **Identifier:** `tool.audio.dialogue_restoration`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Attenuates 50Hz/60Hz mains hum, removes low rumble, performs spectral subtraction gating, and compresses sibilance.
+- **Invocation Method:** Python in-process (`DialogueCleaner`, `DeEsser`, `RoomToneGenerator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.dialogue import DialogueCleaner; print('Dialogue Cleaner OK')"`
+
+### 10.4 Procedural Foley & Cinematic SFX Synthesizer
+- **Identifier:** `tool.audio.procedural_sfx`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Mathematically synthesizes cinematic sub-impacts, swept whoosh transitions, exponential tension risers, and ambient drones without media files.
+- **Invocation Method:** Python in-process (`ProceduralSFXEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.sound_design import ProceduralSFXEngine; print('Procedural SFX OK')"`
+
+### 10.5 Multitrack Mixer & Sidechain Dialogue Ducker
+- **Identifier:** `tool.audio.multitrack_mixer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** 32-bit floating point multitrack summing, equal-power clip crossfading, parameter automation, and dialogue-triggered music ducking.
+- **Invocation Method:** Python in-process (`MultitrackMixer`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.mixing import MultitrackMixer; print('Multitrack Mixer OK')"`
+
+### 10.6 4-Stem Source Separation Engine
+- **Identifier:** `tool.audio.source_separator`
+- **Version:** `1.0.0`
+- **License:** BSD-3-Clause / MIT
+- **Role:** Separates mixed audio into 4 isolated stems (`vocals`, `drums`, `bass`, `other`) using harmonic-percussive STFT median filtering.
+- **Invocation Method:** Python in-process (`SourceSeparator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.separation import SourceSeparator; print('Source Separator OK')"`
+
+### 10.7 Voice Talent Dubbing & Consent Verifier
+- **Identifier:** `tool.audio.voice_producer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Synthesizes emotional, character-consistent speech with word timestamps and verifies biometric talent commercial consent.
+- **Invocation Method:** Python in-process (`VoiceProducer`, `SubtitlesDubbingService`).
+- **Health Check Command:** `python3 -c "import departments; from departments.audio_production.voice import VoiceProducer; print('Voice Producer OK')"`
+

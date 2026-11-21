@@ -72,3 +72,4 @@ class TimeSynchronizer:
             return RationalTime(int(round(closest_beat * fps)), fps)
 
         return t
+

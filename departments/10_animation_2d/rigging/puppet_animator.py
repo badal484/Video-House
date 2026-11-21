@@ -224,3 +224,4 @@ class PuppetAnimator:
 
         # Subtle spine bounce and tilt
         rig.bones["spine"].local_rotation = 4.0 * np.sin(phase_rad)
+

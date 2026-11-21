@@ -80,3 +80,4 @@ class AnimationAssetLibrary:
             a for a in self._assets.values()
             if q in a.name.lower() or any(q in t.lower() for t in a.tags)
         ]
+

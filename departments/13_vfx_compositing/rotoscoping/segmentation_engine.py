@@ -79,3 +79,4 @@ class SegmentationEngine:
             prev_mask, map_x, map_y, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=0
         )
         return np.clip(warped_mask, 0.0, 1.0)
+

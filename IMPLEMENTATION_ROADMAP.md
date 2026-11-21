@@ -172,11 +172,21 @@ flowchart LR
   - Department 15: AI Generation Router (Runway, Kling, Wan2.1, Flux.1)
   - Department 16: Color & Restoration (Real-ESRGAN, RIFE)
 
-### Phase 10 (Part 10): Professional Audio Post-Production & Finishing
+### Phase 10 (Part 10): Professional Audio Post-Production & Finishing [COMPLETED]
 - **Focus Departments:**
-  - Department 14: Audio Production (Spotify Pedalboard)
-  - Department 17: Subtitles & Dubbing (WhisperX / ElevenLabs / Kokoro)
-  - Department 18: Quality Control (Automated QC)
+  - Department 14: Audio Production (Spotify Pedalboard DSP, Multitrack Mixer, Dialogue Cleaner)
+  - Department 17: Subtitles & Dubbing (WhisperX / ElevenLabs / Kokoro-82M Voice Dubbing)
+- **Key Deliverables:**
+  - In-process 32-bit float multitrack mixing engine with Spotify Pedalboard JUCE C++ acceleration and pure SciPy fallbacks.
+  - 5-band parametric EQ (HPF, LPF, Peaking, High/Low Shelf, Notch) and dynamic compressor/limiter.
+  - ITU-R BS.1770-4 / EBU R128 gated loudness normalizer conforming to YouTube (-14 LUFS), Apple Podcasts (-16 LUFS), and European broadcast (-23 LUFS) with -1.0 dBTP ceiling.
+  - Dialogue restoration pipeline with 50/60 Hz mains hum attenuation, low rumble filtering, spectral subtraction denoising, and sibilance de-essing.
+  - Automated dialogue-triggered sidechain music ducking and room tone extraction with equal-power looping.
+  - Procedural sound design synthesizer for cinematic sub-impacts, swept whoosh transitions, exponential tension risers, and ambient drones.
+  - 4-stem source separation (`vocals`, `drums`, `bass`, `other`) using local harmonic-percussive STFT decomposition.
+  - Voice talent dubbing generator with biometric consent verification and emotional inflection.
+  - Bidirectional OpenTimelineIO timeline bridge and Director blueprint audio cue parser.
+- **Verification Gate:** 20/20 unit tests passing in `tests/unit/test_audio_production.py`; full studio test suite at 107/107 passing tests (100%); visual and audio artifacts generated in `test_artifacts/audio/`.
 
 ### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application
 - **Focus Departments:**

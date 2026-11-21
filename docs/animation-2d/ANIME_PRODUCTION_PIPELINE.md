@@ -54,3 +54,4 @@ Unlike Western 24 FPS full animation where every frame is unique (animating on 1
 1. **Flat Base Tone (`color_base`):** Solid base local color for skin, hair, and clothing.
 2. **Core Shadow Tone (`color_shadow`):** Tinted darker tone applied along anatomical creases and clothing folds according to scene light direction.
 3. **Rim / Specular Highlight (`color_highlight`):** Bright edge line along hair strands and shoulder edges simulating backlight radiance.
+

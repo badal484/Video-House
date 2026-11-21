@@ -54,3 +54,4 @@ The studio standardizes exclusively on **SIL Open Font License (OFL 1.1)** and *
 1. **Zero Copyleft Infection:** All code authored in Department 09 is permissively licensed.
 2. **Zero Commercial Licensing Liabilities:** Rejection of GSAP and isolation of Remotion prevents legal encumbrances on downstream commercial creators.
 3. **Typography Safety:** All default fonts bundled with presets carry verified SIL OFL 1.1 or Apache 2.0 licenses.
+

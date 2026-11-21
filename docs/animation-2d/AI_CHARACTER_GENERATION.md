@@ -47,3 +47,4 @@ Standard text-to-image models fail character consistency because diffusion cross
 1. **Decoupled Identity Conditioning:** Face structure is conditioned via facial feature embedding; costume color palette is conditioned via explicit RGB constraints; pose is conditioned via OpenPose skeletal coordinate maps.
 2. **Settei Constraint Masking:** Background generation is separated from character generation. Characters are generated against pure alpha or neutral flat backdrops before compositing.
 3. **Automated Drift Rejection:** If the candidate image violates the registered `CharacterIdentity` color palette by $\Delta E > 8.0$ or proportion by $> 5\%$, the candidate is automatically discarded without human intervention.
+

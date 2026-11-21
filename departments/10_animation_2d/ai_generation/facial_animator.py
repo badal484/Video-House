@@ -91,3 +91,4 @@ class FacialAnimator:
         elif offset == 3:
             return 0.7  # Opening
         return 1.0     # Normal open eyes
+

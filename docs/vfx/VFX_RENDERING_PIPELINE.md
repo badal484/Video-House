@@ -52,3 +52,4 @@ $$\alpha_{out} = \alpha_{fg} + \alpha_{bg} \times (1.0 - \alpha_{fg})$$
    - High-bitrate H.264 / H.265 Rec.709 MP4 for web and client review previews.
 2. **Intermediate Frame Caches:**
    - Saved in temporary storage with immediate cleanup upon job completion to preserve the ~41GB local disk quota.
+

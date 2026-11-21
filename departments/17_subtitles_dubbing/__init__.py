@@ -1,7 +1,16 @@
 """
-Department: 17_subtitles_dubbing
-WhisperX timed subtitles and ElevenLabs/Kokoro voice dubbing.
+Department 17: Subtitles & Dubbing Package
 """
-from .interface import ISubtitlesDubbing
+from .interface import (
+    ISubtitlesDubbing,
+    SubtitlesDubbingRequest,
+    SubtitlesDubbingResponse,
+)
+from .service import SubtitlesDubbingService
 
-__all__ = ["ISubtitlesDubbing"]
+__all__ = [
+    "ISubtitlesDubbing",
+    "SubtitlesDubbingRequest",
+    "SubtitlesDubbingResponse",
+    "SubtitlesDubbingService",
+]

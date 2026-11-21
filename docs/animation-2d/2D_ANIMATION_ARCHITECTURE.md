@@ -86,3 +86,4 @@ Department 10 (`10_animation_2d`) and Department 12 (`12_character_production`) 
 ### 2.6 Studio Pipeline Integration (`departments/10_animation_2d/integrations/`)
 - **`TimelineAnimationAdapter`:** Automatically inserts rendered character animations onto NLE timeline track `V1` (as full scenes) or track `V3` (as transparent overlays over live-action/motion graphics).
 - **`DirectorAnimationBridge`:** Ingests Department 04 `PlannedShot` records, translates storyboard sketches into keyframe tracks, and auto-schedules character animation tasks.
+

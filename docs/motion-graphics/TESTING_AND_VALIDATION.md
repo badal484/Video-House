@@ -51,3 +51,4 @@ All 10 required visual compositions were rendered and saved into `test_artifacts
 8. **`08_transparent_overlay.svg`:** Alpha overlay plate (`ALPHA OVERLAY`).
 9. **`09_voiceover_synced_explainer.svg`:** Word-cadence synchronized kinetic headline.
 10. **`10_multilingual_indic_devanagari.svg`:** Hindi Devanagari script (`नमस्ते भारत - सार्वभौमिक स्टूडियो`) demonstrating proper grapheme cluster ligature preservation.
+
