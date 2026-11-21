@@ -1781,3 +1781,175 @@ async def get_restoration_job_endpoint(job_id: str):
 async def list_restoration_jobs_endpoint(project_id: str):
     jobs = db.list_restoration_jobs(project_id)
     return {"project_id": project_id, "jobs": jobs}
+
+
+# ==============================================================================
+# Part 13 — Subtitles, Dubbing & Localization Endpoints
+# ==============================================================================
+
+class LocalizationTranscribeRequest(BaseModel):
+    project_id: UUID
+    media_asset_id: UUID
+    language: Optional[str] = None
+    simulated_text: Optional[str] = None
+
+class LocalizationTranslateRequest(BaseModel):
+    project_id: UUID
+    text: str
+    target_language: str
+    source_language: str = "en"
+
+class LocalizationSubtitlesRequest(BaseModel):
+    project_id: UUID
+    text: Optional[str] = None
+    format: str = "srt"
+    style_preset: str = "cinematic"
+    max_cpl: int = 42
+
+class LocalizationDubbingRequest(BaseModel):
+    project_id: UUID
+    target_language: str
+    text: Optional[str] = None
+    preserve_background: bool = True
+    voice_mappings: Optional[Dict[str, str]] = None
+
+class LocalizationLipSyncRequest(BaseModel):
+    project_id: UUID
+    video_asset_id: UUID
+    audio_asset_id: UUID
+    provider: str = "synclabs"
+
+class LocalizationQCAuditRequest(BaseModel):
+    project_id: UUID
+    measured_lufs: float = -23.0
+    true_peak_db: float = -1.2
+
+
+@app.post("/api/v1/localization/transcribe")
+async def transcribe_endpoint(req: LocalizationTranscribeRequest):
+    import departments
+    from departments.subtitles_dubbing.service import SubtitlesDubbingService
+    from departments.subtitles_dubbing.interface import SubtitlesDubbingRequest
+    svc = SubtitlesDubbingService()
+    resp = await svc.execute(SubtitlesDubbingRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "transcribe",
+            "media_asset_id": req.media_asset_id,
+            "language": req.language,
+            "simulated_text": req.simulated_text,
+        }
+    ))
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/localization/translate")
+async def translate_endpoint(req: LocalizationTranslateRequest):
+    import departments
+    from departments.subtitles_dubbing.translation.translator import MultilingualTranslator
+    from departments.subtitles_dubbing.core.models import TranscriptSegment
+    translator = MultilingualTranslator()
+    seg = TranscriptSegment(start_time=0.0, end_time=3.0, text=req.text)
+    record = translator.translate_segment(
+        segment=seg,
+        project_id=req.project_id,
+        target_language=req.target_language,
+        source_language=req.source_language,
+    )
+    return {"success": True, "translation": record.model_dump(mode="json")}
+
+
+@app.post("/api/v1/localization/subtitles")
+async def subtitles_endpoint(req: LocalizationSubtitlesRequest):
+    import departments
+    from departments.subtitles_dubbing.service import SubtitlesDubbingService
+    from departments.subtitles_dubbing.interface import SubtitlesDubbingRequest
+    svc = SubtitlesDubbingService()
+    resp = await svc.execute(SubtitlesDubbingRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "generate_subtitles",
+            "text": req.text,
+            "format": req.format,
+            "style_preset": req.style_preset,
+            "max_cpl": req.max_cpl,
+        }
+    ))
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/localization/dubbing", status_code=status.HTTP_202_ACCEPTED)
+async def dubbing_endpoint(req: LocalizationDubbingRequest):
+    import departments
+    from departments.subtitles_dubbing.service import SubtitlesDubbingService
+    from departments.subtitles_dubbing.interface import SubtitlesDubbingRequest
+    svc = SubtitlesDubbingService()
+    resp = await svc.execute(SubtitlesDubbingRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "orchestrate_dubbing",
+            "target_language": req.target_language,
+            "text": req.text,
+            "preserve_background": req.preserve_background,
+            "voice_mappings": req.voice_mappings,
+        }
+    ))
+    if resp.success and "dubbing_job" in resp.data:
+        job_data = resp.data["dubbing_job"]
+        db.save_localization_job(
+            job_id=job_data["job_id"],
+            project_id=str(req.project_id),
+            job_type="dubbing",
+            target_language=req.target_language,
+            status=job_data["status"],
+            output_asset_id=job_data.get("output_audio_asset_id"),
+            details=job_data,
+        )
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/localization/lipsync", status_code=status.HTTP_202_ACCEPTED)
+async def lipsync_endpoint(req: LocalizationLipSyncRequest):
+    import departments
+    from departments.subtitles_dubbing.service import SubtitlesDubbingService
+    from departments.subtitles_dubbing.interface import SubtitlesDubbingRequest
+    svc = SubtitlesDubbingService()
+    resp = await svc.execute(SubtitlesDubbingRequest(
+        project_id=req.project_id,
+        parameters={
+            "action": "process_lipsync",
+            "video_asset_id": req.video_asset_id,
+            "audio_asset_id": req.audio_asset_id,
+            "provider": req.provider,
+        }
+    ))
+    if resp.success and "lipsync_job" in resp.data:
+        job_data = resp.data["lipsync_job"]
+        db.save_localization_job(
+            job_id=job_data["job_id"],
+            project_id=str(req.project_id),
+            job_type="lipsync",
+            target_language="visual_sync",
+            status=job_data["status"],
+            output_asset_id=job_data.get("output_video_asset_id"),
+            details=job_data,
+        )
+    return resp.model_dump(mode="json")
+
+
+@app.post("/api/v1/localization/qc")
+async def localization_qc_endpoint(req: LocalizationQCAuditRequest):
+    import departments
+    from departments.subtitles_dubbing.qc.quality_controller import LocalizationQualityController
+    report = LocalizationQualityController.audit_audio_loudness(
+        project_id=req.project_id,
+        measured_lufs=req.measured_lufs,
+        true_peak_db=req.true_peak_db,
+    )
+    return {"success": True, "qc_report": report.model_dump(mode="json")}
+
+
+@app.get("/api/v1/localization/projects/{project_id}/jobs")
+async def list_localization_jobs_endpoint(project_id: str):
+    jobs = db.list_localization_jobs(project_id)
+    return {"project_id": project_id, "jobs": jobs}

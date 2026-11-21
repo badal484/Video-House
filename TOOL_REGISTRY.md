@@ -726,3 +726,94 @@ flowchart LR
 - **Role:** Applies ACES RRT, Reinhard extended, and Hable filmic tone curves for HDR to SDR tone mapping, highlight roll-off, and gamut compression.
 - **Invocation Method:** Python in-process (`ToneMapper`).
 - **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.hdr import ToneMapper; print('Tone Mapper OK')"`
+
+
+## 13. Subtitles, Dubbing & Localization Tools (Department 17)
+
+### 13.1 Multilingual ASR & Forced Alignment Engine
+- **Identifier:** `tool.localization.asr`
+- **Version:** `1.0.0`
+- **License:** BSD-3-Clause / MIT (WhisperX / Faster-Whisper)
+- **Role:** Executes multilingual speech recognition with sub-20ms word-level timestamp alignment, language identification, and Indic script / Hinglish code-switching detection.
+- **Invocation Method:** Python in-process (`ASREngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.transcription.asr_engine import ASREngine; print('ASR Engine OK')"`
+
+### 13.2 Canonical Transcript Manager
+- **Identifier:** `tool.localization.transcript_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Manages canonical subtitle and speech transcripts, non-destructive segment splitting, segment merging, manual review audit trails, and full-text keyword indexing.
+- **Invocation Method:** Python in-process (`TranscriptManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.transcription.transcript_manager import TranscriptManager; print('Transcript Manager OK')"`
+
+### 13.3 Glossary Terminology & Multilingual Translation Engine
+- **Identifier:** `tool.localization.translator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Orchestrates contextual dialogue translation preserving project-specific glossary terms, character register, and cultural nuances across global and Indic languages.
+- **Invocation Method:** Python in-process (`MultilingualTranslator`, `GlossaryManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.translation.translator import MultilingualTranslator; print('Translator OK')"`
+
+### 13.4 Dialogue Adaptation & Isochronic Pacing Adapter
+- **Identifier:** `tool.localization.dialogue_adapter`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Calculates syllable counts, speech rates (syllables/sec), and bounds target speech tempos strictly between $0.90\times$ and $1.15\times$ to avoid artificial unnatural voice speedups.
+- **Invocation Method:** Python in-process (`DialogueAdapter`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.adaptation.dialogue_adapter import DialogueAdapter; print('Dialogue Adapter OK')"`
+
+### 13.5 Broadcast Subtitle Generator & Exporter
+- **Identifier:** `tool.localization.subtitle_generator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Generates standardized subtitle cues (max 42 CPL Latin / 16 CJK, max 2 lines, min 0.833s duration, 2-frame gaps) and exports to SubRip (.srt), WebVTT (.vtt), ASS (.ass), and TTML (.ttml).
+- **Invocation Method:** Python in-process (`SubtitleGenerator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.subtitles.generator import SubtitleGenerator; print('Subtitle Generator OK')"`
+
+### 13.6 Kinetic Typography & Subtitle Styler
+- **Identifier:** `tool.localization.subtitle_styler`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Applies styling presets (Cinematic, Social Kinetic Reels, SDH High-Contrast) and generates word-by-word karaoke highlight cues (`{\k<duration>}`).
+- **Invocation Method:** Python in-process (`SubtitleStyler`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.subtitles.styler import SubtitleStyler; print('Subtitle Styler OK')"`
+
+### 13.7 Voice Casting & Biometric Consent Manager
+- **Identifier:** `tool.localization.voice_assigner`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Profiles speaker acoustics (gender, pitch, timbre), assigns target language voice talent profiles, and enforces legal biometric consent verification.
+- **Invocation Method:** Python in-process (`VoiceAssignmentManager`, `ConsentManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.voice.voice_assigner import VoiceAssignmentManager; print('Voice Assigner OK')"`
+
+### 13.8 Multilingual Dubbing Orchestrator
+- **Identifier:** `tool.localization.dubbing_orchestrator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Executes end-to-end voice dubbing: translates segments, adapts timing, synthesizes authorized voices, and preserves background music/ambience stems via Department 10 DSP.
+- **Invocation Method:** Python in-process (`DubbingOrchestrator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.dubbing.orchestrator import DubbingOrchestrator; print('Dubbing Orchestrator OK')"`
+
+### 13.9 Commercial Lip-Sync Orchestrator & License Firewall
+- **Identifier:** `tool.localization.lipsync`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 / Commercial SLA (Sync Labs, LatentSync, MuseTalk; strictly blocks CC-BY-NC Wav2Lip)
+- **Role:** Dispatches video and dubbed audio to commercial Sync Labs API or permissive open-source models, verifying license hygiene and blending facial ROIs.
+- **Invocation Method:** Python in-process (`LipSyncOrchestrator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.lipsync.lipsync_orchestrator import LipSyncOrchestrator; print('LipSync Orchestrator OK')"`
+
+### 13.10 Timecode Synchronization & Drift Elimination Manager
+- **Identifier:** `tool.localization.sync_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Enforces rational timecode arithmetic (`RationalTime`), detects clock drift between audio samples and video frames, and snaps subtitle cues to shot cut boundaries.
+- **Invocation Method:** Python in-process (`SyncManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.sync.sync_manager import SyncManager; print('Sync Manager OK')"`
+
+### 13.11 Localization Quality Control Auditor
+- **Identifier:** `tool.localization.qc`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Automates inspection of subtitle tracks (CPS reading speed, CPL line length, overlaps) and verifies dubbed dialogue loudness compliance (EBU R128).
+- **Invocation Method:** Python in-process (`LocalizationQualityController`).
+- **Health Check Command:** `python3 -c "import departments; from departments.subtitles_dubbing.qc.quality_controller import LocalizationQualityController; print('Localization QC OK')"`

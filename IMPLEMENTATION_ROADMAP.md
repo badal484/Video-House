@@ -226,6 +226,26 @@ flowchart LR
   - SQLite persistence (`color_grades`, `restoration_jobs`, `lut_records`) and 7 FastAPI REST endpoints.
 - **Verification Gate:** 24/24 unit tests passing in `tests/unit/test_color_restoration.py`; all 151 studio platform tests passing (100% pass rate in 10.120s); visual artifacts rendered in `test_artifacts/color_restoration/`.
 
+### Phase 13 (Part 13): Professional Subtitles, Multilingual Dubbing & Lip-Synchronization Studio [COMPLETED]
+- **Focus Departments:**
+  - Department 17: Subtitles, Captioning, Translation, Dubbing, Voice Localization & Lip-Synchronization
+- **Key Deliverables:**
+  - Multilingual ASR engine (`ASREngine`) with sub-20ms word timestamps, language identification, and Indic script / Hinglish code-switching detection.
+  - Canonical transcript data model (`Transcript`, `TranscriptSegment`, `WordTimestamp`, `SpeakerRecord`) with manual edit auditing, splitting, merging, and full-text search.
+  - Project glossary terminology preservation manager (`GlossaryManager`) with entity masking and unmasking.
+  - Context-aware multilingual translation engine (`MultilingualTranslator`) supporting global (EN, ES, FR, DE, JA) and Indic languages (HI, BN, TA, TE, etc.).
+  - Isochronic dialogue adapter (`DialogueAdapter`) with syllable estimation, pacing adjustment, and tempo scaling bounded in $[0.90, 1.15]$.
+  - Broadcast subtitle cue generator (`SubtitleGenerator`) enforcing max 42 CPL Latin / 16 CJK, max 2 lines, min 0.833s duration, 2-frame gaps, with multi-standard export to SRT, WebVTT, ASS/SSA, and TTML (XML).
+  - Kinetic typography and styling engine (`SubtitleStyler`) supporting Cinematic, Social Kinetic Reels, SDH High-Contrast, and word-by-word karaoke highlight cues (`{\k<duration>}`).
+  - Voice talent assignment manager (`VoiceAssignmentManager`) with acoustic profiling, gender matching, and biometric consent verification.
+  - Biometric consent manager (`ConsentManager`) enforcing legal authorizations, territorial checks, and expiration dates.
+  - Multilingual dubbing orchestrator (`DubbingOrchestrator`) executing end-to-end voice dubbing and background music/ambience preservation via Department 10 DSP ducking and convolution reverb.
+  - Lip-sync orchestrator (`LipSyncOrchestrator`) with Sync Labs commercial cloud API adapter, permissive open-source models (LatentSync, MuseTalk), and strict licensing firewall rejecting non-commercial checkpoints (Wav2Lip).
+  - Timecode synchronization manager (`SyncManager`) enforcing rational arithmetic (`RationalTime`), clock drift detection, and shot boundary cue snapping.
+  - Automated quality control auditor (`LocalizationQualityController`) for subtitle CPS reading speed, CPL line length, temporal overlaps, and EBU R128 audio loudness compliance.
+  - SQLite persistence (`localization_projects`, `biometric_consents`, `subtitle_tracks`) and 7 FastAPI REST endpoints in `api.py`.
+- **Verification Gate:** 28/28 unit tests passing in `tests/unit/test_subtitles_dubbing.py`; all 179 studio platform tests passing (100% pass rate in 11.687s); subtitle artifacts exported in `test_artifacts/localization/`.
+
 
 
 ### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application

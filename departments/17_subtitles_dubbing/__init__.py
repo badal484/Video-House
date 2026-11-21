@@ -1,5 +1,5 @@
 """
-Department 17: Subtitles & Dubbing Package
+Department 17: Subtitles, Dubbing & Localization Package
 """
 from .interface import (
     ISubtitlesDubbing,
@@ -7,10 +7,40 @@ from .interface import (
     SubtitlesDubbingResponse,
 )
 from .service import SubtitlesDubbingService
+from .core.models import (
+    WordTimestamp,
+    TranscriptSegment,
+    SpeakerRecord,
+    Transcript,
+    GlossaryTerm,
+    TranslationRecord,
+    SubtitleCue,
+    SubtitleTrack,
+    DubbingJob,
+    LipSyncJob,
+    BiometricConsentRecord,
+    LocalizationQCReport,
+    SubtitleFormat,
+    SubtitleStylePreset,
+)
 
 __all__ = [
     "ISubtitlesDubbing",
     "SubtitlesDubbingRequest",
     "SubtitlesDubbingResponse",
     "SubtitlesDubbingService",
+    "WordTimestamp",
+    "TranscriptSegment",
+    "SpeakerRecord",
+    "Transcript",
+    "GlossaryTerm",
+    "TranslationRecord",
+    "SubtitleCue",
+    "SubtitleTrack",
+    "DubbingJob",
+    "LipSyncJob",
+    "BiometricConsentRecord",
+    "LocalizationQCReport",
+    "SubtitleFormat",
+    "SubtitleStylePreset",
 ]

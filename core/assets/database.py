@@ -2365,6 +2365,46 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_color_grades_project ON color_grades(project_id);
             CREATE INDEX IF NOT EXISTS idx_restoration_jobs_project ON restoration_jobs(project_id);
             CREATE INDEX IF NOT EXISTS idx_lut_records_project ON lut_records(project_id);
+
+            -- Part 13 Localization & Subtitles Tables
+            CREATE TABLE IF NOT EXISTS localization_projects (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                job_type TEXT NOT NULL,
+                target_language TEXT NOT NULL,
+                status TEXT NOT NULL,
+                output_asset_id TEXT,
+                details_json TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS biometric_consents (
+                consent_id TEXT PRIMARY KEY,
+                talent_name TEXT NOT NULL,
+                voice_profile_id TEXT NOT NULL UNIQUE,
+                is_authorized INTEGER DEFAULT 1,
+                purposes_json TEXT NOT NULL,
+                territories_json TEXT NOT NULL,
+                expiry_date TEXT,
+                signature_hash TEXT NOT NULL,
+                created_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS subtitle_tracks (
+                track_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                language_code TEXT NOT NULL,
+                format TEXT NOT NULL,
+                style_preset TEXT NOT NULL,
+                cues_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_loc_projects ON localization_projects(project_id);
+            CREATE INDEX IF NOT EXISTS idx_sub_tracks ON subtitle_tracks(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -16897,3 +16937,174 @@ class AssetDatabase:
                 }
                 for r in rows
             ]
+
+    # --- Part 13 Localization CRUD Methods ---
+
+    def save_localization_job(
+        self,
+        job_id: str,
+        project_id: str,
+        job_type: str,
+        target_language: str,
+        status: str,
+        output_asset_id: Optional[str] = None,
+        details: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Saves or updates a localization job (dubbing, lip-sync, or subtitle job)."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO localization_projects (
+                    job_id, project_id, job_type, target_language, status, output_asset_id, details_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(job_id),
+                str(project_id),
+                job_type,
+                target_language,
+                status,
+                str(output_asset_id) if output_asset_id else None,
+                json.dumps(details or {}),
+                now,
+                now,
+            ))
+
+    def get_localization_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a localization job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM localization_projects WHERE job_id = ?",
+                (str(job_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "job_type": row["job_type"],
+                "target_language": row["target_language"],
+                "status": row["status"],
+                "output_asset_id": row["output_asset_id"],
+                "details": json.loads(row["details_json"] or "{}"),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_localization_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all localization jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM localization_projects WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "job_type": r["job_type"],
+                    "target_language": r["target_language"],
+                    "status": r["status"],
+                    "output_asset_id": r["output_asset_id"],
+                    "details": json.loads(r["details_json"] or "{}"),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_biometric_consent(
+        self,
+        consent_id: str,
+        talent_name: str,
+        voice_profile_id: str,
+        is_authorized: bool = True,
+        purposes: Optional[List[str]] = None,
+        territories: Optional[List[str]] = None,
+        expiry_date: Optional[str] = None,
+        signature_hash: str = "sig_sha256_verified",
+    ) -> None:
+        """Saves a biometric consent record."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO biometric_consents (
+                    consent_id, talent_name, voice_profile_id, is_authorized,
+                    purposes_json, territories_json, expiry_date, signature_hash, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(consent_id),
+                talent_name,
+                voice_profile_id,
+                1 if is_authorized else 0,
+                json.dumps(purposes or ["commercial", "dubbing"]),
+                json.dumps(territories or ["worldwide"]),
+                expiry_date,
+                signature_hash,
+                now,
+            ))
+
+    def get_biometric_consent(self, voice_profile_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves biometric consent by voice profile ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM biometric_consents WHERE voice_profile_id = ?",
+                (voice_profile_id,)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "consent_id": row["consent_id"],
+                "talent_name": row["talent_name"],
+                "voice_profile_id": row["voice_profile_id"],
+                "is_authorized": bool(row["is_authorized"]),
+                "purposes": json.loads(row["purposes_json"]),
+                "territories": json.loads(row["territories_json"]),
+                "expiry_date": row["expiry_date"],
+                "signature_hash": row["signature_hash"],
+                "created_at": row["created_at"],
+            }
+
+    def save_subtitle_track(
+        self,
+        track_id: str,
+        project_id: str,
+        language_code: str,
+        format: str,
+        style_preset: str,
+        cues: List[Dict[str, Any]],
+    ) -> None:
+        """Saves a subtitle track."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO subtitle_tracks (
+                    track_id, project_id, language_code, format, style_preset, cues_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(track_id),
+                str(project_id),
+                language_code,
+                format,
+                style_preset,
+                json.dumps(cues),
+                now,
+            ))
+
+    def get_subtitle_track(self, track_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a subtitle track by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM subtitle_tracks WHERE track_id = ?",
+                (str(track_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "track_id": row["track_id"],
+                "project_id": row["project_id"],
+                "language_code": row["language_code"],
+                "format": row["format"],
+                "style_preset": row["style_preset"],
+                "cues": json.loads(row["cues_json"]),
+                "created_at": row["created_at"],
+            }

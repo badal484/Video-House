@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tt xmlns="http://www.w3.org/ns/ttml" xml:lang="en">
+  <head>
+    <styling>
+      <style xml:id="defaultStyle" fontStyle="normal" fontFamily="sansSerif" fontSize="100%"/>
+    </styling>
+    <layout>
+      <region xml:id="bottom" origin="10% 80%" extent="80% 15%"/>
+    </layout>
+  </head>
+  <body>
+    <div region="bottom">
+      <p begin="00:00:00.500" end="00:00:03.800">Universal AI Video Production Studio<br/>multilingual localization engine online.</p>
+      <p begin="00:00:04.200" end="00:00:07.500">Precision word-level timestamps and<br/>rational timecode alignment verified.</p>
+    </div>
+  </body>
+</tt>

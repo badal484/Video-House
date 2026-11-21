@@ -856,3 +856,52 @@ Chosen option: **Non-Destructive Versioned Derivation with Provenance Tagging (`
 - Source files remain byte-for-byte read-only.
 - Graded and restored deliverables are registered as independent derivatives in the Central Asset Database (`derivatives` table).
 - AI upscaled frames are explicitly labeled with `detail_reconstruction_type: "AI_SYNTHESIZED_TEXTURE"` and `is_authentic_ground_truth: False`.
+
+
+---
+
+## ADR-049: Strict Commercial License Firewall for Neural Lip-Sync Models
+
+### Status
+Accepted & Implemented (Part 13)
+
+### Context & Problem Statement
+Early research models for audiovisual lip-synchronization (such as original Wav2Lip, Wav2Lip+HQ, and SadTalker) are distributed under restrictive non-commercial licenses (Creative Commons Attribution-NonCommercial 4.0 International / CC-BY-NC 4.0). Under Studio Prime Directive #6, non-commercial licenses cannot be incorporated into the commercial studio engine. Furthermore, running local 4K video diffusion models on Apple Silicon (16GB RAM) risks memory exhaustion.
+
+### Decision Outcome
+Chosen option: **Multi-Tier Lip-Sync Architecture with Strict License Firewall (`LipSyncOrchestrator`)**.
+- **Tier 1 (Broadcast Master 4K):** Commercial Cloud API adapter (`SyncLabsAdapter`) ensuring broadcast-quality fidelity and enterprise commercial indemnification.
+- **Tier 2 (Permissive Open-Weights):** Permissive Apache 2.0 / MIT models (`LatentSync`, `MuseTalk`) isolated behind remote worker boundaries.
+- **License Firewall:** `LocalLipSyncAdapter` validates requested model names prior to execution and raises `NonCommercialModelRejectedException` if `wav2lip` or `sadtalker` is targeted.
+
+---
+
+## ADR-050: Zero-Drift Subtitle Timing via Rational Time and Shot Boundary Alignment
+
+### Status
+Accepted & Implemented (Part 13)
+
+### Context & Problem Statement
+In digital video production, audio sample rates (48,000 Hz) and fractional video frame rates (23.976 fps, 29.97 fps) diverge over long-form timelines if calculated using floating-point seconds, accumulating seconds of clock drift. Furthermore, subtitles that flash across hard shot cuts distract viewers and cause cognitive dissonance.
+
+### Decision Outcome
+Chosen option: **Rational Timecode Arithmetic (`RationalTime`) and Shot Cut Snapping (`SyncManager`)**.
+- Every cue and audio event maintains exact rational frame offsets: $\text{Time} = \text{RationalTime}(\text{value}, \text{rate})$.
+- The `SyncManager` calculates clock drift $\Delta t = |(\text{samples} / \text{rate}) - (\text{frames} / \text{fps})| \times 1000$ and triggers sub-sample phase correction if drift exceeds 0.5 video frames.
+- Subtitle cues within a 3-frame tolerance (0.125s) of shot cut points automatically snap to the cut boundary, eliminating flash frame cuts.
+
+---
+
+## ADR-051: Biometric Voice Consent and Provenance Governance Architecture
+
+### Status
+Accepted & Implemented (Part 13)
+
+### Context & Problem Statement
+Neural voice cloning presents severe legal and ethical risks regarding identity theft, deepfakes, and copyright infringement under emerging global AI regulations (EU AI Act, California AB 2602). An enterprise studio cannot synthesize or clone voices without verifiable authorization.
+
+### Decision Outcome
+Chosen option: **Cryptographically Validated Biometric Consent Records (`ConsentManager`)**.
+- Every voice profile requires a registered `BiometricConsentRecord` specifying talent name, permitted purposes, approved territories, and expiration date.
+- The `VoiceAssignmentManager` and `DubbingOrchestrator` query the consent manager prior to executing any synthesis; missing or expired authorizations raise `ConsentAuthorizationException`.
+- Exported dubbed audio and video deliverables embed provenance metadata and synthetic media markers.
