@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  studio-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: universal_video_studio
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - STUDIO_ENV=production
+      - LOG_LEVEL=INFO
+      - DATABASE_PATH=/app/projects/studio_asset_registry.db
+      - STORAGE_ROOT=/app/assets
+      - TEMP_DIR=/app/temp
+      - CORS_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+    volumes:
+      - studio_assets:/app/assets
+      - studio_projects:/app/projects
+      - studio_logs:/app/logs
+      - studio_backups:/app/backups
+      - studio_temp:/app/temp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/system/telemetry"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 4096M
+        reservations:
+          cpus: "1.0"
+          memory: 1024M
+
+volumes:
+  studio_assets:
+    driver: local
+  studio_projects:
+    driver: local
+  studio_logs:
+    driver: local
+  studio_backups:
+    driver: local
+  studio_temp:
+    driver: local

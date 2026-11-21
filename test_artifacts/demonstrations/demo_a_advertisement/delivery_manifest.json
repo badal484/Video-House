@@ -1,0 +1,65 @@
+{
+  "delivery_id": "deliv_16e09c49767a",
+  "project_id": "44fae2c9-9c96-41d3-9519-7295c82377a9",
+  "created_at": "2026-11-21T17:22:44.532289+00:00",
+  "engine_version": "1.0.0",
+  "files": [
+    {
+      "file_type": "MASTER_VIDEO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/apex_quantum_drive_30s_master.mp4",
+      "file_size_bytes": 158073,
+      "sha256_checksum": "76533492455f9fe5b0411b198ccde24b1f29766314654647cad0980b273175b8"
+    },
+    {
+      "file_type": "AUDIO_STEM_DIALOGUE",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/voiceover_dialogue.wav",
+      "file_size_bytes": 1440102,
+      "sha256_checksum": "40969df211d17ee0ad7ba53b67c125653707fb68913041eaec686579ebb4d4d6"
+    },
+    {
+      "file_type": "AUDIO_STEM_SFX",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/whoosh_sfx.wav",
+      "file_size_bytes": 576102,
+      "sha256_checksum": "cb124960b5206896efd00f9d60774d430c55d3b33b18649d7c952004459752d4"
+    },
+    {
+      "file_type": "SUBTITLES_SRT",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/captions_en.srt",
+      "file_size_bytes": 142,
+      "sha256_checksum": "760fca6d4f32f5ddb3adad450df2a4e1b3d70eeb3c6f877bc16bae3ed8f8ca80"
+    },
+    {
+      "file_type": "BRAND_LOGO_PNG",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/apex_logo.png",
+      "file_size_bytes": 1038,
+      "sha256_checksum": "a26213db95d80a3ca2924d68242fabbdd57fd8ef1ed21d02f6a4a42c2487760b"
+    },
+    {
+      "file_type": "EDITORIAL_TIMELINE_OTIO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/advertisement_timeline.otio",
+      "file_size_bytes": 1113,
+      "sha256_checksum": "323de851c039b1f384531212a48c465f64365e3a6229e5fd2ed7d20240527a93"
+    },
+    {
+      "file_type": "QUALITY_CONTROL_REPORT",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_a_advertisement/qc_report.json",
+      "file_size_bytes": 593,
+      "sha256_checksum": "f8b8eabf24bf95aa1572b10390799731260e17520582400cade3a72a3b51ba27"
+    }
+  ],
+  "technical_specs": {
+    "resolution": "1920x1080",
+    "frame_rate": 24.0,
+    "container": "MP4",
+    "video_codec": "H.264",
+    "audio_loudness": "-14.0 LUFS"
+  },
+  "qc_summary": {
+    "verdict": "PASSED",
+    "report_id": "27137196-be3b-4b5e-9ca3-7fc36c1b812c"
+  },
+  "provenance": {
+    "generated_by": "Universal AI Video Production Studio (Dept 19)",
+    "c2pa_metadata": "c2pa_provenance_manifest_v1"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "Apex_Quantum_Drive_Commercial_Master",
+  "global_start_time": {
+    "value": 0,
+    "rate": 24.0
+  },
+  "tracks": [
+    {
+      "name": "V1_Hero_Footage",
+      "kind": "Video",
+      "clips": [
+        {
+          "name": "Hero_Shot_A01",
+          "duration": {
+            "value": 120,
+            "rate": 24.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "V2_Motion_Graphics",
+      "kind": "Video",
+      "clips": [
+        {
+          "name": "Apex_Logo_Overlay",
+          "duration": {
+            "value": 48,
+            "rate": 24.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "A1_Voiceover",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Voiceover_Dialogue",
+          "duration": {
+            "value": 120,
+            "rate": 24.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "A2_Sound_Effects",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Whoosh_SFX",
+          "duration": {
+            "value": 48,
+            "rate": 24.0
+          }
+        }
+      ]
+    }
+  ]
+}

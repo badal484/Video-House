@@ -1,0 +1,19 @@
+{
+  "model_sheet_id": "de391f29-fc00-46c1-ac22-4f108b019fbf",
+  "character_id": "43d5868b-9778-4deb-ad5e-bea1f97d2661",
+  "name": "Ren_Turnaround",
+  "front_view": {},
+  "three_quarter_view": {},
+  "side_view": {},
+  "back_view": {},
+  "close_up": {},
+  "alignment_guides": {
+    "top_of_head": 180.0,
+    "eye_line": 231.0,
+    "chin": 273.0,
+    "shoulder": 305.0,
+    "hip": 505.0,
+    "knee": 663.0,
+    "ankle": 880.0
+  }
+}

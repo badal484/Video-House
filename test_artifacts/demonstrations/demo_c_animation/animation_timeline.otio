@@ -1,0 +1,41 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "Ren_Animation_Assembly",
+  "global_start_time": {
+    "value": 0,
+    "rate": 24.0
+  },
+  "tracks": [
+    {
+      "name": "V1_Background",
+      "kind": "Video",
+      "clips": []
+    },
+    {
+      "name": "V2_Character_Ren_ProRes4444",
+      "kind": "Video",
+      "clips": [
+        {
+          "name": "Ren_Turnaround_Rig",
+          "duration": {
+            "value": 72,
+            "rate": 24.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "A1_Dialogue_Track",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Ren_Battlecry",
+          "duration": {
+            "value": 72,
+            "rate": 24.0
+          }
+        }
+      ]
+    }
+  ]
+}

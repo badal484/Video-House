@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <g id="lyr_78d0e23b4da4" opacity="0.900" transform="translate(960.00, 540.00) rotate(90.00)">
+  <g id="lyr_f79951d424c3" opacity="0.900" transform="translate(960.00, 540.00) rotate(90.00)">
     <circle cx="0" cy="0" r="120" fill="none" stroke="#00F0FF" stroke-width="2.0" stroke-dasharray="16, 8" />
     <circle cx="0" cy="0" r="60" fill="none" stroke="#39FF14" stroke-width="2.0" />
     <line x1="-140" y1="0" x2="-80" y2="0" stroke="#00F0FF" stroke-width="2" />

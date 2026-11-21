@@ -1,0 +1,36 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "Neo_Tokyo_Dusk_Master_Timeline",
+  "global_start_time": {
+    "value": 0,
+    "rate": 23.976
+  },
+  "tracks": [
+    {
+      "name": "V1_Cinematic_Footage",
+      "kind": "Video",
+      "clips": [
+        {
+          "name": "Raw_Take_01_Graded",
+          "duration": {
+            "value": 96,
+            "rate": 23.976
+          }
+        }
+      ]
+    },
+    {
+      "name": "A1_Atmospheric_Score",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Synthwave_Score",
+          "duration": {
+            "value": 96,
+            "rate": 23.976
+          }
+        }
+      ]
+    }
+  ]
+}

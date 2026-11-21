@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "message": "Media Quality Control audit completed.",
+  "data": {
+    "qc_report": {
+      "report_id": "27137196-be3b-4b5e-9ca3-7fc36c1b812c",
+      "project_id": "44fae2c9-9c96-41d3-9519-7295c82377a9",
+      "asset_id": "955d12b9-6190-4b22-bcd3-df64083c2d7a",
+      "render_job_id": null,
+      "passed": true,
+      "total_issues": 0,
+      "critical_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "info_count": 0,
+      "defects": [],
+      "metrics": {},
+      "inspected_at": "2026-11-21T17:22:44.515106Z"
+    }
+  },
+  "produced_asset_ids": []
+}

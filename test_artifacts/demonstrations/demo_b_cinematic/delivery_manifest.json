@@ -1,0 +1,52 @@
+{
+  "delivery_id": "deliv_cf6d33547326",
+  "project_id": "ffd20ec9-1408-4ea6-a0b2-ec7a97914c8e",
+  "created_at": "2026-11-21T17:22:47.812866+00:00",
+  "engine_version": "1.0.0",
+  "files": [
+    {
+      "file_type": "MASTER_VIDEO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_b_cinematic/neo_tokyo_dusk_master.mp4",
+      "file_size_bytes": 299390,
+      "sha256_checksum": "f5cfa1df4032a064d323744ea311d7b8c3b052b9111f70e61e333d0cabb54ca8"
+    },
+    {
+      "file_type": "AUDIO_STEM_SCORE",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_b_cinematic/synthwave_atmospheric_score.wav",
+      "file_size_bytes": 1152102,
+      "sha256_checksum": "27fff342ff74f06f83780c933ba75880d0ed3eb0586e121b07c949f1a267cd69"
+    },
+    {
+      "file_type": "MULTIMODAL_REFERENCE_PROFILE",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_b_cinematic/multimodal_reference_profile.json",
+      "file_size_bytes": 1191,
+      "sha256_checksum": "cad3300c1ab3d960439e03c3a8b2528c7ece0fda4e3736a79c7452e9f7dd7965"
+    },
+    {
+      "file_type": "EDITORIAL_TIMELINE_OTIO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_b_cinematic/cinematic_timeline.otio",
+      "file_size_bytes": 651,
+      "sha256_checksum": "51f4cb72a1004170f84307626bc4eee3267c75c872a6864e87955b3b7b8baee0"
+    },
+    {
+      "file_type": "QUALITY_CONTROL_REPORT",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_b_cinematic/qc_report.json",
+      "file_size_bytes": 1042,
+      "sha256_checksum": "61d7f1e3f06e183c088dc544e19fcebb839c67790579e156f0e918cae410b3df"
+    }
+  ],
+  "technical_specs": {
+    "resolution": "2048x858 (2.39:1 CinemaScope)",
+    "frame_rate": 23.976,
+    "color_gamut": "ACEScg / DCI-P3",
+    "codec": "H.264 High Profile / Level 5.1"
+  },
+  "qc_summary": {
+    "verdict": "PASSED",
+    "report_id": "b1e1c084-e8c0-47e3-870f-c61c0bd79318"
+  },
+  "provenance": {
+    "generated_by": "Universal AI Video Production Studio (Dept 19)",
+    "c2pa_metadata": "c2pa_provenance_manifest_v1"
+  }
+}

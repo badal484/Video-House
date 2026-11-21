@@ -270,3 +270,32 @@ Every department interacts with a unified project schema:
   "mograph_ref": "mograph/titles.ts"
 }
 ```
+
+---
+
+## 5. Production Integration & Deployment Architecture
+
+### 5.1 Modular Monolith & In-Process Bus
+The studio runtime is implemented as an asynchronous modular monolith. The 22 departments communicate across strict boundary interfaces (`interface.py`) and a shared asynchronous job queue. Dynamic module resolution in `departments/__init__.py` maps human-readable department names to numbered filesystem folders.
+
+### 5.2 Security Defenses & Guardrails (`core/security.py`)
+1. **Path Traversal Defenses:** `MediaSecurityPolicy.resolve_safe_path()` prevents directory traversal escapes outside registered project storage boundaries.
+2. **Token Bucket Rate Limiting:** `RateLimiter` enforces admission ceilings on compute-heavy render and ingestion endpoints with sub-microsecond latency (`0.414 µs`).
+3. **Secret Scrubber:** `SecretScrubber` redacts Bearer tokens, API keys (OpenAI `sk-`, Google `AIzaSy`), and sensitive dictionary keys from logs and telemetry payloads.
+4. **SSRF Guard:** `SSRFGuard` rejects loopback (`127.0.0.1`), RFC 1918 private IPs, AWS/cloud metadata addresses (`169.254.169.254`), and non-HTTP schemes.
+
+### 5.3 Observability & Telemetry (`core/observability/`)
+- Structured JSON logging (`StudioLogger`) with correlation IDs (`correlation_id`).
+- Prometheus metrics exporter (`MetricsRegistry`) at `/metrics` tracking HTTP request duration, queue depth, transcode throughput, and hardware memory consumption.
+
+### 5.4 Disaster Recovery & Backup (`scripts/backup_restore.py`)
+- `StudioBackupManager` produces self-contained `.tar.gz` archives with SHA-256 verification.
+- Supports non-destructive restore into SQLite databases and physical asset stores.
+- Automated unindexed orphaned file scanner.
+
+### 5.5 Hardware Optimization
+- Primary workstation: Apple MacBook Pro (Apple M4, 16GB RAM).
+- Apple VideoToolbox hardware ASIC acceleration (`h264_videotoolbox`, `hevc_videotoolbox`, `prores_videotoolbox`).
+- Low-memory footprint (< 50MB RSS baseline).
+- Heavy CUDA tasks (Wan2.1 video diffusion, SAM 2.1 4K tracking) route to cloud/remote GPU workers.
+

@@ -1,0 +1,58 @@
+{
+  "delivery_id": "deliv_b18cc7c38173",
+  "project_id": "cb7b666d-1a81-46cc-84a5-122f33bfe9a7",
+  "created_at": "2026-11-21T17:22:49.352759+00:00",
+  "engine_version": "1.0.0",
+  "files": [
+    {
+      "file_type": "MASTER_VIDEO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/ren_character_animation_master.mov",
+      "file_size_bytes": 2509530,
+      "sha256_checksum": "151c65eee43253f16ab77515768ddfeeceeee45d7583167ee3b93798697bda6d"
+    },
+    {
+      "file_type": "SETTEI_TURNAROUND_MODEL_SHEET",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/ren_settei_turnaround_sheet.json",
+      "file_size_bytes": 428,
+      "sha256_checksum": "dc43fa4dc40d441fc7503ade7578537d969bac0a6bca47d1c4ce718674daeb0b"
+    },
+    {
+      "file_type": "AUDIO_STEM_DIALOGUE",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/ren_dialogue_battlecry.wav",
+      "file_size_bytes": 864102,
+      "sha256_checksum": "1c915ba0d71b12eb5fca284f4191d8e7525903637ca464db3d23b8fb312019ee"
+    },
+    {
+      "file_type": "LIP_SYNC_VISEME_CUES",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/lip_sync_visemes.json",
+      "file_size_bytes": 547,
+      "sha256_checksum": "d0e331f4b67eb6a03d9c2d305b4809eddcb7b729c3b48506be3563e242d4af16"
+    },
+    {
+      "file_type": "EDITORIAL_TIMELINE_OTIO",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/animation_timeline.otio",
+      "file_size_bytes": 724,
+      "sha256_checksum": "037ef0bf0288b39cba6c2177ce24109993eb4359bea43dacba67eca3b2aa98a0"
+    },
+    {
+      "file_type": "QUALITY_CONTROL_REPORT",
+      "file_path": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/demo_c_animation/qc_report.json",
+      "file_size_bytes": 593,
+      "sha256_checksum": "47d6f681c0f9815e6f2b89fadb1cc0451fd9d774ca0bbb91f15a321621df99fe"
+    }
+  ],
+  "technical_specs": {
+    "resolution": "1920x1080",
+    "frame_rate": 24.0,
+    "codec": "Apple ProRes 4444 (RGBA with Alpha)",
+    "color_space": "Rec.709 Linear"
+  },
+  "qc_summary": {
+    "verdict": "PASSED",
+    "report_id": "e1e59b3e-7857-4a3f-8d37-bea964c09f8c"
+  },
+  "provenance": {
+    "generated_by": "Universal AI Video Production Studio (Dept 19)",
+    "c2pa_metadata": "c2pa_provenance_manifest_v1"
+  }
+}

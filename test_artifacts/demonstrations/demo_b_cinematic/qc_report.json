@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "message": "Media Quality Control audit completed.",
+  "data": {
+    "qc_report": {
+      "report_id": "b1e1c084-e8c0-47e3-870f-c61c0bd79318",
+      "project_id": "ffd20ec9-1408-4ea6-a0b2-ec7a97914c8e",
+      "asset_id": "c1ae0823-b860-4866-88c6-2a5a7ad330f6",
+      "render_job_id": null,
+      "passed": false,
+      "total_issues": 1,
+      "critical_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "info_count": 0,
+      "defects": [
+        {
+          "defect_id": "ed1017d8-2ff4-45db-b342-2302b3b4e2a9",
+          "check_type": "VIDEO",
+          "severity": "CRITICAL",
+          "rule_name": "resolution_conformance",
+          "description": "Video resolution (2048x858) does not match required (1920x1080).",
+          "timestamp_sec": null,
+          "frame_number": null,
+          "remediation_suggestion": "Re-encode with scale filter: scale=1920:1080."
+        }
+      ],
+      "metrics": {},
+      "inspected_at": "2026-11-21T17:22:47.807694Z"
+    }
+  },
+  "produced_asset_ids": []
+}

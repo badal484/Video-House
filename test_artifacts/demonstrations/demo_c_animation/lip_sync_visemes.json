@@ -1,0 +1,32 @@
+{
+  "character": "Ren",
+  "audio_file": "ren_dialogue_battlecry.wav",
+  "sample_rate": 48000,
+  "viseme_track": [
+    {
+      "time_sec": 0.0,
+      "viseme": "closed",
+      "intensity": 0.0
+    },
+    {
+      "time_sec": 0.5,
+      "viseme": "A_open",
+      "intensity": 0.95
+    },
+    {
+      "time_sec": 1.2,
+      "viseme": "E_wide",
+      "intensity": 0.85
+    },
+    {
+      "time_sec": 1.8,
+      "viseme": "O_round",
+      "intensity": 0.75
+    },
+    {
+      "time_sec": 2.5,
+      "viseme": "closed",
+      "intensity": 1.0
+    }
+  ]
+}

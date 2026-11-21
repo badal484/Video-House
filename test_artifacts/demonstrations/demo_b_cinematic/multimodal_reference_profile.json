@@ -1,0 +1,49 @@
+{
+  "profile_id": "5eec7ea4-81a9-4793-af05-b77ef9c04d7a",
+  "asset_id": "5427f422-6a29-432a-b8c7-b708c326d01f",
+  "name": "Cyberpunk_Ref.mp4",
+  "created_at": "2026-11-21T17:22:46.860385+00:00",
+  "visual_style": {
+    "dominant_palette_hex": [
+      "#f704fb",
+      "#00fe00",
+      "#fefe00",
+      "#067fee",
+      "#f00100"
+    ],
+    "average_luminance": 126.5,
+    "contrast_ratio": 65.32,
+    "lighting_classification": "BALANCED",
+    "primary_camera_motion": "TILT_DOWN"
+  },
+  "editing_style": {
+    "average_shot_length_sec": 4.0,
+    "cut_frequency_cpm": 15.0,
+    "pacing": "MODERATE",
+    "total_shots_count": 1,
+    "total_duration_sec": 4.0
+  },
+  "motion_graphics": {
+    "text_overlay_frequency": "LOW",
+    "typography_style": "CLEAN_MINIMAL",
+    "lower_third_usage": "SPARSE"
+  },
+  "audio_style": {
+    "music_presence": true,
+    "estimated_bpm": 120.0,
+    "audio_pacing": "SYNCHRONIZED"
+  },
+  "narrative_arc": {
+    "opening_hook_sec": 0.8,
+    "climax_estimate_sec": 3.0,
+    "structure": "3_ACT_MICRO"
+  },
+  "key_moments": [
+    {
+      "shot_number": 1,
+      "timestamp": "00:00:00:00",
+      "duration_seconds": 4.0,
+      "shot_scale": "UNKNOWN"
+    }
+  ]
+}

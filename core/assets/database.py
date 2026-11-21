@@ -2511,7 +2511,10 @@ class AssetDatabase:
             if not existing:
                 return None
             new_name = name if name is not None else existing["name"]
-            new_settings = settings if settings is not None else existing["settings"]
+            merged_settings = dict(existing.get("settings", {}))
+            if settings is not None:
+                merged_settings.update(settings)
+            new_settings = merged_settings
             conn.execute(
                 "UPDATE projects SET name = ?, settings_json = ?, updated_at = ? WHERE project_id = ?",
                 (new_name, json.dumps(new_settings), now, str(project_id))

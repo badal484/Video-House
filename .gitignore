@@ -79,10 +79,16 @@ temp/*
 !temp/.gitkeep
 logs/*
 !logs/.gitkeep
-assets/raw/*
-!assets/raw/.gitkeep
-assets/cache/*
-!assets/cache/.gitkeep
+assets/*
+!assets/.gitkeep
+storage/*
+!storage/.gitkeep
+
+# Explicitly allow demonstration test deliverables
+!test_artifacts/demonstrations/**
+!test_artifacts/demonstrations/**/*.mp4
+!test_artifacts/demonstrations/**/*.mov
+!test_artifacts/demonstrations/**/*.wav
 
 # OS generated
 .DS_Store
