@@ -658,3 +658,71 @@ flowchart LR
 - **Health Check Command:** `python3 -c "import departments; from departments.ai_generation.approval import ApprovalGateManager; print('Approval Gate OK')"`
 
 
+
+---
+
+## 12. Department 16: Color Grading, Color Management, Video Restoration & Enhancement
+
+### 12.1 Color Management Layer (ACES & OCIO Engine)
+- **Identifier:** `tool.color.manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Handles color space detection, Input Device Transforms (IDTs), ACEScg/ACEScct scene-referred linear working space, and Output Device Transforms (ODTs) conforming to Rec.709, Display P3, and Rec.2100 PQ/HLG.
+- **Invocation Method:** Python in-process (`ColorManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.color_management import ColorManager; print('Color Manager OK')"`
+
+### 12.2 Scene-Referred Node-Based Grading Engine
+- **Identifier:** `tool.color.grading_engine`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Executes non-destructive grading node graphs with primary corrections (EV stops, Lift/Gamma/Gain, Offset, Contrast, Kelvin temp), monotonic PCHIP spline curves, 3D HSL qualifiers, power windows, and film emulation looks.
+- **Invocation Method:** Python in-process (`GradingEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.grading import GradingEngine; print('Grading Engine OK')"`
+
+### 12.3 3D/1D LUT Management & Interpolation Engine
+- **Identifier:** `tool.color.lut_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Parses, validates, and applies 1D and 3D `.cube` files with trilinear lattice interpolation and strict color space compatibility validation.
+- **Invocation Method:** Python in-process (`LUTManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.lut import LUTManager; print('LUT Manager OK')"`
+
+### 12.4 AI Colorist Assistant
+- **Identifier:** `tool.color.ai_colorist`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Analyzes image frames for exposure distribution, dynamic range, clipping, white balance casts, and vectorscope skin-tone alignment, producing explainable grading graphs.
+- **Invocation Method:** Python in-process (`AIColoristAssistant`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.ai_colorist import AIColoristAssistant; print('AI Colorist OK')"`
+
+### 12.5 Reference Look & Shot Matcher
+- **Identifier:** `tool.color.reference_matcher`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Executes Reinhard $L\alpha\beta$ color transfer, histogram CDF matching, and skin-tone preserving shot-to-shot look harmonization across multi-camera setups.
+- **Invocation Method:** Python in-process (`ReferenceMatcher`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.matching import ReferenceMatcher; print('Reference Matcher OK')"`
+
+### 12.6 Modular Video Restoration Pipeline
+- **Identifier:** `tool.restoration.pipeline`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Orchestrates non-destructive restoration filters: YADIF deinterlacing, moving-average deflickering, affine camera stabilization, Telea scratch inpainting, bilateral denoising, and Wiener deblurring.
+- **Invocation Method:** Python in-process (`RestorationPipeline`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.restoration import RestorationPipeline; print('Restoration Pipeline OK')"`
+
+### 12.7 Super-Resolution & Neural Upscaling Engine
+- **Identifier:** `tool.restoration.upscaler`
+- **Version:** `1.0.0`
+- **License:** BSD-3-Clause / Apache 2.0
+- **Role:** Performs $2\times$ and $4\times$ spatial upscaling with Real-ESRGAN, Anime-ESRGAN line-art preservation, Lanczos-4 baseline, spatial tiling, and explicit AI detail synthesis labeling.
+- **Invocation Method:** Python in-process (`SuperResolutionEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.super_resolution import SuperResolutionEngine; print('Upscaler OK')"`
+
+### 12.8 HDR/SDR Tone Mapping Engine
+- **Identifier:** `tool.color.tone_mapper`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Applies ACES RRT, Reinhard extended, and Hable filmic tone curves for HDR to SDR tone mapping, highlight roll-off, and gamut compression.
+- **Invocation Method:** Python in-process (`ToneMapper`).
+- **Health Check Command:** `python3 -c "import departments; from departments.color_restoration.hdr import ToneMapper; print('Tone Mapper OK')"`

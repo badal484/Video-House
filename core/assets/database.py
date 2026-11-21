@@ -2321,6 +2321,50 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_char_ident_project ON character_identities(project_id);
             CREATE INDEX IF NOT EXISTS idx_anim_proj_project ON animation_projects(project_id);
             CREATE INDEX IF NOT EXISTS idx_anim_asset_cat ON animation_assets(category);
+
+            -- Part 12 Color Grading & Restoration Tables
+            CREATE TABLE IF NOT EXISTS color_grades (
+                grade_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                clip_id TEXT,
+                name TEXT NOT NULL,
+                graph_json TEXT NOT NULL,
+                version INTEGER DEFAULT 1,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS restoration_jobs (
+                job_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                asset_id TEXT NOT NULL,
+                status TEXT NOT NULL,
+                tasks_json TEXT NOT NULL,
+                qc_metrics_json TEXT,
+                review_state TEXT DEFAULT 'UNCHECKED',
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS lut_records (
+                lut_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                format TEXT NOT NULL,
+                input_cs TEXT NOT NULL,
+                output_cs TEXT NOT NULL,
+                is_3d INTEGER DEFAULT 1,
+                file_path TEXT,
+                metadata_json TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_color_grades_project ON color_grades(project_id);
+            CREATE INDEX IF NOT EXISTS idx_restoration_jobs_project ON restoration_jobs(project_id);
+            CREATE INDEX IF NOT EXISTS idx_lut_records_project ON lut_records(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -16698,3 +16742,158 @@ class AssetDatabase:
             ]
 
 
+
+    # -----------------------------------------------------------------------
+    # Part 12: Color Grading & Video Restoration Methods
+    # -----------------------------------------------------------------------
+
+    def save_color_grade(self, grade: Any) -> None:
+        """Persists or updates a GradingGraph."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(grade, "model_dump"):
+            data = grade.model_dump(mode="json")
+        elif isinstance(grade, dict):
+            data = grade
+        else:
+            data = getattr(grade, "__dict__", {})
+
+        grade_id = str(data.get("id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        clip_id = str(data.get("clip_id", "")) if data.get("clip_id") else None
+        name = str(data.get("name", "Master Grade"))
+        version = int(data.get("version", 1))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO color_grades (
+                    grade_id, project_id, clip_id, name, graph_json, version, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                grade_id,
+                project_id,
+                clip_id,
+                name,
+                json.dumps(data),
+                version,
+                now,
+                now,
+            ))
+
+    def get_color_grade(self, grade_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a color grading graph by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM color_grades WHERE grade_id = ?",
+                (str(grade_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "grade_id": row["grade_id"],
+                "project_id": row["project_id"],
+                "clip_id": row["clip_id"],
+                "name": row["name"],
+                "graph": json.loads(row["graph_json"]),
+                "version": row["version"],
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_color_grades(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all color grades for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM color_grades WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "grade_id": r["grade_id"],
+                    "project_id": r["project_id"],
+                    "clip_id": r["clip_id"],
+                    "name": r["name"],
+                    "graph": json.loads(r["graph_json"]),
+                    "version": r["version"],
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_restoration_job(self, job: Any) -> None:
+        """Persists or updates a RestorationJob."""
+        now = datetime.now(timezone.utc).isoformat()
+        if hasattr(job, "model_dump"):
+            data = job.model_dump(mode="json")
+        elif isinstance(job, dict):
+            data = job
+        else:
+            data = getattr(job, "__dict__", {})
+
+        job_id = str(data.get("id", uuid4()))
+        project_id = str(data.get("project_id", "default_project"))
+        asset_id = str(data.get("asset_id", uuid4()))
+        status = str(data.get("status", "PENDING"))
+        review_state = str(data.get("review_state", "UNCHECKED"))
+        tasks_json = json.dumps([t.value if hasattr(t, "value") else str(t) for t in data.get("restoration_types", [])])
+        qc_json = json.dumps(data.get("qc_metrics", {}))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO restoration_jobs (
+                    job_id, project_id, asset_id, status, tasks_json, qc_metrics_json, review_state, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                job_id,
+                project_id,
+                asset_id,
+                status,
+                tasks_json,
+                qc_json,
+                review_state,
+                now,
+                now,
+            ))
+
+    def get_restoration_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a restoration job by ID."""
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM restoration_jobs WHERE job_id = ?",
+                (str(job_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "job_id": row["job_id"],
+                "project_id": row["project_id"],
+                "asset_id": row["asset_id"],
+                "status": row["status"],
+                "tasks": json.loads(row["tasks_json"]),
+                "qc_metrics": json.loads(row["qc_metrics_json"] or "{}"),
+                "review_state": row["review_state"],
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_restoration_jobs(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all restoration jobs for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM restoration_jobs WHERE project_id = ? ORDER BY updated_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "job_id": r["job_id"],
+                    "project_id": r["project_id"],
+                    "asset_id": r["asset_id"],
+                    "status": r["status"],
+                    "tasks": json.loads(r["tasks_json"]),
+                    "qc_metrics": json.loads(r["qc_metrics_json"] or "{}"),
+                    "review_state": r["review_state"],
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]

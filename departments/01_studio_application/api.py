@@ -1663,3 +1663,121 @@ async def list_generation_providers_endpoint():
     return {"providers": [p.model_dump() for p in reg.list_providers()]}
 
 
+
+
+# ---------------------------------------------------------------------------
+# Department 16: Color Grading & Video Restoration Endpoints
+# ---------------------------------------------------------------------------
+
+class ColorGradeSaveRequest(BaseModel):
+    project_id: UUID
+    name: str = "Master Grade"
+    clip_id: Optional[str] = None
+    working_color_space: str = "acescg"
+    display_color_space: str = "rec709"
+    nodes: List[Dict[str, Any]] = Field(default_factory=list)
+    version: int = 1
+    description: Optional[str] = None
+
+
+class RecommendGradeRequest(BaseModel):
+    project_id: UUID
+    creative_intent: Optional[str] = None
+    mean_luminance: float = 0.18
+    color_temperature_k: float = 6500.0
+
+
+class RestorationJobSubmitRequest(BaseModel):
+    project_id: UUID
+    asset_id: UUID
+    restoration_types: List[str]
+    parameters: Dict[str, Any] = Field(default_factory=dict)
+
+
+@app.post("/api/v1/color/grades", status_code=status.HTTP_201_CREATED)
+async def save_color_grade_endpoint(req: ColorGradeSaveRequest):
+    import departments
+    from departments.color_restoration.core.models import GradingGraph, ColorSpace
+    graph = GradingGraph(
+        project_id=req.project_id,
+        name=req.name,
+        clip_id=req.clip_id,
+        working_color_space=ColorSpace(req.working_color_space),
+        display_color_space=ColorSpace(req.display_color_space),
+        version=req.version,
+        description=req.description
+    )
+    db.save_color_grade(graph)
+    return {"success": True, "grade_id": str(graph.id), "name": graph.name}
+
+
+@app.get("/api/v1/color/grades/{grade_id}")
+async def get_color_grade_endpoint(grade_id: str):
+    grade = db.get_color_grade(grade_id)
+    if not grade:
+        raise HTTPException(status_code=404, detail=f"Color grade '{grade_id}' not found.")
+    return {"grade": grade}
+
+
+@app.get("/api/v1/color/projects/{project_id}/grades")
+async def list_color_grades_endpoint(project_id: str):
+    grades = db.list_color_grades(project_id)
+    return {"project_id": project_id, "grades": grades}
+
+
+@app.post("/api/v1/color/recommend-grade")
+async def recommend_grade_endpoint(req: RecommendGradeRequest):
+    import departments
+    from departments.color_restoration.ai_colorist.ai_colorist_assistant import AIColoristAssistant
+    import numpy as np
+
+    # Synthetic sample frame matching requested luminance and temp
+    sample = np.ones((64, 64, 3), dtype=np.float32) * req.mean_luminance
+    if req.color_temperature_k < 5500.0:
+        sample[:, :, 0] *= 1.2 # warm
+    elif req.color_temperature_k > 7000.0:
+        sample[:, :, 2] *= 1.2 # cool
+
+    graph, explanations = AIColoristAssistant.recommend_grade(
+        sample, project_id=req.project_id, creative_intent=req.creative_intent
+    )
+    return {
+        "success": True,
+        "recommended_graph": graph.model_dump(mode="json"),
+        "explanations": explanations
+    }
+
+
+@app.post("/api/v1/restoration/jobs", status_code=status.HTTP_202_ACCEPTED)
+async def submit_restoration_job_endpoint(req: RestorationJobSubmitRequest):
+    import departments
+    from departments.color_restoration.core.models import RestorationJob, RestorationType
+    types = [RestorationType(t) for t in req.restoration_types]
+    job = RestorationJob(
+        project_id=req.project_id,
+        asset_id=req.asset_id,
+        restoration_types=types,
+        parameters=req.parameters,
+        status="PROCESSING"
+    )
+    db.save_restoration_job(job)
+    return {
+        "success": True,
+        "job_id": str(job.id),
+        "status": job.status,
+        "restoration_types": [t.value for t in types]
+    }
+
+
+@app.get("/api/v1/restoration/jobs/{job_id}")
+async def get_restoration_job_endpoint(job_id: str):
+    job = db.get_restoration_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Restoration job '{job_id}' not found.")
+    return {"job": job}
+
+
+@app.get("/api/v1/restoration/projects/{project_id}/jobs")
+async def list_restoration_jobs_endpoint(project_id: str):
+    jobs = db.list_restoration_jobs(project_id)
+    return {"project_id": project_id, "jobs": jobs}

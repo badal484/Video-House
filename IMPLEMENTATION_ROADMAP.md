@@ -204,6 +204,29 @@ flowchart LR
   - SQLite persistence (`generation_jobs`, `generation_character_profiles`) and 7 FastAPI REST endpoints.
 - **Verification Gate:** 20/20 unit tests passing in `tests/unit/test_ai_generation.py`; all 127 studio platform tests passing (100% pass rate in 9.431s); test media generated in `test_artifacts/generation/`.
 
+### Phase 12 (Part 12): Professional Color Grading, Restoration & Enhancement Studio [COMPLETED]
+- **Focus Departments:**
+  - Department 16: Color Grading, Color Management, Video Restoration & Enhancement
+- **Key Deliverables:**
+  - Scene-referred color management foundation supporting ACES 1.3/2.0 (ACEScg, ACEScct, AP0, AP1) and OpenColorIO v2.3+ configuration discovery.
+  - Ingestion transforms and IDTs for ARRI LogC3/C4, Sony S-Log3, Canon C-Log3, RED Log3G10, Rec.709, sRGB, Display P3, and Rec.2020.
+  - Non-destructive DAG grading engine (`GradingEngine`) supporting photographic EV exposure, 3-way Lift/Gamma/Gain, Offset, Contrast with 18% pivot, Kelvin color temperature, Tint, Saturation, and Vibrance.
+  - Monotonic PCHIP cubic spline curves (Master RGB, R, G, B) and Hue-selective curves (Hue vs Hue, Hue vs Sat, Lum vs Sat).
+  - 3D HSL secondary qualifier with circular hue distance and soft tolerance feathering for skin-tone isolation.
+  - Geometric elliptical and rectangular power windows with feathering, rotation, and inversion.
+  - Standard cinematic creative look presets: Teal & Orange, Bleach Bypass, Kodak 2383 Film Stock, Monochrome High-Contrast, Warm Sunset, Cool Sci-Fi.
+  - Adobe/DaVinci 1D/3D `.cube` parser and vectorized trilinear 3D lattice interpolation with color-space compatibility validation.
+  - AI Colorist Assistant (`AIColoristAssistant`) performing objective analysis (exposure, clipping, gray world color casts, vectorscope skin-tone I-line) and generating explainable grading graphs.
+  - Reference look and shot matcher (`ReferenceMatcher`) using Reinhard $L\alpha\beta$ color transfer and skin-tone protection.
+  - Modular restoration pipeline (`RestorationPipeline`): YADIF deinterlacing, moving-average deflickering, affine optical flow camera stabilization, Telea fast marching scratch inpainting, bilateral denoising, and Wiener deblurring.
+  - Super-Resolution Engine (`SuperResolutionEngine`): 2x/4x spatial upscaling with Anime-ESRGAN line-art preservation, Lanczos-4 baseline, spatial tiling ($512\text{px}$), and AI detail synthesis labeling.
+  - HDR tone mapping (`ToneMapper`): ACES RRT, Reinhard extended, and Hable filmic curves for Rec.2100 PQ / HLG to SDR conversion with highlight roll-off.
+  - Quality control auditors (`ColorQualityController`, `RestorationQualityController`) for out-of-range pixels, HDR metadata, duration sync, and PSNR/SSIM metrics.
+  - Inter-department bridges: OpenTimelineIO clip integration, AI Director blueprint translation, Central Asset Database derivative registration, and AI-generated media normalization.
+  - SQLite persistence (`color_grades`, `restoration_jobs`, `lut_records`) and 7 FastAPI REST endpoints.
+- **Verification Gate:** 24/24 unit tests passing in `tests/unit/test_color_restoration.py`; all 151 studio platform tests passing (100% pass rate in 10.120s); visual artifacts rendered in `test_artifacts/color_restoration/`.
+
+
 
 ### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application
 - **Focus Departments:**

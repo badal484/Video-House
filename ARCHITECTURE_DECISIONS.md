@@ -808,3 +808,51 @@ Chosen option: **Multi-Tier Financial Firewall & Cryptographic Idempotency (`Gen
 - **Human Approval Gates:** Generation jobs exceeding $1.00 or utilizing unverified biometric voice clones are held in an `ApprovalTicket` queue awaiting human confirmation.
 
 
+
+---
+
+## ADR-046: Scene-Referred ACEScg/ACEScct Floating-Point Architecture with OCIO Compatibility
+
+### Status
+Accepted & Implemented (Part 12)
+
+### Context & Problem Statement
+Applying color grading, VFX compositing, or neural restoration directly on display-referred 8-bit integer pixels (e.g. standard Rec.709 sRGB) leads to severe quantization banding, clipped highlight blowout, and inconsistent behavior across camera sources (e.g. ARRI LogC3, Sony S-Log3, Canon C-Log3).
+
+### Decision Outcome
+Chosen option: **Scene-Referred ACEScg/ACEScct 32-bit Floating-Point Architecture (`ColorManager`)**.
+- All media is linearized upon ingestion via Input Device Transforms (IDTs) into ACEScg (AP1 primaries) or ACEScct (logarithmic toe for tactile grading).
+- Primary corrections (exposure, contrast, balance) operate in linear radiance before applying Output Device Transforms (ODTs) conforming to Rec.709, Display P3, or Rec.2100 HDR.
+- Seamless fallback to analytical NumPy vector math when native OpenColorIO C++ libraries or configs are absent.
+
+---
+
+## ADR-047: Strict Separation of Creative Color Grading from Technical Video Restoration
+
+### Status
+Accepted & Implemented (Part 12)
+
+### Context & Problem Statement
+Creative color grading (artistic look, mood, contrast, saturation) and technical video restoration (deinterlacing, denoising, scratch removal, deflicker, upscaling) have fundamentally different objectives, mathematical models, validation methods, and risks. Conflating them causes destructive processing and unpredictable regressions.
+
+### Decision Outcome
+Chosen option: **Decoupled Grading Node Graphs (`GradingGraph`) vs Modular Restoration Chains (`RestorationPipeline`)**.
+- Color grading operates via non-destructive parameter graphs without altering source pixels.
+- Restoration operates as staged, reversible signal-processing filters creating distinct master derivatives in the Central Asset Database.
+- Quality control metrics for restoration (PSNR, SSIM, duration sync) are separate from color gamut audits.
+
+---
+
+## ADR-048: Non-Destructive DAG-Based Grading & Reversible Inpainting Derivative Registration
+
+### Status
+Accepted & Implemented (Part 12)
+
+### Context & Problem Statement
+Overwriting camera raw files or intermediate renders prevents creative experimentation, breaks A/B comparisons, and destroys editorial integrity. Furthermore, neural upscaling can hallucinate synthetic details that must not be falsely claimed as authentic historical media.
+
+### Decision Outcome
+Chosen option: **Non-Destructive Versioned Derivation with Provenance Tagging (`AssetStoreBridge`)**.
+- Source files remain byte-for-byte read-only.
+- Graded and restored deliverables are registered as independent derivatives in the Central Asset Database (`derivatives` table).
+- AI upscaled frames are explicitly labeled with `detail_reconstruction_type: "AI_SYNTHESIZED_TEXTURE"` and `is_authentic_ground_truth: False`.
