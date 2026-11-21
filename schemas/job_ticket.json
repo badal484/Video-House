@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StudioJobTicketSchema",
+  "type": "object",
+  "required": [
+    "ticket_id",
+    "project_id",
+    "department_id",
+    "task_name",
+    "status",
+    "parameters",
+    "created_at"
+  ],
+  "properties": {
+    "ticket_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "department_id": {
+      "type": "string"
+    },
+    "task_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["QUEUED", "RUNNING", "PAUSED_FOR_APPROVAL", "COMPLETED", "FAILED", "CANCELLED"]
+    },
+    "priority": {
+      "type": "integer",
+      "default": 5
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "estimated_cost_cents": {
+      "type": "number",
+      "default": 0.0
+    },
+    "actual_cost_cents": {
+      "type": "number",
+      "default": 0.0
+    },
+    "result_asset_ids": {
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" }
+    },
+    "error_message": {
+      "type": ["string", "null"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

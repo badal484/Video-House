@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StudioProjectSchema",
+  "type": "object",
+  "required": [
+    "project_id",
+    "project_name",
+    "version",
+    "created_at",
+    "settings"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique immutable UUID for the production project."
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Human-readable project title."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of project state."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "settings": {
+      "type": "object",
+      "required": [
+        "timeline_rate_fps",
+        "canvas_width",
+        "canvas_height",
+        "color_space",
+        "audio_sample_rate"
+      ],
+      "properties": {
+        "timeline_rate_fps": {
+          "type": "number",
+          "enum": [23.976, 24.0, 25.0, 29.97, 30.0, 50.0, 59.94, 60.0]
+        },
+        "canvas_width": {
+          "type": "integer",
+          "minimum": 320
+        },
+        "canvas_height": {
+          "type": "integer",
+          "minimum": 240
+        },
+        "aspect_ratio": {
+          "type": "string",
+          "enum": ["16:9", "9:16", "1:1", "4:5", "2.39:1"]
+        },
+        "color_space": {
+          "type": "string",
+          "enum": ["ACEScg", "Rec.709", "sRGB", "Display P3", "Rec.2020"]
+        },
+        "audio_sample_rate": {
+          "type": "integer",
+          "enum": [44100, 48000, 96000]
+        },
+        "audio_channels": {
+          "type": "integer",
+          "enum": [1, 2, 6]
+        }
+      }
+    },
+    "timeline_ref": {
+      "type": "string",
+      "description": "Path to primary OpenTimelineIO file."
+    },
+    "scene_3d_ref": {
+      "type": "string",
+      "description": "Path to OpenUSD scene root."
+    },
+    "asset_manifest_ref": {
+      "type": "string",
+      "description": "Path to centralized asset manifest."
+    }
+  }
+}

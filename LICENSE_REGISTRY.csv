@@ -1,0 +1,40 @@
+Name,Category,CodeLicense,WeightsLicense,CommercialUsePermitted,RestrictionsAndAttribution,SourceURL,VerifiedDate
+FFmpeg,Media Processing,LGPL-2.1-or-later,N/A,YES,Dynamic linking required for LGPL; GPL if libx264 enabled,https://ffmpeg.org,2026-11-21
+FFprobe,Media Inspection,LGPL-2.1-or-later,N/A,YES,Standard binary execution,https://ffmpeg.org,2026-11-21
+OpenTimelineIO,Timeline Interchange,Apache-2.0,N/A,YES,ASWF standard notice preservation,https://github.com/AcademySoftwareFoundation/OpenTimelineIO,2026-11-21
+PySceneDetect,Shot Detection,BSD-3-Clause,N/A,YES,Standard BSD copyright notice,https://github.com/Breakthrough/PySceneDetect,2026-11-21
+Motion Canvas,Motion Graphics,MIT,N/A,YES,Standard MIT copyright notice,https://github.com/motion-canvas/motion-canvas,2026-11-21
+Blender Headless,3D & 2D Animation,GPL-3.0,N/A,YES,Must run in isolated subprocess to prevent host GPL contagion,https://www.blender.org,2026-11-21
+Spotify Pedalboard,Audio DSP,Apache-2.0,N/A,YES,Standard Apache 2.0 attribution,https://github.com/spotify/pedalboard,2026-11-21
+DeepFilterNet 3,Audio Enhancement,MIT/Apache-2.0,MIT/Apache-2.0,YES,Dual-license permissive,https://github.com/Rikorose/DeepFilterNet,2026-11-21
+LangGraph,Agent Orchestration,MIT,N/A,YES,Standard MIT copyright notice,https://github.com/langchain-ai/langgraph,2026-11-21
+Temporal.io SDK,Durable Execution,MIT,N/A,YES,Standard MIT license,https://github.com/temporalio/sdk-python,2026-11-21
+Model Context Protocol,Agent Tool Interface,MIT,N/A,YES,Anthropic open standard,https://github.com/modelcontextprotocol,2026-11-21
+Google Gemini 1.5/2.0 Pro,Video Understanding,Apache-2.0 (SDK),Commercial API,YES,Enterprise Vertex AI terms; customer data not used for training,https://cloud.google.com/vertex-ai,2026-11-21
+TwelveLabs Marengo/Pegasus,Video Search & Reasoning,Apache-2.0 (SDK),Commercial API,YES,Commercial SaaS subscription terms,https://twelvelabs.io,2026-11-21
+Qwen2.5-VL (7B/72B),Open Video LLM,Apache-2.0,Qwen Open License,YES,Free commercial use up to 100M monthly active users,https://github.com/QwenLM/Qwen2.5-VL,2026-11-21
+SAM 2.1 Video,Video Segmentation & Roto,Apache-2.0,Apache-2.0,YES,Meta FAIR open commercial release,https://github.com/facebookresearch/sam2,2026-11-21
+UniMatch,Optical Flow,Apache-2.0,Apache-2.0,YES,Permissive commercial use,https://github.com/autonomousvision/unimatch,2026-11-21
+CoTracker3,Point Tracking,Apache-2.0,Apache-2.0,YES,Meta AI open release,https://github.com/facebookresearch/co-tracker,2026-11-21
+Depth Anything v2,Metric Depth Estimation,Apache-2.0,Apache-2.0,YES,Permissive commercial use,https://github.com/DepthAnything/Depth-Anything-V2,2026-11-21
+faster-whisper,Speech Recognition,MIT,MIT (OpenAI weights),YES,Permissive commercial use,https://github.com/SYSTRAN/faster-whisper,2026-11-21
+WhisperX,Phoneme Alignment,BSD-2-Clause,MIT,YES,Permissive commercial use,https://github.com/m-bain/whisperX,2026-11-21
+PyAnnote Audio 3.1,Speaker Diarization,MIT,CC-BY-4.0,CONDITIONAL,Weights require attribution; commercial licensing negotiation for enterprise products,https://github.com/pyannote/pyannote-audio,2026-11-21
+Demucs v4,Stem Separation,MIT,MIT,YES,Meta AI open commercial release,https://github.com/facebookresearch/demucs,2026-11-21
+Kokoro-82M,Text-to-Speech,Apache-2.0,Apache-2.0,YES,Permissive commercial use,https://huggingface.co/hexgrad/Kokoro-82M,2026-11-21
+ElevenLabs,Voice & Dubbing,Proprietary SDK,Commercial API,YES,Enterprise SaaS subscription,https://elevenlabs.io,2026-11-21
+Wan2.1,Video Diffusion Generation,Apache-2.0,Apache-2.0,YES,Alibaba open commercial release,https://github.com/Wan-Video/Wan2.1,2026-11-21
+Runway Gen-3 Alpha,Video Generation,Proprietary SDK,Commercial API,YES,Commercial rights included on paid tiers,https://runwayml.com,2026-11-21
+Kling 1.5/2.0,Video Generation,Proprietary SDK,Commercial API,YES,Commercial rights included on paid tiers,https://klingai.com,2026-11-21
+Flux.1-schnell,Image Generation,Apache-2.0,Apache-2.0,YES,Black Forest Labs open commercial release,https://github.com/black-forest-labs/flux,2026-11-21
+MusicGen Large,Music Generation,MIT,MIT,YES,Meta AI open commercial release,https://github.com/facebookresearch/audiocraft,2026-11-21
+AudioLDM 2,Sound Effects Generation,MIT,MIT,YES,Permissive commercial use,https://github.com/haoheliu/AudioLDM2,2026-11-21
+TripoSR,3D Mesh Generation,MIT,MIT,YES,Permissive commercial use,https://github.com/VAST-AI-Research/TripoSR,2026-11-21
+Hunyuan3D 2.0,3D Mesh Generation,Tencent Open Source,Tencent Open Source,YES,Commercial use permitted under Tencent license,https://github.com/Tencent/Hunyuan3D-2,2026-11-21
+OpenUSD,3D Scene Interchange,Apache-2.0,N/A,YES,ASWF standard notice preservation,https://openusd.org,2026-11-21
+Real-ESRGAN,Super-Resolution,BSD-3-Clause,BSD-3-Clause,YES,Permissive commercial use,https://github.com/xinntao/Real-ESRGAN,2026-11-21
+ProPainter,Video Inpainting,CC-BY-NC-4.0,CC-BY-NC-4.0,NO,Non-commercial research only; replaced by E2FGVI for commercial deployment,https://github.com/sczhou/ProPainter,2026-11-21
+E2FGVI,Video Inpainting,Apache-2.0,Apache-2.0,YES,Permissive commercial inpainting engine,https://github.com/MCG-NKU/E2FGVI,2026-11-21
+Ultralytics YOLOv11,Object Detection,AGPL-3.0,AGPL-3.0,CONDITIONAL,Requires costly enterprise license or forces open-source release of studio,https://github.com/ultralytics/ultralytics,2026-11-21
+Grounding DINO,Open-Vocabulary Detection,Apache-2.0,Apache-2.0,YES,Permissive commercial alternative to YOLO,https://github.com/IDEA-Research/GroundingDINO,2026-11-21
+Remotion,Programmatic Video,Company License,N/A,CONDITIONAL,Requires $250-$500/mo commercial license if revenue > $10k/mo,https://www.remotion.dev,2026-11-21

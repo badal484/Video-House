@@ -1,0 +1,38 @@
+# Studio Global Configuration
+studio:
+  name: "Universal AI Video Production Studio"
+  version: "1.0.0"
+  environment: "development"
+  log_level: "INFO"
+
+hardware:
+  platform: "darwin_arm64"
+  apple_silicon_tier: "M4"
+  cpu_cores: 10
+  memory_limit_mb: 12288       # Reserve 4GB for OS/Display out of 16GB
+  mps_enabled: true
+  concurrency_workers: 6
+
+conformance_defaults:
+  timeline_fps: 24.0
+  resolution:
+    width: 3840
+    height: 2160
+    aspect_ratio: "16:9"
+  proxy_resolution:
+    width: 1280
+    height: 720
+  color_space: "ACEScg"
+  audio:
+    sample_rate: 48000
+    channels: 2
+    target_lufs: -14.0        # Web / Streaming target (-23.0 for EBU R128 Broadcast)
+    true_peak_dbfs: -1.0
+
+paths:
+  projects_dir: "projects"
+  assets_dir: "assets"
+  cache_dir: "temp/cache"
+  logs_dir: "logs"
+  output_dir: "output"
+  temp_dir: "temp"

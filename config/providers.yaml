@@ -1,0 +1,28 @@
+# Multimodal AI Provider Routing Configuration
+providers:
+  video_understanding:
+    primary: "gemini"
+    secondary: "twelvelabs"
+    fallback_sovereign: "qwen_vl_local"
+    
+  video_generation:
+    cinematic: "runway"
+    physical_simulation: "kling"
+    open_weight_diffusion: "wan2_1"
+    
+  speech_recognition:
+    fast_local: "faster_whisper"
+    precision_alignment: "whisper_x"
+    
+  voice_synthesis:
+    scratch_preview: "kokoro_82m"
+    production_dub: "elevenlabs"
+    
+  music_generation:
+    royalty_free_local: "musicgen_large"
+    commercial_song: "suno_api"
+
+routing_rules:
+  prioritize_local_when_available: true
+  max_cloud_monthly_spend_usd: 150.00
+  require_approval_above_usd: 5.00

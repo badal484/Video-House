@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DepartmentContractSchema",
+  "type": "object",
+  "required": [
+    "department_code",
+    "department_name",
+    "version",
+    "accepted_input_types",
+    "produced_output_types",
+    "execution_tiers"
+  ],
+  "properties": {
+    "department_code": {
+      "type": "string",
+      "pattern": "^\\d{2}_[a-z_]+$"
+    },
+    "department_name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "accepted_input_types": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "produced_output_types": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "execution_tiers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["LOCAL_CPU", "LOCAL_MPS", "REMOTE_GPU", "CLOUD_API"]
+      }
+    },
+    "supported_tools": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

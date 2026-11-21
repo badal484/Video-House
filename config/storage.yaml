@@ -1,0 +1,14 @@
+# Storage and Cache Policy Configuration
+storage:
+  backend: "local_filesystem"
+  root_path: "assets"
+  
+database:
+  type: "sqlite"
+  database_url: "sqlite:///projects/studio_asset_registry.db"
+
+cache_policy:
+  max_local_cache_gigabytes: 15.0     # Strictly guarded for 41GB available disk
+  eviction_strategy: "LRU"            # Least Recently Used eviction
+  auto_cleanup_temp_on_exit: true
+  proxy_keep_days: 7
