@@ -1,7 +1,34 @@
 """
-Department: 05_multimodal_providers
-Unified provider adapters for Gemini 2.0/1.5, TwelveLabs, Qwen2.5-VL.
+Department 05: Multimodal Providers
+Unified provider adapters for Google Gemini, TwelveLabs, Qwen2.5-VL,
+and Local On-Device processing.
 """
-from .interface import IMultimodalProviders
+from .interface import (
+    IEmbeddingProvider,
+    IMultimodalProviders,
+    ISpeechProvider,
+    IVideoUnderstandingProvider,
+    MultimodalProvidersRequest,
+    MultimodalProvidersResponse,
+    ProviderRoutingMode,
+    VideoAnalysisResult
+)
+from .gemini_provider import GeminiProvider
+from .twelvelabs_provider import TwelveLabsProvider
+from .local_provider import LocalMultimodalProvider
+from .router import MultimodalProviderRouter
 
-__all__ = ["IMultimodalProviders"]
+__all__ = [
+    "IEmbeddingProvider",
+    "IMultimodalProviders",
+    "ISpeechProvider",
+    "IVideoUnderstandingProvider",
+    "MultimodalProvidersRequest",
+    "MultimodalProvidersResponse",
+    "ProviderRoutingMode",
+    "VideoAnalysisResult",
+    "GeminiProvider",
+    "TwelveLabsProvider",
+    "LocalMultimodalProvider",
+    "MultimodalProviderRouter"
+]

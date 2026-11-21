@@ -1,6 +1,7 @@
 """
-Database models and schema for Central Asset Registry.
+Database models and schema for Central Asset Registry and Multimodal Intelligence.
 Uses SQLite for zero-dependency, local-first transactional storage.
+Persists all video, audio, vision, motion, OCR, and reference observations.
 """
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -125,7 +126,7 @@ class DerivativeRecord:
 
 class AssetDatabase:
     """
-    SQLite Database Manager for Asset Registry.
+    SQLite Database Manager for Asset Registry and Multimodal Intelligence.
     Guarantees thread-safe connections, automatic closure, and atomic transactions.
     """
     def __init__(self, db_path: str = "projects/studio_asset_registry.db"):
@@ -247,12 +248,146 @@ class AssetDatabase:
                 FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE RESTRICT,
                 FOREIGN KEY (dependent_asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
             );
+
+            -- Part 03 Multimodal Intelligence Tables
+            CREATE TABLE IF NOT EXISTS shots (
+                shot_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                shot_number INTEGER NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                start_frame INTEGER NOT NULL,
+                end_frame INTEGER NOT NULL,
+                transition_in TEXT DEFAULT 'HARD_CUT',
+                transition_out TEXT DEFAULT 'HARD_CUT',
+                shot_scale TEXT DEFAULT 'UNKNOWN',
+                camera_angle TEXT DEFAULT 'UNKNOWN',
+                camera_motion TEXT DEFAULT 'STATIC',
+                summary TEXT DEFAULT '',
+                visual_features_json TEXT DEFAULT '{}',
+                confidence REAL DEFAULT 1.0,
+                evidence_json TEXT,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS scenes (
+                scene_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                scene_number INTEGER NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                narrative_summary TEXT DEFAULT '',
+                setting TEXT DEFAULT '',
+                lighting_style TEXT DEFAULT '',
+                dominant_mood TEXT DEFAULT '',
+                shot_ids_json TEXT DEFAULT '[]',
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS transcripts (
+                segment_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                speaker_id TEXT DEFAULT 'SPEAKER_00',
+                text TEXT NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                language TEXT DEFAULT 'en',
+                words_json TEXT DEFAULT '[]',
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS audio_events (
+                event_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                description TEXT NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                spectral_energy REAL,
+                confidence REAL DEFAULT 1.0,
+                evidence_json TEXT,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS music_segments (
+                segment_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                tempo_bpm REAL NOT NULL,
+                beat_timestamps_json TEXT DEFAULT '[]',
+                rhythmic_energy REAL DEFAULT 0.5,
+                mood TEXT DEFAULT 'neutral',
+                has_vocals INTEGER DEFAULT 0,
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS detected_objects (
+                detection_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                track_id INTEGER NOT NULL,
+                label TEXT NOT NULL,
+                timestamp_sec REAL NOT NULL,
+                frame_number INTEGER NOT NULL,
+                box_json TEXT NOT NULL,
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS camera_movements (
+                movement_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                start_sec REAL NOT NULL,
+                end_sec REAL NOT NULL,
+                motion_type TEXT NOT NULL,
+                magnitude REAL NOT NULL,
+                direction_json TEXT DEFAULT '[0.0, 0.0]',
+                confidence REAL DEFAULT 1.0,
+                evidence_json TEXT,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS ocr_observations (
+                ocr_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                text TEXT NOT NULL,
+                timestamp_sec REAL NOT NULL,
+                frame_number INTEGER NOT NULL,
+                box_json TEXT NOT NULL,
+                text_category TEXT DEFAULT 'GENERAL',
+                confidence REAL DEFAULT 1.0,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS reference_profiles (
+                profile_id TEXT PRIMARY KEY,
+                asset_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                visual_style_json TEXT NOT NULL,
+                editing_style_json TEXT NOT NULL,
+                mograph_json TEXT NOT NULL,
+                audio_style_json TEXT NOT NULL,
+                narrative_json TEXT NOT NULL,
+                key_moments_json TEXT NOT NULL,
+                FOREIGN KEY (asset_id) REFERENCES assets(asset_id) ON DELETE CASCADE
+            );
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
             CREATE INDEX IF NOT EXISTS idx_assets_media_type ON assets(media_type);
             CREATE INDEX IF NOT EXISTS idx_derivatives_asset ON derivatives(asset_id);
             CREATE INDEX IF NOT EXISTS idx_jobs_status ON processing_jobs(status);
+            CREATE INDEX IF NOT EXISTS idx_shots_asset ON shots(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_scenes_asset ON scenes(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_transcripts_asset ON transcripts(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_audio_events_asset ON audio_events(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_camera_motion_asset ON camera_movements(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_ocr_asset ON ocr_observations(asset_id);
+            CREATE INDEX IF NOT EXISTS idx_detected_objects_asset ON detected_objects(asset_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -532,3 +667,235 @@ class AssetDatabase:
             if not row:
                 return None
             return self.get_asset(UUID(row["asset_id"]))
+
+    # -------------------------------------------------------------
+    # Multimodal Intelligence Persistence Methods (Part 03)
+    # -------------------------------------------------------------
+    def save_shots(self, shots: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for s in shots:
+                evidence_json = json.dumps(s.evidence.raw_measurement) if s.evidence else "{}"
+                conn.execute("""
+                    INSERT OR REPLACE INTO shots (
+                        shot_id, asset_id, shot_number, start_sec, end_sec,
+                        start_frame, end_frame, transition_in, transition_out,
+                        shot_scale, camera_angle, camera_motion, summary,
+                        visual_features_json, confidence, evidence_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(s.shot_id), str(s.asset_id), s.shot_number,
+                    s.timecode_range.start_seconds, s.timecode_range.end_seconds,
+                    s.timecode_range.start_frame, s.timecode_range.end_frame,
+                    s.transition_in.value if hasattr(s.transition_in, "value") else str(s.transition_in),
+                    s.transition_out.value if hasattr(s.transition_out, "value") else str(s.transition_out),
+                    s.shot_scale.value if hasattr(s.shot_scale, "value") else str(s.shot_scale),
+                    s.camera_angle.value if hasattr(s.camera_angle, "value") else str(s.camera_angle),
+                    s.camera_motion.value if hasattr(s.camera_motion, "value") else str(s.camera_motion),
+                    s.summary, json.dumps(s.visual_features), s.confidence, evidence_json
+                ))
+
+    def get_shots(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM shots WHERE asset_id = ? ORDER BY shot_number ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_scenes(self, scenes: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for sc in scenes:
+                conn.execute("""
+                    INSERT OR REPLACE INTO scenes (
+                        scene_id, asset_id, scene_number, start_sec, end_sec,
+                        narrative_summary, setting, lighting_style, dominant_mood,
+                        shot_ids_json, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(sc.scene_id), str(sc.asset_id), sc.scene_number,
+                    sc.timecode_range.start_seconds, sc.timecode_range.end_seconds,
+                    sc.narrative_summary, sc.setting, sc.lighting_style, sc.dominant_mood,
+                    json.dumps([str(sid) for sid in sc.shot_ids]), sc.confidence
+                ))
+
+    def get_scenes(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM scenes WHERE asset_id = ? ORDER BY scene_number ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_transcripts(self, segments: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for t in segments:
+                words_data = [
+                    {"word": w.word, "start": w.start_seconds, "end": w.end_seconds, "confidence": w.confidence}
+                    for w in getattr(t, "words", [])
+                ]
+                conn.execute("""
+                    INSERT OR REPLACE INTO transcripts (
+                        segment_id, asset_id, speaker_id, text, start_sec, end_sec,
+                        language, words_json, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(t.segment_id), str(t.asset_id), t.speaker_id, t.text,
+                    t.timecode_range.start_seconds, t.timecode_range.end_seconds,
+                    t.language, json.dumps(words_data), t.confidence
+                ))
+
+    def get_transcripts(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM transcripts WHERE asset_id = ? ORDER BY start_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_audio_events(self, events: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for ev in events:
+                conn.execute("""
+                    INSERT OR REPLACE INTO audio_events (
+                        event_id, asset_id, event_type, description, start_sec, end_sec,
+                        spectral_energy, confidence, evidence_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(ev.event_id), str(ev.asset_id),
+                    ev.event_type.value if hasattr(ev.event_type, "value") else str(ev.event_type),
+                    ev.description, ev.timecode_range.start_seconds, ev.timecode_range.end_seconds,
+                    ev.spectral_energy, ev.confidence, "{}"
+                ))
+
+    def get_audio_events(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM audio_events WHERE asset_id = ? ORDER BY start_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_music_segments(self, segments: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for m in segments:
+                conn.execute("""
+                    INSERT OR REPLACE INTO music_segments (
+                        segment_id, asset_id, start_sec, end_sec, tempo_bpm,
+                        beat_timestamps_json, rhythmic_energy, mood, has_vocals, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(m.segment_id), str(m.asset_id),
+                    m.timecode_range.start_seconds, m.timecode_range.end_seconds,
+                    m.tempo_bpm, json.dumps(m.beat_timestamps), m.rhythmic_energy,
+                    m.mood, 1 if m.has_vocals else 0, m.confidence
+                ))
+
+    def get_music_segments(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM music_segments WHERE asset_id = ? ORDER BY start_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_detected_objects(self, detections: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for d in detections:
+                box_dict = {"x": d.box.x, "y": d.box.y, "w": d.box.width, "h": d.box.height}
+                conn.execute("""
+                    INSERT OR REPLACE INTO detected_objects (
+                        detection_id, asset_id, track_id, label, timestamp_sec,
+                        frame_number, box_json, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(d.detection_id), str(d.asset_id), d.track_id, d.label,
+                    d.timestamp_seconds, d.frame_number, json.dumps(box_dict), d.confidence
+                ))
+
+    def get_detected_objects(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM detected_objects WHERE asset_id = ? ORDER BY timestamp_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_camera_movements(self, movements: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for c in movements:
+                conn.execute("""
+                    INSERT OR REPLACE INTO camera_movements (
+                        movement_id, asset_id, start_sec, end_sec, motion_type,
+                        magnitude, direction_json, confidence, evidence_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(c.movement_id), str(c.asset_id),
+                    c.timecode_range.start_seconds, c.timecode_range.end_seconds,
+                    c.motion_type.value if hasattr(c.motion_type, "value") else str(c.motion_type),
+                    c.magnitude, json.dumps(c.direction_vector), c.confidence, "{}"
+                ))
+
+    def get_camera_movements(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM camera_movements WHERE asset_id = ? ORDER BY start_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_ocr_observations(self, ocr_list: List[Any]) -> None:
+        with self.get_connection() as conn:
+            for o in ocr_list:
+                box_dict = {"x": o.box.x, "y": o.box.y, "w": o.box.width, "h": o.box.height}
+                conn.execute("""
+                    INSERT OR REPLACE INTO ocr_observations (
+                        ocr_id, asset_id, text, timestamp_sec, frame_number,
+                        box_json, text_category, confidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    str(o.ocr_id), str(o.asset_id), o.text, o.timestamp_seconds,
+                    o.frame_number, json.dumps(box_dict), o.text_category, o.confidence
+                ))
+
+    def get_ocr_observations(self, asset_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM ocr_observations WHERE asset_id = ? ORDER BY timestamp_sec ASC",
+                (str(asset_id),)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def save_reference_profile(self, profile: Any) -> None:
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO reference_profiles (
+                    profile_id, asset_id, name, created_at, visual_style_json,
+                    editing_style_json, mograph_json, audio_style_json, narrative_json, key_moments_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(profile.profile_id), str(profile.asset_id), profile.name, profile.created_at,
+                json.dumps(profile.visual_style), json.dumps(profile.editing_style),
+                json.dumps(profile.motion_graphics), json.dumps(profile.audio_style),
+                json.dumps(profile.narrative_arc), json.dumps(profile.key_moments)
+            ))
+
+    def get_reference_profile(self, asset_id: UUID) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM reference_profiles WHERE asset_id = ?",
+                (str(asset_id),)
+            ).fetchone()
+            if not row:
+                return None
+            return {
+                "profile_id": UUID(row["profile_id"]),
+                "asset_id": UUID(row["asset_id"]),
+                "name": row["name"],
+                "created_at": row["created_at"],
+                "visual_style": json.loads(row["visual_style_json"]),
+                "editing_style": json.loads(row["editing_style_json"]),
+                "motion_graphics": json.loads(row["mograph_json"]),
+                "audio_style": json.loads(row["audio_style_json"]),
+                "narrative_arc": json.loads(row["narrative_json"]),
+                "key_moments": json.loads(row["key_moments_json"])
+            }

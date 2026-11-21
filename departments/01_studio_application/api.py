@@ -34,6 +34,12 @@ from core.assets.database import (
 from core.orchestration.job_queue import IngestionJobQueue
 from core.storage.storage_service import StorageService
 from departments.media_ingestion.service import MediaIngestionService
+from core.assets.intelligence_models import (
+    AnalysisProfile,
+    ReferenceProfile
+)
+from departments.media_intelligence.service import MediaIntelligenceService
+from departments.multimodal_providers.router import MultimodalProviderRouter
 
 # ---------------------------------------------------------
 # Lifecycle & Dependency Wiring
@@ -42,6 +48,8 @@ db = AssetDatabase("projects/studio_asset_registry.db")
 storage = StorageService("assets", "temp")
 job_queue = IngestionJobQueue(db, max_concurrent_workers=4)
 ingestion_service = MediaIngestionService(db, storage, job_queue)
+intelligence_service = MediaIntelligenceService(db)
+provider_router = MultimodalProviderRouter()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -84,6 +92,17 @@ class ImportLocalFileRequest(BaseModel):
     file_path: str = Field(..., description="Absolute or relative path to local media file")
     display_name: Optional[str] = None
     roles: List[AssetRole] = Field(default_factory=lambda: [AssetRole.SOURCE_FOOTAGE])
+
+class AnalyzeAssetRequest(BaseModel):
+    profile: AnalysisProfile = Field(default=AnalysisProfile.STANDARD)
+
+class CompareAssetsRequest(BaseModel):
+    source_asset_id: UUID
+    reference_asset_id: UUID
+
+class SearchMediaRequest(BaseModel):
+    query: str = Field(..., min_length=1)
+    limit: int = Field(default=20, ge=1, le=100)
 
 class UpdateAssetRequest(BaseModel):
     display_name: Optional[str] = None
@@ -374,3 +393,120 @@ async def get_derivative_file(derivative_id: UUID):
         if not path.exists():
             raise HTTPException(status_code=404, detail="Derivative file missing on disk.")
         return FileResponse(path, media_type=row["mime_type"])
+
+# ---------------------------------------------------------
+# Department 04 & 05: Multimodal Intelligence Endpoints
+# ---------------------------------------------------------
+
+@app.post("/api/v1/projects/{project_id}/assets/{asset_id}/analyze")
+async def analyze_asset(project_id: UUID, asset_id: UUID, req: AnalyzeAssetRequest):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    
+    result = await intelligence_service.analyze_asset(asset_id, profile=req.profile)
+    return {"success": True, "asset_id": str(asset_id), "manifest": result}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/analysis")
+async def get_asset_analysis(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    
+    shots = db.get_shots(asset_id)
+    transcripts = db.get_transcripts(asset_id)
+    audio_events = db.get_audio_events(asset_id)
+    camera_motions = db.get_camera_movements(asset_id)
+    ocr_obs = db.get_ocr_observations(asset_id)
+    ref_profile = db.get_reference_profile(asset_id)
+    
+    return {
+        "success": True,
+        "asset_id": str(asset_id),
+        "shots_count": len(shots),
+        "transcripts_count": len(transcripts),
+        "audio_events_count": len(audio_events),
+        "camera_movements_count": len(camera_motions),
+        "ocr_count": len(ocr_obs),
+        "has_reference_profile": ref_profile is not None
+    }
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/shots")
+async def get_asset_shots(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    shots = db.get_shots(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "shots": shots}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/transcript")
+async def get_asset_transcript(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    transcripts = db.get_transcripts(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "transcripts": transcripts}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/audio-events")
+async def get_asset_audio_events(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    events = db.get_audio_events(asset_id)
+    music = db.get_music_segments(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "audio_events": events, "music_segments": music}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/camera-motion")
+async def get_asset_camera_motion(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    motions = db.get_camera_movements(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "camera_motions": motions}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/ocr")
+async def get_asset_ocr(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    ocr_obs = db.get_ocr_observations(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "ocr_observations": ocr_obs}
+
+@app.post("/api/v1/projects/{project_id}/assets/{asset_id}/reference-profile")
+async def generate_reference_profile(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    
+    result = await intelligence_service.analyze_asset(asset_id, profile=AnalysisProfile.REFERENCE_ANALYSIS)
+    profile = db.get_reference_profile(asset_id)
+    return {"success": True, "asset_id": str(asset_id), "reference_profile": profile}
+
+@app.get("/api/v1/projects/{project_id}/assets/{asset_id}/reference-profile")
+async def get_reference_profile_endpoint(project_id: UUID, asset_id: UUID):
+    asset = db.get_asset(asset_id)
+    if not asset or asset.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Asset not found.")
+    profile = db.get_reference_profile(asset_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="Reference profile not found for this asset.")
+    return {"success": True, "asset_id": str(asset_id), "reference_profile": profile}
+
+@app.post("/api/v1/projects/{project_id}/compare")
+async def compare_assets_endpoint(project_id: UUID, req: CompareAssetsRequest):
+    src = db.get_asset(req.source_asset_id)
+    ref = db.get_asset(req.reference_asset_id)
+    if not src or src.project_id != project_id or not ref or ref.project_id != project_id:
+        raise HTTPException(status_code=404, detail="One or both assets not found in project.")
+    
+    try:
+        comparison = intelligence_service.compare_assets(req.source_asset_id, req.reference_asset_id)
+        return {"success": True, "comparison": comparison}
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/api/v1/projects/{project_id}/search")
+async def search_media_endpoint(project_id: UUID, req: SearchMediaRequest):
+    results = intelligence_service.search(project_id, req.query, limit=req.limit)
+    return {"success": True, "query": req.query, "results_count": len(results), "results": results}
+

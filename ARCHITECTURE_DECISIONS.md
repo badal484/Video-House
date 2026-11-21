@@ -124,3 +124,80 @@ Stitching media files into a global flat folder risks filename collisions and ac
 Chosen option: **Project-Partitioned Directory Structure with SHA-256 Deduplication**.
 - Originals are stored at `assets/{project_id}/originals/{asset_id}_{filename}`.
 - If a file with an identical SHA-256 hash is already registered in the project, the system reuses the existing asset record and attaches the new role without duplicating physical disk space.
+
+---
+
+## ADR-014: Multimodal Perceptual Tier: Local Deterministic DSP + Cloud Foundation Reasoning
+
+### Status
+Accepted & Implemented (Part 03)
+
+### Context & Problem Statement
+Video understanding requires both low-level physical precision (exact integer frame cut boundaries, audio transients, optical flow vectors) and high-level conceptual reasoning (narrative intent, emotional tone, editorial critique). Relying solely on cloud LLMs leads to imprecise timecodes and excessive API costs; relying solely on classical CV lacks high-level understanding.
+
+### Decision Outcome
+Chosen option: **Hybrid Perceptual Tier**.
+- Local Machine Engine (`departments/04_media_intelligence`): PySceneDetect cuts, Farneback optical flow, SciPy onset envelopes, and faster-whisper CTranslate2 int8 run 100% on Apple M4 CPU at zero API cost.
+- Cloud Foundation Engine (`departments/05_multimodal_providers`): Google Gemini 2.0 Flash and TwelveLabs Pegasus provide deep narrative synthesis and video embeddings via typed provider adapters with offline simulation fallbacks.
+
+---
+
+## ADR-015: Dual-Engine Cut Detection via PySceneDetect & Color Histogram Fallback
+
+### Status
+Accepted & Implemented (Part 03)
+
+### Context & Problem Statement
+Video cuts must be identified down to the integer frame without failing when external binary dependencies or dynamic libraries encounter environment conflicts.
+
+### Decision Outcome
+Chosen option: **Dual-Engine Shot Detection (`ShotDetectionService`)**.
+- Primary: PySceneDetect `AdaptiveDetector(adaptive_threshold=3.0, min_scene_len=15)`.
+- Secondary Fallback: OpenCV HSV 32-bin 3-channel color histogram correlation drop ($\rho < 0.70$).
+- Guarantees zero unhandled exceptions and exact frame timecodes.
+
+---
+
+## ADR-016: Cinematographic Motion Analysis via Farneback Flow & Affine Decomposition
+
+### Status
+Accepted & Implemented (Part 03)
+
+### Context & Problem Statement
+Understanding whether a camera is stationary, panning, tilting, zooming, or shaking is vital for matching B-roll cuts and reproducing reference cinematography.
+
+### Decision Outcome
+Chosen option: **Farneback Dense Flow with Statistical Moments and Radial Divergence**.
+- Classifies camera motion into `STATIC`, `PAN_LEFT`, `PAN_RIGHT`, `TILT_UP`, `TILT_DOWN`, `ZOOM_IN`, `ZOOM_OUT`, `HANDHELD_JITTER`, and `TRACKING`.
+- Runs on 480p downsampled frames at <0.2s per second of video on Apple M4 CPU.
+
+---
+
+## ADR-017: Rhythmic Audio Intelligence & Beat Grid Generation via SciPy
+
+### Status
+Accepted & Implemented (Part 03)
+
+### Context & Problem Statement
+Editorial cuts must snap cleanly to music beats and pause during silence.
+
+### Decision Outcome
+Chosen option: **Windowed RMS Energy Profiling & Onset Autocorrelation (`AudioIntelligenceService`)**.
+- Energy: 50ms window with 50% overlap; $<-45\text{ dBFS}$ classified as `SILENCE`.
+- Tempo & Rhythm: Spectral flux envelope autocorrelation picking peaks in the 60-180 BPM range, emitting deterministic beat grid timestamps.
+
+---
+
+## ADR-018: Reference Video Deconstruction into Mathematical Style Profiles
+
+### Status
+Accepted & Implemented (Part 03)
+
+### Context & Problem Statement
+Users want their videos edited in the style of existing reference content without vague textual descriptions.
+
+### Decision Outcome
+Chosen option: **Structured Style Deconstruction (`ReferenceAnalysisService`)**.
+- Extracts Average Shot Length (ASL), Cuts Per Minute (CPM), and Pacing Dynamic (`FAST_PACED`, `DYNAMIC`, `CALM_CONTEMPLATIVE`).
+- Clusters video pixel samples via OpenCV K-Means into a dominant 5-color hex palette.
+- Measures camera motion distribution and computes multi-video compatibility scores with actionable editorial recommendations.

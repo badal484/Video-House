@@ -99,3 +99,9 @@ Thumbs.db
 !.env.example
 *.pem
 *.key
+
+# Local SQLite databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

@@ -46,11 +46,11 @@ flowchart LR
 
 ### 2.3 PySceneDetect
 - **Identifier:** `tool.cv.scenedetect`
-- **Version:** `0.6.5`
-- **Invocation Method:** Python library `scenedetect` or CLI `scenedetect`.
+- **Version:** `0.7.3`
+- **Invocation Method:** Python library `scenedetect` with OpenCV backend.
 - **License:** BSD 3-Clause
 - **Role:** Deterministic hard-cut and dissolve transition detection. Generates frame-accurate cut lists before multimodal AI ingestion.
-- **Default Algorithm:** `AdaptiveDetector(adaptive_threshold=3.0, min_scene_len=15)`
+- **Default Algorithm:** `AdaptiveDetector(adaptive_threshold=3.0, min_scene_len=15)` with property accessors (`.seconds`, `.frame_num`, `.frame_rate`).
 - **Health Check Command:** `python3 -c "import scenedetect; print(scenedetect.__version__)"`
 
 ### 2.4 Pillow (PIL)
@@ -67,6 +67,27 @@ flowchart LR
 - **Role:** Embedded ACID transactional engine for Central Asset Registry, project metadata, and job state tracking.
 - **Configuration:** WAL mode (`PRAGMA journal_mode=WAL;`), Foreign Keys enabled (`PRAGMA foreign_keys=ON;`).
 - **Health Check Command:** `python3 -c "import sqlite3; print('SQLite3:', sqlite3.sqlite_version)"`
+
+### 2.6 OpenCV (Computer Vision Engine)
+- **Identifier:** `tool.cv.opencv`
+- **Version:** `5.0.0`
+- **License:** Apache 2.0
+- **Role:** Farneback dense optical flow camera motion decomposition, MOG2 background subtraction object tracking, K-Means 5-color palette extraction.
+- **Health Check Command:** `python3 -c "import cv2; print('OpenCV:', cv2.__version__)"`
+
+### 2.7 faster-whisper (Speech Transcription Engine)
+- **Identifier:** `tool.speech.faster_whisper`
+- **Version:** `1.2.1`
+- **License:** MIT
+- **Role:** CTranslate2 int8 vectorized speech transcription, word-level alignment, and acoustic speaker turn heuristics.
+- **Health Check Command:** `python3 -c "import faster_whisper; print('faster-whisper:', faster_whisper.__version__)"`
+
+### 2.8 SciPy Signal Processing
+- **Identifier:** `tool.audio.scipy`
+- **Version:** `1.18.0`
+- **License:** BSD 3-Clause
+- **Role:** Windowed short-time RMS energy profiling, onset envelope autocorrelation for tempo (BPM) and beat grid timestamp generation.
+- **Health Check Command:** `python3 -c "import scipy.signal; print('SciPy:', scipy.__version__)"`
 
 ---
 
