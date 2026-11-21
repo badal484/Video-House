@@ -149,17 +149,34 @@ flowchart LR
   - Relational SQLite tables (`vfx_projects`, `vfx_shot_tasks`) and REST API endpoints.
 - **Verification Gate:** 12 automated unit tests passing in 0.395s; all 75 cumulative studio tests passing in 8.869s with 100% success rate. All visual acceptance artifacts rendered into `test_artifacts/vfx/`.
 
-### Phase 8 (Part 08): 2D/3D Animation, Generative Video & 3D Integration
+### Phase 8 (Part 08): Professional 2D Animation, Anime & Character Studio (Departments 10 & 12) — [COMPLETED]
+- **Focus Departments:**
+  - Department 10: 2D Animation (Traditional Cel, 2D Rigging, Anime Pipeline)
+  - Department 12: Character Production (Character Identity, Settei Model Sheets)
+- **Key Deliverables:**
+  - Canonical 2D Animation project schema (`AnimationProject`, `AnimationScene`, `AnimationShot`, `AnimationTrack`, `DrawingExposure`).
+  - Persistent character identity DNA, proportion validation ($\Delta_{prop} \le 5\%$), and Lab color distance checks ($\Delta E \le 8.0$).
+  - 5-angle Settei turnaround model sheets with horizontal alignment guides and color palette chips.
+  - 2D skeletal bone rigging and analytical 2-bone Inverse Kinematics (IK) with pole constraints.
+  - Cut-out character puppetry and 8-frame walk cycle stepped on 2s (12 FPS).
+  - Dedicated anime production pipeline: 3-tier cel shading (Base, Shadow, Highlight) and multiplane parallax backgrounds.
+  - Speech-synced facial mouth visemes (8 phoneme shapes) and periodic eye blinks.
+  - AI motion retargeting and easing curve in-betweening.
+  - Transparent Apple ProRes 4444 video export, sprite sheet atlas packager, and direct NLE timeline insertion (V1/V3).
+  - SQLite persistence (`character_identities`, `animation_projects`, `animation_assets`) and 5 REST API endpoints.
+- **Verification Gate:** 12 automated unit tests passing in 0.428s; all 87 cumulative studio tests passing in 8.962s with 100% success rate. All visual acceptance artifacts rendered into `test_artifacts/animation_2d/`.
+
+### Phase 9 (Part 09): 3D Animation, OpenUSD & Generative Video Integration
+- **Focus Departments:**
+  - Department 11: 3D Animation (Blender Headless / OpenUSD)
+  - Department 15: AI Generation Router (Runway, Kling, Wan2.1, Flux.1)
+  - Department 16: Color & Restoration (Real-ESRGAN, RIFE)
+
+### Phase 10 (Part 10): Professional Audio Post-Production & Finishing
 - **Focus Departments:**
   - Department 14: Audio Production (Spotify Pedalboard)
   - Department 17: Subtitles & Dubbing (WhisperX / ElevenLabs / Kokoro)
   - Department 18: Quality Control (Automated QC)
-- **Key Deliverables:**
-  - Programmatic multi-track audio DSP: dynamic EQ, compression, spatial reverb, and stem isolation via Demucs.
-  - EBU R128 broadcast loudness normalization (-14 LUFS / -23 LUFS).
-  - Automated multi-language subtitle generation (.srt, .vtt, styled .ass) and voice cloning dubbing.
-  - Automated QC inspection: detection of black frames, freeze frames, and audio clipping.
-- **Verification Gate:** Full 64-track audio mix meeting EBU R128 broadcast loudness standards with automated PASS verification from the QC engine.
 
 ### Phase 8 (Part 08): Autonomous Agent Orchestration & Studio Application
 - **Focus Departments:**

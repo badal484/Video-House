@@ -282,3 +282,55 @@ flowchart LR
 - **Role:** Automatically inspects composite frames for matte pinholes, green/blue spill leakage, and edge transition halos.
 - **Invocation Method:** Python in-process (`VFXQualityChecker`).
 - **Health Check Command:** `python3 -c "from departments.vfx_compositing import VFXQualityChecker; print('VFX QC OK')"`
+
+---
+
+## 9. 2D Animation & Character Production Tools (Departments 10 & 12)
+
+### 9.1 Character Generator & Settei Model Sheet Engine
+- **Identifier:** `tool.animation.character_generator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Generates persistent character DNA, 5-view Settei turnaround sheets with alignment guides, expression matrices, and pose presets.
+- **Invocation Method:** Python in-process (`CharacterGenerator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import CharacterGenerator; print('Character Generator OK')"`
+
+### 9.2 Quantitative Character Identity Validator
+- **Identifier:** `tool.animation.identity_validator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Programmatically checks candidate character frames for proportion drift ($\Delta_{prop} \le 5\%$) and CIE Lab color distance ($\Delta E \le 8.0$), rejecting inconsistent generations.
+- **Invocation Method:** Python in-process (`IdentityValidator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import IdentityValidator; print('Identity Validator OK')"`
+
+### 9.3 2D Skeletal Puppet & IK Engine
+- **Identifier:** `tool.animation.puppet_animator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Evaluates hierarchical 2D bone trees, solves analytical 2-bone Inverse Kinematics, maps cut-out sprites, and renders walk cycles.
+- **Invocation Method:** Python in-process (`PuppetAnimator`, `IKSolver2D`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import PuppetAnimator; print('Puppet Animator OK')"`
+
+### 9.4 Anime Cel Shading Engine
+- **Identifier:** `tool.animation.cel_shader`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Renders 3-tier anime shading (flat base, core shadow, specular rim highlight) with directional lighting.
+- **Invocation Method:** Python in-process (`AnimeCelShader`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import AnimeCelShader; print('Anime Cel Shader OK')"`
+
+### 9.5 Multiplane Parallax Background Engine
+- **Identifier:** `tool.animation.multiplane_background`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Renders multiplane layered anime environments (sky, distant skyline, midground buildings, foreground railing) with depth-scaled scrolling velocities.
+- **Invocation Method:** Python in-process (`MultiplaneBackgroundEngine`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import MultiplaneBackgroundEngine; print('Multiplane BG OK')"`
+
+### 9.6 Facial Dialogue Lip-Sync & Viseme Engine
+- **Identifier:** `tool.animation.facial_animator`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Generates 8 dialogue-synced mouth visemes (`REST`, `AI_A`, `E_EE`, `O_OH`, `U_OO`, `M_B_P`, `F_V`, `L_TH`) and natural eye blinks.
+- **Invocation Method:** Python in-process (`FacialAnimator`).
+- **Health Check Command:** `python3 -c "from departments.animation_2d import FacialAnimator; print('Facial Animator OK')"`

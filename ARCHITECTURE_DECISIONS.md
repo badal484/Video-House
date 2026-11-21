@@ -479,3 +479,49 @@ Evaluating blurs, glows, and alpha merges in gamma-encoded sRGB produces dark fr
 Chosen option: **Linear Radiance Space Processing with Premultiplied Alpha Blending**.
 - All merge operations evaluate $C_{out} = C_{fg} + C_{bg} \times (1.0 - \alpha_{fg})$ in premultiplied linear float32 space before converting back to sRGB.
 - Built-in color difference despill suppresses green/blue edge reflection on foreground subjects.
+
+---
+
+## ADR-037: Application-Owned Canonical 2D Animation Project Model
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Proprietary 2D animation tools (Live2D, Spine, Rive) introduce vendor lock-in and non-permissive runtime licenses, while simple video renders eliminate the ability to edit timing or swap character parts.
+
+### Decision Outcome
+Chosen option: **Engine-Agnostic Canonical Animation Project Schema (`AnimationProject`)**.
+- Application-owned models for projects, scenes, shots, tracks, drawing exposures, keyframes, cameras, and character instances.
+- Stepped exposure holds on 1s (24 fps), 2s (12 fps), and 3s (8 fps) preserve authentic animation cadence.
+
+---
+
+## ADR-038: Quantitative Multi-Vector Character Identity Verification
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Diffusion and generative AI models frequently suffer from character drift (altering face shapes, eye colors, hair volume, and costume details across seeds).
+
+### Decision Outcome
+Chosen option: **Quantitative Character DNA & Multi-Vector Validation (`IdentityValidator`)**.
+- Enforces strict anatomical proportion tolerance ($\Delta_{prop} \le 5\%$) and CIE Lab color distance ($\Delta E \le 8.0$).
+- Automatically discards drifting candidate frames before committing to the studio asset store.
+
+---
+
+## ADR-039: Authentic Japanese Anime Pipeline Standards (Settei, Genga, Doga, Shiage)
+
+### Status
+Accepted & Implemented (Part 08)
+
+### Context & Problem Statement
+Treating anime as a generic image filter produces unconvincing results without the disciplined cadence, clean line cleanup, and multiplane depth characteristic of professional anime studios.
+
+### Decision Outcome
+Chosen option: **Dedicated Anime Production Subsystems (`AnimeCelShader`, `MultiplaneBackgroundEngine`)**.
+- 5-angle Settei turnaround model sheets with horizontal guide alignments.
+- 3-tier cel shading (flat base, core shadow, specular rim highlight) with directional lighting.
+- Multiplane parallax backgrounds with depth-scaled camera scrolling velocities ($V = V_{cam} / (1 + Z)$).

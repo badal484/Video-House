@@ -1087,6 +1087,53 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS character_identities (
+                character_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                visual_style TEXT NOT NULL,
+                head_ratio REAL NOT NULL,
+                age_appearance TEXT NOT NULL,
+                personality TEXT NOT NULL,
+                palette_json TEXT NOT NULL,
+                features_json TEXT NOT NULL,
+                costume_json TEXT NOT NULL,
+                model_sheets_json TEXT NOT NULL,
+                version INTEGER NOT NULL,
+                status TEXT NOT NULL,
+                metadata_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS animation_projects (
+                animation_project_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                project_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS animation_assets (
+                asset_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                category TEXT NOT NULL,
+                version TEXT NOT NULL,
+                license_type TEXT NOT NULL,
+                data_json TEXT NOT NULL,
+                preview_path TEXT,
+                tags_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
@@ -1123,6 +1170,9 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_vfx_proj_project ON vfx_projects(project_id);
             CREATE INDEX IF NOT EXISTS idx_vfx_tasks_project ON vfx_shot_tasks(project_id);
             CREATE INDEX IF NOT EXISTS idx_vfx_tasks_shot ON vfx_shot_tasks(shot_id);
+            CREATE INDEX IF NOT EXISTS idx_char_ident_project ON character_identities(project_id);
+            CREATE INDEX IF NOT EXISTS idx_anim_proj_project ON animation_projects(project_id);
+            CREATE INDEX IF NOT EXISTS idx_anim_asset_cat ON animation_assets(category);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -2786,6 +2836,219 @@ class AssetDatabase:
             ))
             return cur.rowcount > 0
 
+    def save_character_identity(self, character: Any) -> None:
+        """Saves or updates a CharacterIdentity record."""
+        now = utc_now_iso()
+        c_dict = character.to_dict() if hasattr(character, "to_dict") else character
+        c_id = c_dict.get("character_id")
+        project_id = c_dict.get("project_id", "default")
+        name = c_dict.get("name", "Unnamed Character")
+        style = c_dict.get("visual_style", "ANIME_CEL")
+        ratio = float(c_dict.get("head_ratio", 7.0))
+        age = c_dict.get("age_appearance", "")
+        pers = c_dict.get("personality", "")
+        palette = c_dict.get("color_palette", {})
+        features = c_dict.get("distinctive_features", [])
+        costume = c_dict.get("costume_layers", {})
+        model_sheets = c_dict.get("approved_model_sheet_ids", [])
+        version = int(c_dict.get("version", 1))
+        status = c_dict.get("status", "DRAFT")
+        meta = c_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO character_identities (
+                    character_id, project_id, name, visual_style, head_ratio,
+                    age_appearance, personality, palette_json, features_json,
+                    costume_json, model_sheets_json, version, status, metadata_json,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(c_id),
+                str(project_id),
+                name,
+                style,
+                ratio,
+                age,
+                pers,
+                json.dumps(palette),
+                json.dumps(features),
+                json.dumps(costume),
+                json.dumps(model_sheets),
+                version,
+                str(status),
+                json.dumps(meta),
+                now,
+                now,
+            ))
+
+    def get_character_identity(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a CharacterIdentity by character_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM character_identities WHERE character_id = ?", (str(character_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "visual_style": row["visual_style"],
+                "head_ratio": row["head_ratio"],
+                "age_appearance": row["age_appearance"],
+                "personality": row["personality"],
+                "color_palette": json.loads(row["palette_json"]),
+                "distinctive_features": json.loads(row["features_json"]),
+                "costume_layers": json.loads(row["costume_json"]),
+                "approved_model_sheet_ids": json.loads(row["model_sheets_json"]),
+                "version": row["version"],
+                "status": row["status"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_character_identities(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all CharacterIdentities for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM character_identities WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "visual_style": r["visual_style"],
+                    "head_ratio": r["head_ratio"],
+                    "age_appearance": r["age_appearance"],
+                    "personality": r["personality"],
+                    "color_palette": json.loads(r["palette_json"]),
+                    "distinctive_features": json.loads(r["features_json"]),
+                    "costume_layers": json.loads(r["costume_json"]),
+                    "approved_model_sheet_ids": json.loads(r["model_sheets_json"]),
+                    "version": r["version"],
+                    "status": r["status"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_animation_project(self, project: Any) -> None:
+        """Saves or updates an AnimationProject."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        proj_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "Animation Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_projects (
+                    animation_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, project_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(proj_id),
+                str(proj_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(p_dict),
+                now,
+                now,
+            ))
+
+    def get_animation_project(self, animation_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationProject."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_projects WHERE animation_project_id = ?", (str(animation_project_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["project_json"])
+
+    def list_animation_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AnimationProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM animation_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["project_json"]) for r in rows]
+
+    def save_animation_asset(self, asset: Any, project_id: str = "default") -> None:
+        """Saves or updates an AnimationAsset."""
+        now = utc_now_iso()
+        a_dict = asset.to_dict() if hasattr(asset, "to_dict") else asset
+        a_id = a_dict.get("asset_id")
+        name = a_dict.get("name", "Asset")
+        cat = a_dict.get("category", "PROP")
+        ver = a_dict.get("version", "1.0.0")
+        lic = a_dict.get("license_type", "PROPRIETARY_STUDIO")
+        data = a_dict.get("data", {})
+        prev = a_dict.get("preview_path")
+        tags = a_dict.get("tags", [])
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_assets (
+                    asset_id, project_id, name, category, version, license_type,
+                    data_json, preview_path, tags_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(a_id),
+                str(project_id),
+                name,
+                str(cat),
+                ver,
+                lic,
+                json.dumps(data),
+                prev,
+                json.dumps(tags),
+                now,
+            ))
+
+    def get_animation_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationAsset."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "version": row["version"],
+                "license_type": row["license_type"],
+                "data": json.loads(row["data_json"]),
+                "preview_path": row["preview_path"],
+                "tags": json.loads(row["tags_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_animation_assets(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists all AnimationAssets optionally filtered by category."""
+        with self.get_connection() as conn:
+            if category:
+                rows = conn.execute("SELECT * FROM animation_assets WHERE category = ? ORDER BY created_at DESC", (str(category),)).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM animation_assets ORDER BY created_at DESC").fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "version": r["version"],
+                    "license_type": r["license_type"],
+                    "data": json.loads(r["data_json"]),
+                    "preview_path": r["preview_path"],
+                    "tags": json.loads(r["tags_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
     # -------------------------------------------------------------
     # Multimodal Intelligence Persistence Methods (Part 03)
     # -------------------------------------------------------------
@@ -4168,3 +4431,216 @@ class AssetDatabase:
                 str(task_id),
             ))
             return cur.rowcount > 0
+
+    def save_character_identity(self, character: Any) -> None:
+        """Saves or updates a CharacterIdentity record."""
+        now = utc_now_iso()
+        c_dict = character.to_dict() if hasattr(character, "to_dict") else character
+        c_id = c_dict.get("character_id")
+        project_id = c_dict.get("project_id", "default")
+        name = c_dict.get("name", "Unnamed Character")
+        style = c_dict.get("visual_style", "ANIME_CEL")
+        ratio = float(c_dict.get("head_ratio", 7.0))
+        age = c_dict.get("age_appearance", "")
+        pers = c_dict.get("personality", "")
+        palette = c_dict.get("color_palette", {})
+        features = c_dict.get("distinctive_features", [])
+        costume = c_dict.get("costume_layers", {})
+        model_sheets = c_dict.get("approved_model_sheet_ids", [])
+        version = int(c_dict.get("version", 1))
+        status = c_dict.get("status", "DRAFT")
+        meta = c_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO character_identities (
+                    character_id, project_id, name, visual_style, head_ratio,
+                    age_appearance, personality, palette_json, features_json,
+                    costume_json, model_sheets_json, version, status, metadata_json,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(c_id),
+                str(project_id),
+                name,
+                style,
+                ratio,
+                age,
+                pers,
+                json.dumps(palette),
+                json.dumps(features),
+                json.dumps(costume),
+                json.dumps(model_sheets),
+                version,
+                str(status),
+                json.dumps(meta),
+                now,
+                now,
+            ))
+
+    def get_character_identity(self, character_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a CharacterIdentity by character_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM character_identities WHERE character_id = ?", (str(character_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "character_id": row["character_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "visual_style": row["visual_style"],
+                "head_ratio": row["head_ratio"],
+                "age_appearance": row["age_appearance"],
+                "personality": row["personality"],
+                "color_palette": json.loads(row["palette_json"]),
+                "distinctive_features": json.loads(row["features_json"]),
+                "costume_layers": json.loads(row["costume_json"]),
+                "approved_model_sheet_ids": json.loads(row["model_sheets_json"]),
+                "version": row["version"],
+                "status": row["status"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_character_identities(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all CharacterIdentities for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM character_identities WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "character_id": r["character_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "visual_style": r["visual_style"],
+                    "head_ratio": r["head_ratio"],
+                    "age_appearance": r["age_appearance"],
+                    "personality": r["personality"],
+                    "color_palette": json.loads(r["palette_json"]),
+                    "distinctive_features": json.loads(r["features_json"]),
+                    "costume_layers": json.loads(r["costume_json"]),
+                    "approved_model_sheet_ids": json.loads(r["model_sheets_json"]),
+                    "version": r["version"],
+                    "status": r["status"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def save_animation_project(self, project: Any) -> None:
+        """Saves or updates an AnimationProject."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        proj_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "Animation Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_projects (
+                    animation_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, project_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(proj_id),
+                str(proj_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(p_dict),
+                now,
+                now,
+            ))
+
+    def get_animation_project(self, animation_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationProject."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_projects WHERE animation_project_id = ?", (str(animation_project_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["project_json"])
+
+    def list_animation_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all AnimationProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM animation_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["project_json"]) for r in rows]
+
+    def save_animation_asset(self, asset: Any, project_id: str = "default") -> None:
+        """Saves or updates an AnimationAsset."""
+        now = utc_now_iso()
+        a_dict = asset.to_dict() if hasattr(asset, "to_dict") else asset
+        a_id = a_dict.get("asset_id")
+        name = a_dict.get("name", "Asset")
+        cat = a_dict.get("category", "PROP")
+        ver = a_dict.get("version", "1.0.0")
+        lic = a_dict.get("license_type", "PROPRIETARY_STUDIO")
+        data = a_dict.get("data", {})
+        prev = a_dict.get("preview_path")
+        tags = a_dict.get("tags", [])
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO animation_assets (
+                    asset_id, project_id, name, category, version, license_type,
+                    data_json, preview_path, tags_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(a_id),
+                str(project_id),
+                name,
+                str(cat),
+                ver,
+                lic,
+                json.dumps(data),
+                prev,
+                json.dumps(tags),
+                now,
+            ))
+
+    def get_animation_asset(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves an AnimationAsset."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM animation_assets WHERE asset_id = ?", (str(asset_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "asset_id": row["asset_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "category": row["category"],
+                "version": row["version"],
+                "license_type": row["license_type"],
+                "data": json.loads(row["data_json"]),
+                "preview_path": row["preview_path"],
+                "tags": json.loads(row["tags_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_animation_assets(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Lists all AnimationAssets optionally filtered by category."""
+        with self.get_connection() as conn:
+            if category:
+                rows = conn.execute("SELECT * FROM animation_assets WHERE category = ? ORDER BY created_at DESC", (str(category),)).fetchall()
+            else:
+                rows = conn.execute("SELECT * FROM animation_assets ORDER BY created_at DESC").fetchall()
+            return [
+                {
+                    "asset_id": r["asset_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "category": r["category"],
+                    "version": r["version"],
+                    "license_type": r["license_type"],
+                    "data": json.loads(r["data_json"]),
+                    "preview_path": r["preview_path"],
+                    "tags": json.loads(r["tags_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]

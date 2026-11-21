@@ -5,7 +5,7 @@ derivative access, asset role management, and asynchronous job monitoring.
 """
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID, uuid4
 
 from fastapi import (
@@ -1333,6 +1333,103 @@ async def evaluate_vfx_graph_endpoint(req: VFXGraphEvaluateRequest):
     }
 
 
+# =========================================================================
+# Department 10 & 12: 2D Animation, Anime & Character Studio API Endpoints
+# =========================================================================
+
+class CharacterConceptCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    brief: str
+    head_ratio: float = 7.0
+    visual_style: str = "ANIME_CEL"
+    custom_palette: Optional[Dict[str, str]] = None
+
+
+class AnimationProjectCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    resolution_w: int = 1920
+    resolution_h: int = 1080
+    fps: float = 24.0
+
+
+class AnimationBackgroundRenderRequest(BaseModel):
+    resolution: Tuple[int, int] = (1080, 1920)
+    camera_offset_x: float = 0.0
+    time_of_day: str = "SUNSET"
+
+
+@app.post("/api/v1/animation/characters")
+async def create_character_concept_endpoint(req: CharacterConceptCreateRequest):
+    from departments.animation_2d.characters.character_generator import CharacterGenerator
+    char = CharacterGenerator.create_character_concept(
+        project_id=req.project_id,
+        name=req.name,
+        brief_text=req.brief,
+        head_ratio=req.head_ratio,
+        visual_style=req.visual_style,
+        custom_palette=req.custom_palette,
+    )
+    db.save_character_identity(char)
+    sheet, _ = CharacterGenerator.generate_turnaround_model_sheet(char)
+    return {
+        "success": True,
+        "character": char.to_dict(),
+        "model_sheet": sheet.to_dict(),
+    }
+
+
+@app.get("/api/v1/animation/characters/{character_id}")
+async def get_character_identity_endpoint(character_id: str):
+    char = db.get_character_identity(character_id)
+    if not char:
+        raise HTTPException(status_code=404, detail=f"Character '{character_id}' not found.")
+    return {"character": char}
+
+
+@app.get("/api/v1/animation/projects/{project_id}/characters")
+async def list_character_identities_endpoint(project_id: str):
+    chars = db.list_character_identities(project_id)
+    return {"project_id": project_id, "characters": chars}
+
+
+@app.post("/api/v1/animation/projects")
+async def create_animation_project_endpoint(req: AnimationProjectCreateRequest):
+    from departments.animation_2d.core.models import AnimationProject
+    proj = AnimationProject(
+        project_id=req.project_id,
+        name=req.name,
+        resolution_w=req.resolution_w,
+        resolution_h=req.resolution_h,
+        fps=req.fps,
+    )
+    db.save_animation_project(proj)
+    return {"success": True, "animation_project": proj.to_dict()}
+
+
+@app.get("/api/v1/animation/projects/{project_id}")
+async def list_animation_projects_endpoint(project_id: str):
+    projects = db.list_animation_projects(project_id)
+    return {"project_id": project_id, "animation_projects": projects}
+
+
+@app.post("/api/v1/animation/scenes/render-background")
+async def render_animation_background_endpoint(req: AnimationBackgroundRenderRequest):
+    from departments.animation_2d.anime_pipeline.multiplane_background import MultiplaneBackgroundEngine
+    bg = MultiplaneBackgroundEngine.render_parallax_frame(
+        canvas_shape=req.resolution,
+        camera_offset_x=req.camera_offset_x,
+        time_of_day=req.time_of_day,
+    )
+    return {
+        "success": True,
+        "resolution": list(req.resolution),
+        "time_of_day": req.time_of_day,
+        "frame_shape": list(bg.shape),
+    }
+
+
 
 
 
@@ -2168,6 +2265,103 @@ async def evaluate_vfx_graph_endpoint(req: VFXGraphEvaluateRequest):
         "graph_id": graph.graph_id,
         "frame_shape": list(frame.shape),
         "dtype": str(frame.dtype),
+    }
+
+
+# =========================================================================
+# Department 10 & 12: 2D Animation, Anime & Character Studio API Endpoints
+# =========================================================================
+
+class CharacterConceptCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    brief: str
+    head_ratio: float = 7.0
+    visual_style: str = "ANIME_CEL"
+    custom_palette: Optional[Dict[str, str]] = None
+
+
+class AnimationProjectCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    resolution_w: int = 1920
+    resolution_h: int = 1080
+    fps: float = 24.0
+
+
+class AnimationBackgroundRenderRequest(BaseModel):
+    resolution: Tuple[int, int] = (1080, 1920)
+    camera_offset_x: float = 0.0
+    time_of_day: str = "SUNSET"
+
+
+@app.post("/api/v1/animation/characters")
+async def create_character_concept_endpoint(req: CharacterConceptCreateRequest):
+    from departments.animation_2d.characters.character_generator import CharacterGenerator
+    char = CharacterGenerator.create_character_concept(
+        project_id=req.project_id,
+        name=req.name,
+        brief_text=req.brief,
+        head_ratio=req.head_ratio,
+        visual_style=req.visual_style,
+        custom_palette=req.custom_palette,
+    )
+    db.save_character_identity(char)
+    sheet, _ = CharacterGenerator.generate_turnaround_model_sheet(char)
+    return {
+        "success": True,
+        "character": char.to_dict(),
+        "model_sheet": sheet.to_dict(),
+    }
+
+
+@app.get("/api/v1/animation/characters/{character_id}")
+async def get_character_identity_endpoint(character_id: str):
+    char = db.get_character_identity(character_id)
+    if not char:
+        raise HTTPException(status_code=404, detail=f"Character '{character_id}' not found.")
+    return {"character": char}
+
+
+@app.get("/api/v1/animation/projects/{project_id}/characters")
+async def list_character_identities_endpoint(project_id: str):
+    chars = db.list_character_identities(project_id)
+    return {"project_id": project_id, "characters": chars}
+
+
+@app.post("/api/v1/animation/projects")
+async def create_animation_project_endpoint(req: AnimationProjectCreateRequest):
+    from departments.animation_2d.core.models import AnimationProject
+    proj = AnimationProject(
+        project_id=req.project_id,
+        name=req.name,
+        resolution_w=req.resolution_w,
+        resolution_h=req.resolution_h,
+        fps=req.fps,
+    )
+    db.save_animation_project(proj)
+    return {"success": True, "animation_project": proj.to_dict()}
+
+
+@app.get("/api/v1/animation/projects/{project_id}")
+async def list_animation_projects_endpoint(project_id: str):
+    projects = db.list_animation_projects(project_id)
+    return {"project_id": project_id, "animation_projects": projects}
+
+
+@app.post("/api/v1/animation/scenes/render-background")
+async def render_animation_background_endpoint(req: AnimationBackgroundRenderRequest):
+    from departments.animation_2d.anime_pipeline.multiplane_background import MultiplaneBackgroundEngine
+    bg = MultiplaneBackgroundEngine.render_parallax_frame(
+        canvas_shape=req.resolution,
+        camera_offset_x=req.camera_offset_x,
+        time_of_day=req.time_of_day,
+    )
+    return {
+        "success": True,
+        "resolution": list(req.resolution),
+        "time_of_day": req.time_of_day,
+        "frame_shape": list(bg.shape),
     }
 
 

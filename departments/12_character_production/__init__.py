@@ -8,10 +8,26 @@ from .interface import (
     ICharacterProduction
 )
 from .continuity_service import WorldContinuityService
+from departments.animation_2d.characters import (
+    CharacterIdentity,
+    ModelSheet,
+    CharacterPose,
+    ExpressionType,
+    PoseType,
+    CharacterGenerator,
+    IdentityValidator,
+)
 
 __all__ = [
     "CharacterProductionRequest",
     "CharacterProductionResponse",
     "ICharacterProduction",
-    "WorldContinuityService"
+    "WorldContinuityService",
+    "CharacterIdentity",
+    "ModelSheet",
+    "CharacterPose",
+    "ExpressionType",
+    "PoseType",
+    "CharacterGenerator",
+    "IdentityValidator",
 ]

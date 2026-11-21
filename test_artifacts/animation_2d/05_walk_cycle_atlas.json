@@ -1,0 +1,66 @@
+{
+  "image": "05_walk_cycle_spritesheet.png",
+  "resolution": [
+    1600,
+    800
+  ],
+  "frame_count": 8,
+  "frames": [
+    {
+      "frame_index": 0,
+      "x": 0,
+      "y": 0,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 1,
+      "x": 400,
+      "y": 0,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 2,
+      "x": 800,
+      "y": 0,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 3,
+      "x": 1200,
+      "y": 0,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 4,
+      "x": 0,
+      "y": 400,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 5,
+      "x": 400,
+      "y": 400,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 6,
+      "x": 800,
+      "y": 400,
+      "width": 400,
+      "height": 400
+    },
+    {
+      "frame_index": 7,
+      "x": 1200,
+      "y": 400,
+      "width": 400,
+      "height": 400
+    }
+  ]
+}
