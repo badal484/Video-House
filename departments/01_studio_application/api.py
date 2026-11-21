@@ -18,8 +18,14 @@ from fastapi import (
     status
 )
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+import mimetypes
 from pydantic import BaseModel, Field
+
+import departments
+from departments.project_management.service import ProjectManagementService, STANDARD_TEMPLATES
+from departments.project_management.models import ProjectTemplateType
+from departments.studio_application.service import StudioApplicationService
 
 from core.assets.database import (
     AssetDatabase,
@@ -74,10 +80,8 @@ creative_director = CreativeDirectorService(db)
 production_planner = ProductionPlanningService(db)
 continuity_service = WorldContinuityService(db)
 video_editor = VideoEditingService(db)
-provider_router = MultimodalProviderRouter()
-creative_director = CreativeDirectorService(db)
-production_planner = ProductionPlanningService(db)
-continuity_service = WorldContinuityService(db)
+project_manager = ProjectManagementService(db)
+studio_app = StudioApplicationService(db)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -108,6 +112,17 @@ app.add_middleware(
 class CreateProjectRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     settings: Dict[str, Any] = Field(default_factory=dict)
+
+class UpdateProjectRequest(BaseModel):
+    name: Optional[str] = None
+    settings: Optional[Dict[str, Any]] = None
+
+class SaveVersionRequest(BaseModel):
+    version_name: str
+    notes: Optional[str] = None
+
+class SaveLayoutRequest(BaseModel):
+    layout: Dict[str, Any]
 
 class ProjectResponse(BaseModel):
     project_id: UUID
@@ -246,12 +261,53 @@ async def create_project(req: CreateProjectRequest):
         raise HTTPException(status_code=500, detail="Failed to create project.")
     return proj
 
+@app.get("/api/v1/projects")
+async def list_projects_endpoint(limit: int = 100, offset: int = 0):
+    return {"projects": project_manager.list_projects(limit=limit, offset=offset)}
+
+@app.get("/api/v1/projects/templates")
+async def list_project_templates():
+    return {"templates": [t.model_dump(mode="json") for t in project_manager.get_templates()]}
+
 @app.get("/api/v1/projects/{project_id}", response_model=ProjectResponse)
 async def get_project(project_id: UUID):
     proj = db.get_project(project_id)
     if not proj:
         raise HTTPException(status_code=404, detail="Project not found.")
     return proj
+
+@app.patch("/api/v1/projects/{project_id}")
+async def update_project_endpoint(project_id: UUID, req: UpdateProjectRequest):
+    updated = project_manager.update_project(project_id, name=req.name, settings=req.settings)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Project not found.")
+    return updated
+
+@app.delete("/api/v1/projects/{project_id}")
+async def delete_project_endpoint(project_id: UUID):
+    success = project_manager.delete_project(project_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Project not found.")
+    return {"success": True, "message": f"Project {project_id} deleted."}
+
+@app.post("/api/v1/projects/{project_id}/versions")
+async def save_project_version_endpoint(project_id: UUID, req: SaveVersionRequest):
+    try:
+        ver = project_manager.save_version(project_id, req.version_name, req.notes)
+        return ver
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.get("/api/v1/projects/{project_id}/versions")
+async def list_project_versions_endpoint(project_id: UUID):
+    return {"versions": project_manager.list_versions(project_id)}
+
+@app.post("/api/v1/projects/{project_id}/versions/{version_id}/restore")
+async def restore_project_version_endpoint(project_id: UUID, version_id: str):
+    try:
+        return project_manager.restore_version(project_id, version_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 # ---------------------------------------------------------
 # Media Ingestion & Upload Endpoints
@@ -965,20 +1021,29 @@ async def add_clip_endpoint(timeline_id: UUID, req: AddClipRequest):
 
 @app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/split")
 async def split_clip_endpoint(timeline_id: UUID, clip_id: UUID, req: SplitClipRequest):
-    c1, c2 = video_editor.manager.split_clip(timeline_id, clip_id, req.split_time_sec)
-    return {"success": True, "left_clip": c1.to_dict(), "right_clip": c2.to_dict()}
+    try:
+        c1, c2 = video_editor.manager.split_clip(timeline_id, clip_id, req.split_time_sec)
+        return {"success": True, "left_clip": c1.to_dict(), "right_clip": c2.to_dict()}
+    except (ValueError, KeyError) as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/trim")
 async def trim_clip_endpoint(timeline_id: UUID, clip_id: UUID, req: TrimClipRequest):
-    clip = video_editor.manager.trim_clip(timeline_id, clip_id, req.new_start_sec, req.new_end_sec)
-    return {"success": True, "clip": clip.to_dict()}
+    try:
+        clip = video_editor.manager.trim_clip(timeline_id, clip_id, req.new_start_sec, req.new_end_sec)
+        return {"success": True, "clip": clip.to_dict()}
+    except (ValueError, KeyError) as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.post("/api/v1/editing/timelines/{timeline_id}/clips/{clip_id}/ripple-delete")
 async def ripple_delete_endpoint(timeline_id: UUID, clip_id: UUID):
-    removed = video_editor.manager.ripple_delete_clip(timeline_id, clip_id)
-    if not removed:
-        raise HTTPException(status_code=404, detail="Clip not found.")
-    return {"success": True, "removed_clip": removed.to_dict()}
+    try:
+        removed = video_editor.manager.ripple_delete_clip(timeline_id, clip_id)
+        if not removed:
+            raise HTTPException(status_code=404, detail="Clip not found.")
+        return {"success": True, "removed_clip": removed.to_dict()}
+    except (ValueError, KeyError) as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @app.post("/api/v1/editing/timelines/{timeline_id}/transitions")
 async def add_transition_endpoint(timeline_id: UUID, req: AddTransitionRequest):
@@ -1171,6 +1236,7 @@ async def instantiate_motion_preset_endpoint(preset_id: str, req: InstantiatePre
     params = req.parameters.copy()
     params["project_id"] = str(req.project_id)
     comp = motion_service.presets.instantiate(preset_id, params)
+    comp.project_id = str(req.project_id)
     db.save_motion_composition(comp)
     val = DesignValidator.validate_composition(comp)
 
@@ -1553,7 +1619,9 @@ async def generate_procedural_sfx_endpoint(req: AudioSFXGenerateRequest):
     else:
         audio = ProceduralSFXEngine.generate_ambient_drone(duration_sec=req.duration_sec)
 
-    out_path = f"temp/audio_scratch/sfx_{uuid.uuid4().hex[:8]}.wav"
+    import os
+    os.makedirs("temp/audio_scratch", exist_ok=True)
+    out_path = f"temp/audio_scratch/sfx_{uuid4().hex[:8]}.wav"
     MasteringEngine.export_wav(audio, 48000, out_path)
     return {
         "success": True,
@@ -2120,3 +2188,64 @@ async def get_qc_report_endpoint(report_id: str):
     if not rep:
         raise HTTPException(status_code=404, detail=f"QC report '{report_id}' not found.")
     return {"qc_report": rep}
+
+
+# ---------------------------------------------------------
+# System Telemetry & Workspace Layout Endpoints
+# ---------------------------------------------------------
+
+@app.get("/api/v1/system/telemetry")
+async def get_system_telemetry():
+    return studio_app.get_system_telemetry()
+
+@app.get("/api/v1/system/layout/{workspace_id}")
+async def get_workspace_layout_endpoint(workspace_id: str):
+    return {"workspace_id": workspace_id, "layout": studio_app.get_workspace_layout(workspace_id)}
+
+@app.post("/api/v1/system/layout/{workspace_id}")
+async def save_workspace_layout_endpoint(workspace_id: str, req: SaveLayoutRequest):
+    studio_app.save_workspace_layout(workspace_id, req.layout)
+    return {"success": True, "workspace_id": workspace_id, "layout": req.layout}
+
+# ---------------------------------------------------------
+# Studio UI Static Web Application Serving
+# ---------------------------------------------------------
+
+UI_DIR = Path(__file__).parent / "ui"
+
+@app.get("/")
+async def serve_index():
+    index_file = UI_DIR / "index.html"
+    if not index_file.exists():
+        raise HTTPException(status_code=404, detail="UI index.html not found.")
+    return HTMLResponse(content=index_file.read_text(encoding="utf-8"))
+
+@app.get("/ui")
+@app.get("/ui/{file_path:path}")
+async def serve_ui_file(file_path: str = ""):
+    if not file_path or file_path.endswith("/"):
+        target = UI_DIR / "index.html"
+    else:
+        target = (UI_DIR / file_path).resolve()
+
+    # Path traversal protection
+    if not str(target).startswith(str(UI_DIR.resolve())):
+        raise HTTPException(status_code=403, detail="Forbidden: Path traversal blocked")
+
+    if target.is_dir() or not target.exists():
+        target = UI_DIR / "index.html"
+
+    mime_type, _ = mimetypes.guess_type(str(target))
+    if str(target).endswith(".css"):
+        mime_type = "text/css"
+    elif str(target).endswith(".js"):
+        mime_type = "application/javascript"
+    elif str(target).endswith(".html"):
+        mime_type = "text/html"
+    elif str(target).endswith(".svg"):
+        mime_type = "image/svg+xml"
+    elif str(target).endswith(".json"):
+        mime_type = "application/json"
+
+    return Response(content=target.read_bytes(), media_type=mime_type or "application/octet-stream")
+

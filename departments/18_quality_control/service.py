@@ -29,7 +29,8 @@ class QualityControlService(IQualityControl):
         try:
             if action == "audit_media_file":
                 file_path = params.get("file_path", "")
-                asset_id = UUID(str(params.get("asset_id", uuid4())))
+                raw_aid = params.get("asset_id")
+                asset_id = UUID(str(raw_aid)) if raw_aid else uuid4()
                 policy_name = params.get("policy_name", "STREAMING_STANDARD")
 
                 defects: List[QCDefect] = []
@@ -42,7 +43,7 @@ class QualityControlService(IQualityControl):
                 defects.extend(integrity_defects)
 
                 # 2. Video validation (if simulated parameters or probe data provided)
-                if "video" in params:
+                if params.get("video"):
                     v_params = params["video"]
                     v_defects = VideoValidator.validate_stream_properties(
                         actual_width=v_params.get("width", 1920),
@@ -61,7 +62,7 @@ class QualityControlService(IQualityControl):
                         defects.extend(VideoValidator.detect_freeze_frames(v_params["frozen_intervals"]))
 
                 # 3. Audio validation
-                if "audio" in params:
+                if params.get("audio"):
                     a_params = params["audio"]
                     a_stream_defects = AudioValidator.validate_audio_stream(
                         has_audio=a_params.get("has_audio", True),
@@ -93,7 +94,7 @@ class QualityControlService(IQualityControl):
                     asset_id=asset_id,
                     defects=defects,
                     policy_name=policy_name,
-                    render_job_id=UUID(str(params["render_job_id"])) if "render_job_id" in params else None,
+                    render_job_id=UUID(str(params["render_job_id"])) if params.get("render_job_id") else None,
                 )
 
                 return QualityControlResponse(

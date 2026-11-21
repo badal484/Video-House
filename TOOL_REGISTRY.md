@@ -910,3 +910,40 @@ flowchart LR
 - **Invocation Method:** Python in-process (`VisualMetricsCalculator`).
 - **Health Check Command:** `python3 -c "import departments; from departments.quality_control.metrics.visual_metrics import VisualMetricsCalculator; print('Visual Metrics OK')"`
 
+---
+
+## 15. Studio Application, User Interface & Project Management (Departments 01 & 02)
+
+### 15.1 Studio Application Service & Static SPA Engine
+- **Identifier:** `tool.studio.application_service`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Central application gateway serving the single-page creative workspace, delivering high-performance CSS tokens, Vanilla JS reactive architecture, and system telemetry without external Node.js build dependencies.
+- **Invocation Method:** Python in-process (`StudioApplicationService`, FastAPI endpoints `GET /`, `GET /ui/{file_path:path}`).
+- **Health Check Command:** `python3 -c "from departments.01_studio_application.service import StudioApplicationService; print('Studio App OK')"`
+
+### 15.2 Project Management & Version Snapshotting Engine
+- **Identifier:** `tool.studio.project_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Manages project lifecycles, predefined multi-aspect production templates (YouTube 16:9, Shorts 9:16, DCI Cinema 2.39:1, Anime 2D), immutable project version snapshots, stage transitions, and cascading deletion.
+- **Invocation Method:** Python in-process (`ProjectManagementService`).
+- **Health Check Command:** `python3 -c "from departments.02_project_management.service import ProjectManagementService; print('Project Manager OK')"`
+
+### 15.3 High-Performance Media Preview & Canvas Engine
+- **Identifier:** `tool.ui.media_preview`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Client-side HTML5/Canvas video player supporting rational-time frame-stepping (J/K/L shuttling), A/B split-screen comparison slider, audio waveform sync, and safe-title guides.
+- **Invocation Method:** JavaScript client runtime (`media_preview.js`).
+- **Asset Path:** `departments/01_studio_application/ui/js/media_preview.js`
+
+### 15.4 Command Palette & Keyboard Dispatcher Engine
+- **Identifier:** `tool.ui.command_palette`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Global fuzzy-search modal (`Cmd+K` / `Ctrl+K`) and keyboard shortcut routing system enabling keyboard-driven navigation across all 9 specialized studio workspaces and 50+ actions.
+- **Invocation Method:** JavaScript client runtime (`command_palette.js`, `shortcuts.js`).
+- **Asset Path:** `departments/01_studio_application/ui/js/command_palette.js`
+
+

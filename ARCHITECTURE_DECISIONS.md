@@ -958,3 +958,52 @@ Chosen option: **Mandatory Preflight Project Gatekeeper (`PreflightValidator`)**
   4. **Commercial Licensing:** Validates that all incorporated assets have approved commercial licenses (`Apache-2.0`, `MIT`, `BSD`, `Commercial-Royalty-Free`) and explicitly rejects non-commercial (`CC-BY-NC`) or copyleft traps.
 - If preflight detects any blocking defect, the render job immediately transitions to `FAILED_PREFLIGHT`, preventing unnecessary compute consumption.
 
+---
+
+## ADR-055: Zero-Build Single-Page Application (SPA) Delivery Architecture via FastAPI
+
+### Status
+Accepted & Implemented (Part 15)
+
+### Context & Problem Statement
+Professional creative tools require an ultra-responsive user interface that avoids latency, layout thrashing, and fragile Node.js/npm toolchains that bloat local disk storage on 16GB RAM / 40GB free disk workstations. The studio frontend needs to be delivered directly from the Python backend service while maintaining clear separation of concerns, modern ES modules, CSS design tokens, and instant live reloading.
+
+### Decision Outcome
+Chosen option: **Native Modern ES Modules and CSS Design Tokens Served Directly via FastAPI (`StudioApplicationService`, `api.py`)**.
+- The entire frontend is built with native Vanilla JavaScript (ES2022+ modules) and standard CSS variables without Webpack, Vite, Node modules, or bundle transpilation.
+- FastAPI's built-in `HTMLResponse` and streaming responses deliver `index.html` at `GET /` and assets under `GET /ui/{file_path:path}` with proper MIME types and aggressive client-side caching.
+- Eliminates 500MB+ of `node_modules` overhead, prevents build-step failures in headless deployments, and delivers instantaneous page loads (<50ms).
+
+---
+
+## ADR-056: State-Driven 4-Quadrant Adaptive Workspace Architecture
+
+### Status
+Accepted & Implemented (Part 15)
+
+### Context & Problem Statement
+Creative software workflows range widely from high-level natural language prompt directing to multi-track frame-accurate NLE editing, procedural audio mixing, node-based VFX compositing, and broadcast delivery QC. Generic tabbed layouts cause cognitive overload and disjointed navigation.
+
+### Decision Outcome
+Chosen option: **Unified 4-Quadrant Adaptive Shell with Specialized Workspaces (`app.js`, `layout.css`, `state.js`)**.
+- The application implements a battle-tested 4-quadrant layout (Top-Left: Media/Library; Top-Center: Player/Canvas; Top-Right: Inspector/Cockpit; Bottom: Multi-Track Timeline/Mixer/Console).
+- A centralized pub/sub state manager (`state.js`) orchestrates active project context, current workspace, selection, and transport playback across all components.
+- Nine specialized workspaces (AI Director, Editing, Motion Graphics, VFX, 2D Animation, 3D, Audio DAW, Color Grading, Localization, and Rendering/QC) dynamically adapt the 4 quadrants while preserving global transport and navigation.
+
+---
+
+## ADR-057: Immutable Project Version Snapshotting and Non-Destructive Restore
+
+### Status
+Accepted & Implemented (Part 15)
+
+### Context & Problem Statement
+Creative users frequently experiment with multiple creative directions, edit passes, and generation iterations. Destructive autosave or lack of milestone tracking leads to accidental loss of work and customer frustration.
+
+### Decision Outcome
+Chosen option: **Relational Project Version Snapshots with Non-Destructive Rollback (`ProjectManagementService`, `project_versions`)**.
+- All project state—including configuration, timeline graphs, asset rosters, and stage metadata—is serialized into immutable JSON snapshots in the SQLite asset registry.
+- Users can create named milestones ("Director Cut v1.0", "Rough Cut", "Client Feedback Pass") at any time.
+- Restoring a previous version updates the active project state while generating a prior-state backup, guaranteeing zero irreversible data loss.
+
+

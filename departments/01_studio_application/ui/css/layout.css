@@ -1,0 +1,276 @@
+/* ==========================================================================
+   Layout Styles: Global App Shell, 4-Quadrant Canvas & Resizable Splitters
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--studio-bg-canvas);
+  color: var(--studio-text-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+#app-root {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------------- Top Application Bar ---------------- */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  background-color: var(--studio-bg-surface);
+  border-bottom: 1px solid var(--studio-border-subtle);
+  padding: 0 var(--space-3);
+  z-index: var(--z-sticky);
+  flex-shrink: 0;
+}
+
+.top-bar-left, .top-bar-center, .top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.studio-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  font-size: var(--font-size-md);
+  color: var(--studio-accent-primary);
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+
+.project-title-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-15);
+  background-color: var(--studio-bg-panel);
+  border: 1px solid var(--studio-border-default);
+  border-radius: var(--radius-sm);
+  padding: 3px var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--studio-text-primary);
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.save-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--studio-text-muted);
+}
+.save-indicator.saved { color: var(--studio-status-success); }
+.save-indicator.unsaved { color: var(--studio-status-warning); }
+
+/* Workspace Switcher Bar */
+.workspace-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-05);
+  background-color: var(--studio-bg-canvas);
+  border: 1px solid var(--studio-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.ws-tab {
+  background: transparent;
+  border: none;
+  color: var(--studio-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: 4px var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ws-tab:hover {
+  color: var(--studio-text-primary);
+  background-color: var(--studio-bg-hover);
+}
+
+.ws-tab.active {
+  color: var(--studio-text-inverse);
+  background-color: var(--studio-accent-primary);
+  font-weight: 600;
+}
+
+.ws-tab-key {
+  font-size: var(--font-size-2xs);
+  opacity: 0.7;
+}
+
+/* ---------------- Main Content Layout ---------------- */
+.main-viewport {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 44px - 26px);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 4-Quadrant Grid (Creative Workspace) */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: var(--left-panel-width, 300px) 4px 1fr 4px var(--right-panel-width, 360px);
+  grid-template-rows: 1fr 4px var(--bottom-panel-height, 280px);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.grid-quadrant-left {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: var(--studio-bg-surface);
+  border-right: 1px solid var(--studio-border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-quadrant-center {
+  grid-column: 3;
+  grid-row: 1;
+  background-color: var(--studio-bg-canvas);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.grid-quadrant-right {
+  grid-column: 5;
+  grid-row: 1;
+  background-color: var(--studio-bg-surface);
+  border-left: 1px solid var(--studio-border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-quadrant-bottom {
+  grid-column: 1 / span 5;
+  grid-row: 3;
+  background-color: var(--studio-bg-panel);
+  border-top: 1px solid var(--studio-border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Resizable Splitter Bars */
+.splitter-h {
+  grid-row: 1;
+  width: 4px;
+  background-color: transparent;
+  cursor: col-resize;
+  transition: background-color var(--transition-fast);
+  z-index: var(--z-panel);
+}
+.splitter-h:hover, .splitter-h.resizing {
+  background-color: var(--studio-accent-primary);
+}
+.splitter-left { grid-column: 2; }
+.splitter-right { grid-column: 4; }
+
+.splitter-v {
+  grid-column: 1 / span 5;
+  grid-row: 2;
+  height: 4px;
+  background-color: transparent;
+  cursor: row-resize;
+  transition: background-color var(--transition-fast);
+  z-index: var(--z-panel);
+}
+.splitter-v:hover, .splitter-v.resizing {
+  background-color: var(--studio-accent-primary);
+}
+
+/* Panel Headers & Bodies */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  background-color: var(--studio-bg-panel);
+  border-bottom: 1px solid var(--studio-border-subtle);
+  padding: 0 var(--space-2);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--studio-text-secondary);
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-2);
+}
+
+/* ---------------- Bottom Status Bar ---------------- */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+  background-color: var(--studio-bg-surface);
+  border-top: 1px solid var(--studio-border-subtle);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--studio-text-muted);
+  z-index: var(--z-sticky);
+  flex-shrink: 0;
+}
+
+.status-bar-left, .status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.telemetry-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.telemetry-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--studio-status-success);
+}

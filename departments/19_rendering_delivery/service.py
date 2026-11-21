@@ -56,7 +56,7 @@ class RenderingDeliveryService(IRenderingDelivery):
             if action == "compile_render_plan":
                 meta = params.get("project_metadata", {})
                 profile_id = params.get("render_profile_id", "youtube_1080p")
-                timeline_id = UUID(str(params["timeline_id"])) if "timeline_id" in params else None
+                timeline_id = UUID(str(params["timeline_id"])) if params.get("timeline_id") else None
 
                 plan = RenderPlanCompiler.compile_plan(
                     project_id=project_id,

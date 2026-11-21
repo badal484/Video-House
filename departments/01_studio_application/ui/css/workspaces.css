@@ -1,0 +1,296 @@
+/* ==========================================================================
+   Workspace Styles: Multi-Track Timeline, Monitor, Color Wheels, Audio Mixer
+   ========================================================================== */
+
+/* ---------------- Timeline Multi-Track ---------------- */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.timeline-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  background-color: var(--studio-bg-panel);
+  border-bottom: 1px solid var(--studio-border-subtle);
+  padding: 0 var(--space-2);
+  flex-shrink: 0;
+}
+
+.timeline-tools, .timeline-zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.timeline-ruler-track-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.timeline-headers-column {
+  width: 160px;
+  background-color: var(--studio-bg-surface);
+  border-right: 1px solid var(--studio-border-subtle);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.track-header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--studio-border-subtle);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--studio-text-secondary);
+}
+
+.track-lane-area {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+  background-color: var(--studio-bg-canvas);
+}
+
+.timeline-ruler {
+  height: 24px;
+  background-color: var(--studio-bg-panel);
+  border-bottom: 1px solid var(--studio-border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.timeline-tracks-body {
+  position: relative;
+  min-width: 1000px;
+}
+
+.track-lane {
+  height: 48px;
+  position: relative;
+  border-bottom: 1px solid var(--studio-border-subtle);
+}
+
+.timeline-clip {
+  position: absolute;
+  top: 4px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background-color: var(--studio-track-video);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  padding: 2px 6px;
+  font-size: var(--font-size-2xs);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.timeline-clip.clip-audio { background-color: var(--studio-track-audio); }
+.timeline-clip.clip-graphics { background-color: var(--studio-track-graphics); }
+.timeline-clip.selected { border: 2px solid var(--studio-accent-primary); box-shadow: 0 0 8px var(--studio-accent-primary); }
+
+/* Draggable Playhead Needle */
+.playhead-needle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--studio-accent-primary);
+  z-index: 20;
+  pointer-events: none;
+}
+.playhead-head {
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  background-color: var(--studio-accent-primary);
+  clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%);
+  cursor: ew-resize;
+  pointer-events: auto;
+}
+
+/* ---------------- Program Preview Monitor ---------------- */
+.preview-monitor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #07080A;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewport-canvas {
+  max-width: 95%;
+  max-height: 80%;
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  border: 1px solid var(--studio-border-subtle);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.monitor-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  background-color: var(--studio-bg-surface);
+  border-top: 1px solid var(--studio-border-subtle);
+  padding: 0 var(--space-4);
+  position: absolute;
+  bottom: 0;
+}
+
+.timecode-display {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--studio-accent-primary);
+  background-color: var(--studio-bg-canvas);
+  border: 1px solid var(--studio-border-default);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+/* ---------------- 3-Way Color Wheels ---------------- */
+.color-wheels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.color-wheel-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.color-wheel-disk {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+  border: 2px solid var(--studio-border-default);
+  position: relative;
+  cursor: crosshair;
+}
+
+.color-wheel-reticle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  border: 2px solid #FFFFFF;
+  background-color: transparent;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* ---------------- Audio DAW Mixer ---------------- */
+.audio-mixer-console {
+  display: flex;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-3);
+  overflow-x: auto;
+}
+
+.mixer-channel-strip {
+  width: 90px;
+  background-color: var(--studio-bg-panel-elevated);
+  border: 1px solid var(--studio-border-default);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-2);
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.mixer-fader-slot {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.volume-fader {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 24px;
+  height: 140px;
+  cursor: pointer;
+}
+
+.audio-peak-meter {
+  width: 8px;
+  height: 140px;
+  background: linear-gradient(to top, #10B981 70%, #F59E0B 88%, #EF4444 100%);
+  border-radius: var(--radius-sm);
+  position: relative;
+  border: 1px solid var(--studio-border-subtle);
+}
+
+/* ---------------- Storyboard & Concept Cards ---------------- */
+.storyboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.storyboard-card {
+  background-color: var(--studio-bg-panel-elevated);
+  border: 1px solid var(--studio-border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.storyboard-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  object-fit: cover;
+  border-bottom: 1px solid var(--studio-border-subtle);
+}
+
+.storyboard-meta {
+  padding: var(--space-2);
+  font-size: var(--font-size-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}

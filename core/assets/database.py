@@ -2451,6 +2451,17 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_render_plans_project ON render_plans(project_id);
             CREATE INDEX IF NOT EXISTS idx_qc_reports_project ON qc_reports(project_id);
             CREATE INDEX IF NOT EXISTS idx_delivery_packages_project ON delivery_packages(project_id);
+
+            CREATE TABLE IF NOT EXISTS project_versions (
+                version_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                version_name TEXT NOT NULL,
+                snapshot_json TEXT NOT NULL,
+                notes TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+            CREATE INDEX IF NOT EXISTS idx_project_versions_project ON project_versions(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -2463,6 +2474,97 @@ class AssetDatabase:
 
     def get_project(self, project_id: UUID) -> Optional[Dict[str, Any]]:
         with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM projects WHERE project_id = ?", (str(project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "project_id": UUID(row["project_id"]),
+                "name": row["name"],
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+                "settings": json.loads(row["settings_json"])
+            }
+
+    def list_projects(self, limit: int = 100, offset: int = 0) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT p.*, (SELECT COUNT(*) FROM assets a WHERE a.project_id = p.project_id) as asset_count "
+                "FROM projects p ORDER BY p.updated_at DESC LIMIT ? OFFSET ?",
+                (limit, offset)
+            ).fetchall()
+            results = []
+            for row in rows:
+                results.append({
+                    "project_id": UUID(row["project_id"]),
+                    "name": row["name"],
+                    "created_at": row["created_at"],
+                    "updated_at": row["updated_at"],
+                    "settings": json.loads(row["settings_json"]),
+                    "asset_count": row["asset_count"]
+                })
+            return results
+
+    def update_project(self, project_id: UUID, name: Optional[str] = None, settings: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            existing = self.get_project(project_id)
+            if not existing:
+                return None
+            new_name = name if name is not None else existing["name"]
+            new_settings = settings if settings is not None else existing["settings"]
+            conn.execute(
+                "UPDATE projects SET name = ?, settings_json = ?, updated_at = ? WHERE project_id = ?",
+                (new_name, json.dumps(new_settings), now, str(project_id))
+            )
+        return self.get_project(project_id)
+
+    def delete_project(self, project_id: UUID) -> bool:
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM projects WHERE project_id = ?", (str(project_id),))
+            return cur.rowcount > 0
+
+    def save_project_version(self, project_id: UUID, version_name: str, snapshot_data: Dict[str, Any], notes: Optional[str] = None) -> str:
+        version_id = str(uuid4())
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute(
+                "INSERT INTO project_versions (version_id, project_id, version_name, snapshot_json, notes, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (version_id, str(project_id), version_name, json.dumps(snapshot_data), notes or "", now)
+            )
+        return version_id
+
+    def list_project_versions(self, project_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM project_versions WHERE project_id = ? ORDER BY created_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "version_id": row["version_id"],
+                    "project_id": UUID(row["project_id"]),
+                    "version_name": row["version_name"],
+                    "snapshot": json.loads(row["snapshot_json"]),
+                    "notes": row["notes"],
+                    "created_at": row["created_at"]
+                }
+                for row in rows
+            ]
+
+    def get_project_version(self, version_id: str) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM project_versions WHERE version_id = ?", (version_id,)).fetchone()
+            if not row:
+                return None
+            return {
+                "version_id": row["version_id"],
+                "project_id": UUID(row["project_id"]),
+                "version_name": row["version_name"],
+                "snapshot": json.loads(row["snapshot_json"]),
+                "notes": row["notes"],
+                "created_at": row["created_at"]
+            }
             row = conn.execute("SELECT * FROM projects WHERE project_id = ?", (str(project_id),)).fetchone()
             if not row:
                 return None

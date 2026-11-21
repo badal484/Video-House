@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universal AI Video Production Studio</title>
+  <!-- Design System CSS Stylesheets -->
+  <link rel="stylesheet" href="/ui/css/tokens.css" />
+  <link rel="stylesheet" href="/ui/css/layout.css" />
+  <link rel="stylesheet" href="/ui/css/components.css" />
+  <link rel="stylesheet" href="/ui/css/workspaces.css" />
+</head>
+<body>
+  <div id="app-root">
+    <!-- Top Application Bar -->
+    <header class="top-bar">
+      <!-- Top Bar Left: Logo & Active Project Identity -->
+      <div class="top-bar-left">
+        <div class="studio-logo" id="studio-logo-btn" title="Return to Dashboard">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          </svg>
+          <span>STUDIO</span>
+        </div>
+        <div class="project-title-badge" id="topbar-project-title">No Project Active</div>
+        <div class="save-indicator saved" id="topbar-save-status">✓ Saved</div>
+      </div>
+
+      <!-- Top Bar Center: 12 Specialized Workspace Tabs -->
+      <div class="top-bar-center">
+        <nav class="workspace-tabs" role="tablist" aria-label="Specialized Workspaces">
+          <button class="ws-tab active" data-ws="home" role="tab" title="Home (1)">Dashboard <span class="ws-tab-key">1</span></button>
+          <button class="ws-tab" data-ws="creative" role="tab" title="Creative NLE (4)">Creative NLE <span class="ws-tab-key">4</span></button>
+          <button class="ws-tab" data-ws="director" role="tab" title="AI Director (2)">AI Director <span class="ws-tab-key">2</span></button>
+          <button class="ws-tab" data-ws="agents" role="tab" title="Agent Center">Agents</button>
+          <button class="ws-tab" data-ws="generation" role="tab" title="Generative Studio (8)">Generate <span class="ws-tab-key">8</span></button>
+          <button class="ws-tab" data-ws="motion" role="tab" title="Motion Graphics (5)">Motion <span class="ws-tab-key">5</span></button>
+          <button class="ws-tab" data-ws="vfx" role="tab" title="VFX (6)">VFX <span class="ws-tab-key">6</span></button>
+          <button class="ws-tab" data-ws="animation" role="tab" title="2D Animation (7)">Animation <span class="ws-tab-key">7</span></button>
+          <button class="ws-tab" data-ws="audio" role="tab" title="Audio DAW (9)">Audio <span class="ws-tab-key">9</span></button>
+          <button class="ws-tab" data-ws="color" role="tab" title="Color Grading (0)">Color <span class="ws-tab-key">0</span></button>
+          <button class="ws-tab" data-ws="localization" role="tab" title="Subtitles & Dubbing (-)">Localize <span class="ws-tab-key">-</span></button>
+          <button class="ws-tab" data-ws="rendering" role="tab" title="QC & Delivery (=)">QC & Deliver <span class="ws-tab-key">=</span></button>
+        </nav>
+      </div>
+
+      <!-- Top Bar Right: Search, Jobs, Telemetry & Settings -->
+      <div class="top-bar-right">
+        <button class="btn btn-ghost btn-xs" id="topbar-search-btn" title="Global Command Palette (Cmd+K)" onclick="window.dispatchEvent(new CustomEvent('toggle-command-palette'))">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <kbd style="font-size: 9px; padding: 1px 4px; border-radius: 2px; background: var(--studio-bg-hover);">⌘K</kbd>
+        </button>
+        <button class="btn btn-ghost btn-xs ws-tab" data-ws="settings" title="Project & Studio Settings">⚙</button>
+      </div>
+    </header>
+
+    <!-- Main Viewport Mount Surface -->
+    <main class="main-viewport" id="main-viewport-mount" role="main"></main>
+
+    <!-- Bottom Status Bar -->
+    <footer class="status-bar">
+      <div class="status-bar-left">
+        <div class="telemetry-chip">
+          <div class="telemetry-dot"></div>
+          <span>Studio Engine Online</span>
+        </div>
+        <span>•</span>
+        <span id="sb-hw-status">Apple Silicon VideoToolbox ASIC Active</span>
+        <span>•</span>
+        <span>OTIO RationalTime Engine</span>
+      </div>
+      <div class="status-bar-right">
+        <span id="sb-storage-status">Storage: ~38GB Available</span>
+        <span>•</span>
+        <span>v1.0.0 Production</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Master ES6+ Application Module -->
+  <script type="module" src="/ui/js/app.js"></script>
+</body>
+</html>
