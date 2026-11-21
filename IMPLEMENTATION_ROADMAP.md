@@ -132,20 +132,24 @@ flowchart LR
   - 8 new REST API endpoints registered and verified in `departments/01_studio_application/api.py`.
 - **Verification Gate:** 12 automated unit and integration tests passing in 1.857s; all 63 cumulative studio tests passing in 7.973s with 100% success rate. All 10 visual acceptance example artifacts rendered into `test_artifacts/motion_graphics/`.
 
-### Phase 7 (Part 07): 2D/3D Animation, Generative Video & VFX Compositing
+### Phase 7 (Part 07): Advanced VFX & Compositing Studio (Department 13) — [COMPLETED]
 - **Focus Departments:**
-  - Department 10: 2D Animation (Blender Grease Pencil)
-  - Department 11: 3D Animation (Blender Headless / OpenUSD)
-  - Department 13: VFX & Compositing (SAM 2.1 / OpenColorIO)
-  - Department 15: AI Generation Router
-  - Department 16: Color & Restoration
+  - Department 13: VFX & Compositing (Deterministic Local DAG + Headless Blender)
 - **Key Deliverables:**
-  - Headless Blender scripts for automated camera animation and Cycles/EEVEE rendering.
-  - Zero-shot video rotoscoping pipeline using SAM 2.1 Video Predictor.
-  - OpenColorIO ACEScg color pipeline and Real-ESRGAN super-resolution upscaler.
-- **Verification Gate:** Transparent alpha-channel title composite overlaid onto a camera-tracked 3D scene with ACEScg color conformance.
+  - Node-based Directed Acyclic Graph (DAG) compositing engine with topological execution.
+  - Green/blue chroma keying with color difference despill and alpha matte refinement.
+  - 4-point planar tracking & perspective homography warping (`cv2.warpPerspective`).
+  - Feature point tracking via Lucas-Kanade optical flow (`cv2.calcOpticalFlowPyrLK`).
+  - Object removal and video cleanup via Telea fast marching inpainting.
+  - Optical light wrapping and procedural dust particle simulation.
+  - Lens bloom glow and RGB chromatic aberration.
+  - Dual-engine architecture: LocalCompositorEngine + BlenderCompositorEngine router.
+  - Automated VFX quality control auditor (matte holes, spill leakage, edge halos).
+  - Inter-departmental timeline bridge and director blueprint bridge.
+  - Relational SQLite tables (`vfx_projects`, `vfx_shot_tasks`) and REST API endpoints.
+- **Verification Gate:** 12 automated unit tests passing in 0.395s; all 75 cumulative studio tests passing in 8.869s with 100% success rate. All visual acceptance artifacts rendered into `test_artifacts/vfx/`.
 
-### Phase 7 (Part 07): Professional Audio Post-Production & Finishing
+### Phase 8 (Part 08): 2D/3D Animation, Generative Video & 3D Integration
 - **Focus Departments:**
   - Department 14: Audio Production (Spotify Pedalboard)
   - Department 17: Subtitles & Dubbing (WhisperX / ElevenLabs / Kokoro)

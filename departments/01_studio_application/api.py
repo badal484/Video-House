@@ -1242,6 +1242,97 @@ async def insert_motion_composition_to_timeline_endpoint(composition_id: str, re
     return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
 
 
+# =========================================================================
+# Department 13: VFX & Compositing API Endpoints
+# =========================================================================
+
+class VFXProjectCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    resolution_w: int = 1920
+    resolution_h: int = 1080
+    fps: float = 24.0
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class VFXTaskCreateRequest(BaseModel):
+    project_id: str
+    shot_id: str
+    name: str
+    vfx_type: str
+    description: str = ""
+    input_assets: List[str] = Field(default_factory=list)
+    compositing_graph: Optional[Dict[str, Any]] = None
+
+
+class VFXGraphEvaluateRequest(BaseModel):
+    graph: Dict[str, Any]
+    frame_index: int = 0
+
+
+@app.post("/api/v1/vfx/projects")
+async def create_vfx_project_endpoint(req: VFXProjectCreateRequest):
+    from departments.vfx_compositing.core.vfx_project_models import VFXProject
+    vfx_proj = VFXProject(
+        vfx_project_id=str(uuid4()),
+        project_id=req.project_id,
+        name=req.name,
+        resolution_w=req.resolution_w,
+        resolution_h=req.resolution_h,
+        fps=req.fps,
+        metadata=req.metadata,
+    )
+    db.save_vfx_project(vfx_proj)
+    return {"success": True, "vfx_project": vfx_proj.to_dict()}
+
+
+@app.get("/api/v1/vfx/projects/{project_id}")
+async def list_vfx_projects_endpoint(project_id: str):
+    projects = db.list_vfx_projects(project_id)
+    return {"project_id": project_id, "vfx_projects": projects}
+
+
+@app.post("/api/v1/vfx/shots/tasks")
+async def create_vfx_task_endpoint(req: VFXTaskCreateRequest):
+    from departments.vfx_compositing.core.vfx_project_models import VFXShotTask, VFXType, VFXTaskStatus
+    task = VFXShotTask(
+        task_id=str(uuid4()),
+        project_id=req.project_id,
+        shot_id=req.shot_id,
+        name=req.name,
+        vfx_type=VFXType(req.vfx_type),
+        description=req.description,
+        status=VFXTaskStatus.PENDING,
+        input_assets=req.input_assets,
+        compositing_graph_id=req.compositing_graph.get("graph_id") if req.compositing_graph else None,
+    )
+    db.save_vfx_shot_task(task)
+    return {"success": True, "task": task.to_dict()}
+
+
+@app.get("/api/v1/vfx/shots/tasks/{task_id}")
+async def get_vfx_task_endpoint(task_id: str):
+    task = db.get_vfx_shot_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"VFX Task '{task_id}' not found.")
+    return {"task": task}
+
+
+@app.post("/api/v1/vfx/evaluate-graph")
+async def evaluate_vfx_graph_endpoint(req: VFXGraphEvaluateRequest):
+    from departments.vfx_compositing.core.graph_models import CompositingGraph
+    from departments.vfx_compositing.engines.local_compositor import LocalCompositorEngine
+    graph = CompositingGraph.from_dict(req.graph)
+    engine = LocalCompositorEngine()
+    frame = engine.evaluate_frame(graph, frame_index=req.frame_index)
+    return {
+        "success": True,
+        "graph_id": graph.graph_id,
+        "frame_shape": list(frame.shape),
+        "dtype": str(frame.dtype),
+    }
+
+
 
 
 
@@ -1987,6 +2078,97 @@ async def insert_motion_composition_to_timeline_endpoint(composition_id: str, re
         codec=req.codec
     )
     return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
+
+
+# =========================================================================
+# Department 13: VFX & Compositing API Endpoints
+# =========================================================================
+
+class VFXProjectCreateRequest(BaseModel):
+    project_id: str
+    name: str
+    resolution_w: int = 1920
+    resolution_h: int = 1080
+    fps: float = 24.0
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class VFXTaskCreateRequest(BaseModel):
+    project_id: str
+    shot_id: str
+    name: str
+    vfx_type: str
+    description: str = ""
+    input_assets: List[str] = Field(default_factory=list)
+    compositing_graph: Optional[Dict[str, Any]] = None
+
+
+class VFXGraphEvaluateRequest(BaseModel):
+    graph: Dict[str, Any]
+    frame_index: int = 0
+
+
+@app.post("/api/v1/vfx/projects")
+async def create_vfx_project_endpoint(req: VFXProjectCreateRequest):
+    from departments.vfx_compositing.core.vfx_project_models import VFXProject
+    vfx_proj = VFXProject(
+        vfx_project_id=str(uuid4()),
+        project_id=req.project_id,
+        name=req.name,
+        resolution_w=req.resolution_w,
+        resolution_h=req.resolution_h,
+        fps=req.fps,
+        metadata=req.metadata,
+    )
+    db.save_vfx_project(vfx_proj)
+    return {"success": True, "vfx_project": vfx_proj.to_dict()}
+
+
+@app.get("/api/v1/vfx/projects/{project_id}")
+async def list_vfx_projects_endpoint(project_id: str):
+    projects = db.list_vfx_projects(project_id)
+    return {"project_id": project_id, "vfx_projects": projects}
+
+
+@app.post("/api/v1/vfx/shots/tasks")
+async def create_vfx_task_endpoint(req: VFXTaskCreateRequest):
+    from departments.vfx_compositing.core.vfx_project_models import VFXShotTask, VFXType, VFXTaskStatus
+    task = VFXShotTask(
+        task_id=str(uuid4()),
+        project_id=req.project_id,
+        shot_id=req.shot_id,
+        name=req.name,
+        vfx_type=VFXType(req.vfx_type),
+        description=req.description,
+        status=VFXTaskStatus.PENDING,
+        input_assets=req.input_assets,
+        compositing_graph_id=req.compositing_graph.get("graph_id") if req.compositing_graph else None,
+    )
+    db.save_vfx_shot_task(task)
+    return {"success": True, "task": task.to_dict()}
+
+
+@app.get("/api/v1/vfx/shots/tasks/{task_id}")
+async def get_vfx_task_endpoint(task_id: str):
+    task = db.get_vfx_shot_task(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"VFX Task '{task_id}' not found.")
+    return {"task": task}
+
+
+@app.post("/api/v1/vfx/evaluate-graph")
+async def evaluate_vfx_graph_endpoint(req: VFXGraphEvaluateRequest):
+    from departments.vfx_compositing.core.graph_models import CompositingGraph
+    from departments.vfx_compositing.engines.local_compositor import LocalCompositorEngine
+    graph = CompositingGraph.from_dict(req.graph)
+    engine = LocalCompositorEngine()
+    frame = engine.evaluate_frame(graph, frame_index=req.frame_index)
+    return {
+        "success": True,
+        "graph_id": graph.graph_id,
+        "frame_shape": list(frame.shape),
+        "dtype": str(frame.dtype),
+    }
 
 
 

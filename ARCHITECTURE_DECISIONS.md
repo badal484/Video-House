@@ -434,3 +434,48 @@ Repurposing landscape video graphics for vertical mobile feeds (9:16) often caus
 Chosen option: **Semantic Coordinate Re-anchoring (`DesignValidator.adapt_aspect_ratio`)**.
 - Re-scales coordinates proportionally.
 - Intelligently detects vertical aspect ratios ($H > W$), automatically enlarges typography for mobile viewing, and re-centers lower thirds to prevent collision with mobile app UI buttons.
+
+---
+
+## ADR-034: Directed Acyclic Graph (DAG) for Node-Based Compositing
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+OpenTimelineIO and NLE timeline tracks are designed for sequential horizontal editorial cuts, not for complex multi-branch 2D pixel transformations, planar tracking corner pins, and matte extractions.
+
+### Decision Outcome
+Chosen option: **Explicit Directed Acyclic Graph (DAG) Compositing Schema (`CompositingGraph`)**.
+- Nodes possess typed input/output sockets (`IMAGE_RGBA`, `IMAGE_RGB`, `MASK_ALPHA`, `TRANSFORM_MATRIX`, `TRACK_DATA`).
+- Cycle detection enforces acyclic topology, executed strictly in topological sort order via Kahn's algorithm.
+
+---
+
+## ADR-035: Dual-Engine Compositing Architecture (LocalCompositorEngine + BlenderCompositorEngine)
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+Local Apple Silicon M4 hardware constraints require instant, zero-network, sub-millisecond 2D compositing without heavy 3D rendering overhead, while preserving future headless 3D OpenUSD/Cycles multi-pass rendering.
+
+### Decision Outcome
+Chosen option: **Hybrid Dual-Engine Architecture with Dynamic Router (`VFXEngineRouter`)**.
+- `LocalCompositorEngine`: Pure Python + NumPy + OpenCV 5.0 for deterministic local execution of chroma keying, planar perspective warping, inpainting, and alpha merges.
+- `BlenderCompositorEngine`: Standalone Python script generator for headless Blender compositor node trees and multi-pass OpenEXR compositing.
+
+---
+
+## ADR-036: Premultiplied Alpha Math & Linear Color Space Conformance
+
+### Status
+Accepted & Implemented (Part 07)
+
+### Context & Problem Statement
+Evaluating blurs, glows, and alpha merges in gamma-encoded sRGB produces dark fringing, muddy edges, and unphysical light summation.
+
+### Decision Outcome
+Chosen option: **Linear Radiance Space Processing with Premultiplied Alpha Blending**.
+- All merge operations evaluate $C_{out} = C_{fg} + C_{bg} \times (1.0 - \alpha_{fg})$ in premultiplied linear float32 space before converting back to sRGB.
+- Built-in color difference despill suppresses green/blue edge reflection on foreground subjects.

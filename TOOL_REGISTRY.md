@@ -238,3 +238,47 @@ flowchart LR
 - **Role:** Generates task dependency DAGs, verifies local Apple M4 hardware compatibility (<2GB weight downloads), routes heavy diffusion to remote GPUs, models compute cost ranges, and enforces human approval gates.
 - **Invocation Method:** Python in-process (`ProductionBreakdownService`, `ProductionFeasibilityService`, `ProductionBlueprintManager`).
 - **Health Check Command:** `python3 -c "from departments.production_planning.planning_service import ProductionPlanningService; print('Planning Engine OK')"`
+
+---
+
+## 8. VFX & Compositing Tools (Department 13)
+
+### 8.1 Local Node Compositor Engine
+- **Identifier:** `tool.vfx.local_compositor`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 / BSD-3-Clause (Studio Core)
+- **Role:** Topological DAG node graph evaluator executing chroma keying, perspective warping, inpainting, and multi-layer premultiplied alpha merges.
+- **Invocation Method:** Python in-process (`LocalCompositorEngine`, `VFXEngineRouter`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import LocalCompositorEngine; print('Local Compositor OK')"`
+
+### 8.2 Chroma Keying & Despill Engine
+- **Identifier:** `tool.vfx.chroma_keyer`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Extracts alpha mattes from green and blue screens using color difference metrics with despill suppression and morphological edge feathering.
+- **Invocation Method:** Python in-process (`ChromaKeyer`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import ChromaKeyer; print('Chroma Keyer OK')"`
+
+### 8.3 Planar Tracking & Perspective Warper
+- **Identifier:** `tool.vfx.planar_tracker`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (OpenCV / Studio Core)
+- **Role:** 4-point perspective homography estimation and Lanczos4 warping for screen and billboard replacements.
+- **Invocation Method:** Python in-process (`PlanarTracker`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import PlanarTracker; print('Planar Tracker OK')"`
+
+### 8.4 Video Cleanup & Inpainting Engine
+- **Identifier:** `tool.vfx.inpainting_engine`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (OpenCV / Studio Core)
+- **Role:** Wire, rig, logo, and blemish removal using Telea fast marching and Navier-Stokes differential equations.
+- **Invocation Method:** Python in-process (`InpaintingEngine`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import InpaintingEngine; print('Inpainting Engine OK')"`
+
+### 8.5 Automated VFX Quality Auditor
+- **Identifier:** `tool.vfx.quality_checker`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Automatically inspects composite frames for matte pinholes, green/blue spill leakage, and edge transition halos.
+- **Invocation Method:** Python in-process (`VFXQualityChecker`).
+- **Health Check Command:** `python3 -c "from departments.vfx_compositing import VFXQualityChecker; print('VFX QC OK')"`

@@ -1057,6 +1057,36 @@ class AssetDatabase:
                 updated_at TEXT NOT NULL,
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS vfx_projects (
+                vfx_project_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                metadata_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS vfx_shot_tasks (
+                task_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                shot_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                vfx_type TEXT NOT NULL,
+                description TEXT NOT NULL,
+                status TEXT NOT NULL,
+                input_assets_json TEXT NOT NULL,
+                output_asset_id TEXT,
+                compositing_graph_id TEXT,
+                tracking_data_json TEXT NOT NULL,
+                qc_report_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
@@ -1090,6 +1120,9 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_markers_timeline ON timeline_markers(timeline_id);
             CREATE INDEX IF NOT EXISTS idx_renders_timeline ON render_jobs(timeline_id);
             CREATE INDEX IF NOT EXISTS idx_mograph_project ON motion_compositions(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_proj_project ON vfx_projects(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_tasks_project ON vfx_shot_tasks(project_id);
+            CREATE INDEX IF NOT EXISTS idx_vfx_tasks_shot ON vfx_shot_tasks(shot_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -2574,6 +2607,185 @@ class AssetDatabase:
             cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
             return cur.rowcount > 0
 
+    def save_vfx_project(self, project: Any) -> None:
+        """Saves or updates a VFXProject in the database."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        vfx_proj_id = p_dict.get("vfx_project_id")
+        project_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "VFX Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+        meta = p_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_projects (
+                    vfx_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(vfx_proj_id),
+                str(project_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(meta),
+                now,
+            ))
+
+    def get_vfx_project(self, vfx_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXProject record."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_projects WHERE vfx_project_id = ?", (str(vfx_project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "vfx_project_id": row["vfx_project_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "resolution_w": row["resolution_w"],
+                "resolution_h": row["resolution_h"],
+                "fps": row["fps"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_vfx_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "vfx_project_id": r["vfx_project_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "resolution_w": r["resolution_w"],
+                    "resolution_h": r["resolution_h"],
+                    "fps": r["fps"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_vfx_shot_task(self, task: Any) -> None:
+        """Saves or updates a VFXShotTask."""
+        now = utc_now_iso()
+        t_dict = task.to_dict() if hasattr(task, "to_dict") else task
+        task_id = t_dict.get("task_id")
+        project_id = t_dict.get("project_id", "default")
+        shot_id = t_dict.get("shot_id", "shot_0")
+        name = t_dict.get("name", "VFX Shot Task")
+        vfx_type = t_dict.get("vfx_type", "MULTI_LAYER_COMPOSITE")
+        desc = t_dict.get("description", "")
+        status = t_dict.get("status", "PENDING")
+        input_assets = t_dict.get("input_assets", [])
+        output_asset_id = t_dict.get("output_asset_id")
+        comp_graph_id = t_dict.get("compositing_graph_id")
+        tracking_data = t_dict.get("tracking_data", {})
+        qc_report = t_dict.get("qc_report", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_shot_tasks (
+                    task_id, project_id, shot_id, name, vfx_type, description,
+                    status, input_assets_json, output_asset_id, compositing_graph_id,
+                    tracking_data_json, qc_report_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(task_id),
+                str(project_id),
+                str(shot_id),
+                name,
+                str(vfx_type),
+                desc,
+                str(status),
+                json.dumps(input_assets),
+                str(output_asset_id) if output_asset_id else None,
+                str(comp_graph_id) if comp_graph_id else None,
+                json.dumps(tracking_data),
+                json.dumps(qc_report),
+                now,
+                now,
+            ))
+
+    def get_vfx_shot_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXShotTask by task_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_shot_tasks WHERE task_id = ?", (str(task_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "task_id": row["task_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "name": row["name"],
+                "vfx_type": row["vfx_type"],
+                "description": row["description"],
+                "status": row["status"],
+                "input_assets": json.loads(row["input_assets_json"]),
+                "output_asset_id": row["output_asset_id"],
+                "compositing_graph_id": row["compositing_graph_id"],
+                "tracking_data": json.loads(row["tracking_data_json"]),
+                "qc_report": json.loads(row["qc_report_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_vfx_shot_tasks(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXShotTasks for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_shot_tasks WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "task_id": r["task_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "name": r["name"],
+                    "vfx_type": r["vfx_type"],
+                    "description": r["description"],
+                    "status": r["status"],
+                    "input_assets": json.loads(r["input_assets_json"]),
+                    "output_asset_id": r["output_asset_id"],
+                    "compositing_graph_id": r["compositing_graph_id"],
+                    "tracking_data": json.loads(r["tracking_data_json"]),
+                    "qc_report": json.loads(r["qc_report_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def update_vfx_shot_task_status(
+        self,
+        task_id: str,
+        status: str,
+        output_asset_id: Optional[str] = None,
+        qc_report: Optional[Dict[str, Any]] = None,
+    ) -> bool:
+        """Updates status, output asset, and QC report for a VFXShotTask."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            cur = conn.execute("""
+                UPDATE vfx_shot_tasks
+                SET status = ?,
+                    output_asset_id = COALESCE(?, output_asset_id),
+                    qc_report_json = CASE WHEN ? IS NOT NULL THEN ? ELSE qc_report_json END,
+                    updated_at = ?
+                WHERE task_id = ?
+            """, (
+                status,
+                str(output_asset_id) if output_asset_id else None,
+                json.dumps(qc_report) if qc_report else None,
+                json.dumps(qc_report) if qc_report else None,
+                now,
+                str(task_id),
+            ))
+            return cur.rowcount > 0
+
     # -------------------------------------------------------------
     # Multimodal Intelligence Persistence Methods (Part 03)
     # -------------------------------------------------------------
@@ -3776,4 +3988,183 @@ class AssetDatabase:
         """Deletes a MotionComposition by composition_id."""
         with self.get_connection() as conn:
             cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
+            return cur.rowcount > 0
+
+    def save_vfx_project(self, project: Any) -> None:
+        """Saves or updates a VFXProject in the database."""
+        now = utc_now_iso()
+        p_dict = project.to_dict() if hasattr(project, "to_dict") else project
+        vfx_proj_id = p_dict.get("vfx_project_id")
+        project_id = p_dict.get("project_id", "default")
+        name = p_dict.get("name", "VFX Project")
+        res_w = int(p_dict.get("resolution_w", 1920))
+        res_h = int(p_dict.get("resolution_h", 1080))
+        fps = float(p_dict.get("fps", 24.0))
+        meta = p_dict.get("metadata", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_projects (
+                    vfx_project_id, project_id, name, resolution_w, resolution_h,
+                    fps, metadata_json, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(vfx_proj_id),
+                str(project_id),
+                name,
+                res_w,
+                res_h,
+                fps,
+                json.dumps(meta),
+                now,
+            ))
+
+    def get_vfx_project(self, vfx_project_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXProject record."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_projects WHERE vfx_project_id = ?", (str(vfx_project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "vfx_project_id": row["vfx_project_id"],
+                "project_id": row["project_id"],
+                "name": row["name"],
+                "resolution_w": row["resolution_w"],
+                "resolution_h": row["resolution_h"],
+                "fps": row["fps"],
+                "metadata": json.loads(row["metadata_json"]),
+                "created_at": row["created_at"],
+            }
+
+    def list_vfx_projects(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXProjects for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_projects WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "vfx_project_id": r["vfx_project_id"],
+                    "project_id": r["project_id"],
+                    "name": r["name"],
+                    "resolution_w": r["resolution_w"],
+                    "resolution_h": r["resolution_h"],
+                    "fps": r["fps"],
+                    "metadata": json.loads(r["metadata_json"]),
+                    "created_at": r["created_at"],
+                }
+                for r in rows
+            ]
+
+    def save_vfx_shot_task(self, task: Any) -> None:
+        """Saves or updates a VFXShotTask."""
+        now = utc_now_iso()
+        t_dict = task.to_dict() if hasattr(task, "to_dict") else task
+        task_id = t_dict.get("task_id")
+        project_id = t_dict.get("project_id", "default")
+        shot_id = t_dict.get("shot_id", "shot_0")
+        name = t_dict.get("name", "VFX Shot Task")
+        vfx_type = t_dict.get("vfx_type", "MULTI_LAYER_COMPOSITE")
+        desc = t_dict.get("description", "")
+        status = t_dict.get("status", "PENDING")
+        input_assets = t_dict.get("input_assets", [])
+        output_asset_id = t_dict.get("output_asset_id")
+        comp_graph_id = t_dict.get("compositing_graph_id")
+        tracking_data = t_dict.get("tracking_data", {})
+        qc_report = t_dict.get("qc_report", {})
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO vfx_shot_tasks (
+                    task_id, project_id, shot_id, name, vfx_type, description,
+                    status, input_assets_json, output_asset_id, compositing_graph_id,
+                    tracking_data_json, qc_report_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(task_id),
+                str(project_id),
+                str(shot_id),
+                name,
+                str(vfx_type),
+                desc,
+                str(status),
+                json.dumps(input_assets),
+                str(output_asset_id) if output_asset_id else None,
+                str(comp_graph_id) if comp_graph_id else None,
+                json.dumps(tracking_data),
+                json.dumps(qc_report),
+                now,
+                now,
+            ))
+
+    def get_vfx_shot_task(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a VFXShotTask by task_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM vfx_shot_tasks WHERE task_id = ?", (str(task_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "task_id": row["task_id"],
+                "project_id": row["project_id"],
+                "shot_id": row["shot_id"],
+                "name": row["name"],
+                "vfx_type": row["vfx_type"],
+                "description": row["description"],
+                "status": row["status"],
+                "input_assets": json.loads(row["input_assets_json"]),
+                "output_asset_id": row["output_asset_id"],
+                "compositing_graph_id": row["compositing_graph_id"],
+                "tracking_data": json.loads(row["tracking_data_json"]),
+                "qc_report": json.loads(row["qc_report_json"]),
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+            }
+
+    def list_vfx_shot_tasks(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all VFXShotTasks for a project."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM vfx_shot_tasks WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [
+                {
+                    "task_id": r["task_id"],
+                    "project_id": r["project_id"],
+                    "shot_id": r["shot_id"],
+                    "name": r["name"],
+                    "vfx_type": r["vfx_type"],
+                    "description": r["description"],
+                    "status": r["status"],
+                    "input_assets": json.loads(r["input_assets_json"]),
+                    "output_asset_id": r["output_asset_id"],
+                    "compositing_graph_id": r["compositing_graph_id"],
+                    "tracking_data": json.loads(r["tracking_data_json"]),
+                    "qc_report": json.loads(r["qc_report_json"]),
+                    "created_at": r["created_at"],
+                    "updated_at": r["updated_at"],
+                }
+                for r in rows
+            ]
+
+    def update_vfx_shot_task_status(
+        self,
+        task_id: str,
+        status: str,
+        output_asset_id: Optional[str] = None,
+        qc_report: Optional[Dict[str, Any]] = None,
+    ) -> bool:
+        """Updates status, output asset, and QC report for a VFXShotTask."""
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            cur = conn.execute("""
+                UPDATE vfx_shot_tasks
+                SET status = ?,
+                    output_asset_id = COALESCE(?, output_asset_id),
+                    qc_report_json = CASE WHEN ? IS NOT NULL THEN ? ELSE qc_report_json END,
+                    updated_at = ?
+                WHERE task_id = ?
+            """, (
+                status,
+                str(output_asset_id) if output_asset_id else None,
+                json.dumps(qc_report) if qc_report else None,
+                json.dumps(qc_report) if qc_report else None,
+                now,
+                str(task_id),
+            ))
             return cur.rowcount > 0
