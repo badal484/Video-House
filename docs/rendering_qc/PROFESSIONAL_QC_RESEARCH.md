@@ -28,3 +28,4 @@ Professional automated Quality Control (QC) protects broadcast networks, streami
 > - VMAF **CANNOT** evaluate whether the original creative edit was "good" or "bad".
 > - When transcoding masters for streaming delivery (e.g. ProRes master -> H.264 web delivery), VMAF is applied with a target threshold $\ge 93.0$ (SDR) or $\ge 90.0$ (HDR model `vmaf_b_v0.6.3`).
 > - When no reference master exists, non-reference statistical checks (bitrate variance, black frames, freeze frames, audio clipping) are applied.
+

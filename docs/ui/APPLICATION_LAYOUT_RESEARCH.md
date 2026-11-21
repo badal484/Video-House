@@ -62,3 +62,4 @@ The application supports 12 standardized workspace presets accessible via numeri
 - `0`: **Color Grading & Restoration** (Lift/Gamma/Gain wheels, curves, LUTs)
 - `-`: **Subtitles & Localization** (Transcript editor, translation, dubbing, lip-sync)
 - `=`: **Rendering, QC & Delivery** (Render plan DAG, QC report cards, delivery manifests)
+

@@ -57,3 +57,4 @@ Every `RenderJob` maintains complete provenance:
 - The queue computes a deterministic cache key from:
   $$\text{Key} = \text{SHA256}(\text{project\_id} + \text{timeline\_version} + \text{render\_profile\_id} + \text{asset\_hashes})$$
 - If an existing render with an identical cache key is already completed or currently running, the job system returns the existing job record, preventing redundant encoding passes.
+

@@ -14,3 +14,4 @@ For every render job, the cost manager tracks:
 - **Project Budget Ceiling:** Projects specify a maximum allowed compute budget (e.g. $\$25.00$).
 - **Single-Job Safety Cap:** If an individual render job's estimated cost exceeds $\$1.00$, the scheduler automatically transitions the job to `BLOCKED` and requests explicit user authorization via `HumanApprovalGate`.
 - **Exceeded Budget Enforcement:** If a project reaches its budget limit, all non-essential rendering is paused until the user explicitly expands the ceiling.
+

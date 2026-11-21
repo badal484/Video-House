@@ -24,3 +24,4 @@ To prevent temporal rendering artifacts, the `RenderPlanCompiler` decomposes pro
 ## 4. Cost Management & Compute Sizing
 - Cloud GPU rendering carries substantial hourly egress and compute costs.
 - The studio enforces a strict **Preflight Cost Gate**: Any job requiring remote cloud workers or estimated to exceed $\$1.00$ triggers a mandatory `HumanApprovalGate` before dispatching compute tasks.
+

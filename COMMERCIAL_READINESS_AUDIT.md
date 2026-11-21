@@ -78,3 +78,4 @@ This audit evaluates the intellectual property (IP), licensing terms, and commer
 ## 4. Legal Compliance Certification
 
 The Universal AI Video Production Studio codebase and its runtime dependencies have been audited and certified **Commercially Compliant**. No AGPL-3.0, CC-BY-NC, or proprietary unlicensed code exists in the runtime path.
+

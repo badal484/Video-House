@@ -86,3 +86,4 @@ The studio provides real-time system metrics via `/api/v1/system/telemetry` and 
 
 1. **W3C TraceContext Propagation:** Incoming HTTP requests receive a `traceparent` header. If absent, the API gateway mints a fresh root span. The span context is attached to asyncio tasks and passed across background job parameters.
 2. **Sentry SDK Integration:** Uncaught exceptions in HTTP endpoints or background workers automatically capture stack traces, active project UUID, correlation ID, and OS hardware state without leaking user media tokens or file contents.
+

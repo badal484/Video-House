@@ -20,3 +20,4 @@ Broadcast playout servers require strict adherence to file wrappers, stream layo
 - **Audio Codec:** Uncompressed 24-bit 48kHz PCM
 - **Metadata:** Embedded MediaConch compliance policy and C2PA provenance manifest
 - **Use Case:** Long-term archival preservation (FIAF / Library of Congress)
+

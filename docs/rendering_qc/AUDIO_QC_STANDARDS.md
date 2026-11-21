@@ -30,3 +30,4 @@ ITU-R BS.1770-4 defines the algorithms for objective loudness measurement:
 
 ## 4. QC Engine Enforcement Strategy
 Department 18 evaluates audio against the active `RenderProfile`. A deviation of $> 1.0\text{ LUFS}$ on an EBU R128 profile triggers an automatic `ERROR`, whereas for a social web profile it triggers an `INFO` or `WARNING` with automatic gain normalization remediation advice.
+

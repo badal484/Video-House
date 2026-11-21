@@ -41,3 +41,4 @@ Our design system uses a strict 3-tier token hierarchy:
 
 ### Timeline Track Items
 - Rounded 4px corners, solid category header, waveform/thumbnail canvas backdrop, selection highlight.
+

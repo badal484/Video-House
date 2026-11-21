@@ -111,3 +111,4 @@ class PreflightValidator:
 
         has_blocking = any(i.is_blocking for i in issues)
         return not has_blocking, [i.to_dict() for i in issues]
+

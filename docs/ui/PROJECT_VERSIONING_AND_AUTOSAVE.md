@@ -17,3 +17,4 @@ Professional creative workflows require bulletproof state preservation to safegu
 - Version browser modal lists past versions with creation timestamp, author notes, and snapshot metadata.
 - "Restore Version" creates an automatic safety snapshot of current work before executing a non-destructive rollback.
 - Unsaved change guard: Attempting to close or switch projects with pending edits triggers an explicit confirmation dialog.
+

@@ -44,3 +44,4 @@ The encoding engine configures FFmpeg parameters matching the active `RenderProf
 - **GOP Architecture:** Closed GOPs with keyframe intervals fixed to exactly 2 seconds for web streaming (`-g 48` at 24fps).
 - **FastStart Atom:** Relocates the ISO `moov` atom to the beginning of the MP4 container (`-movflags +faststart`) enabling instant progressive web playback.
 - **Color Tagging:** Writes explicit NCLX color metadata: color primaries, transfer characteristics, and matrix coefficients (e.g. `bt709` or `bt2020-10 / smpte2084`).
+

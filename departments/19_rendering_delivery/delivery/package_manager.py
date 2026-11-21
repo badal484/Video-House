@@ -109,3 +109,4 @@ class DeliveryPackageManager:
             manifest_path=manifest_path,
             total_size_bytes=total_size,
         )
+

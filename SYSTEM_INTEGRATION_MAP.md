@@ -82,3 +82,4 @@ flowchart TD
 | **20** | **Agent Orchestration**| User briefs, execution tickets | Orchestrated task transitions, agent states | Dept 06, 07, 19 |
 | **21** | **Storage & Asset Mgmt**| Binary files, metadata records | Central SQLite Asset Registry, persistent paths | All departments |
 | **22** | **Licensing & Cost** | Model invocations, cloud render tickets | Ledger entries, license compliance audits | Dept 02, 15, 19 |
+

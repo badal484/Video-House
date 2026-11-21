@@ -25,3 +25,4 @@ The Universal AI Video Production Studio fuses these best practices:
 2. **Premiere Pro's 4-Quadrant Discipline:** Preserves the muscle memory of video editors with Source/Program monitors, project bin on the left, properties on the right, and multi-track OTIO timeline on the bottom.
 3. **Nuke's Node Transparency:** Visualizes compositing graphs and render execution DAGs without hiding intermediate processing stages.
 4. **Linear's Keyboard-First Speed:** Instant command palette (`Cmd+K`), comprehensive shortcut index, and non-blocking asynchronous background notifications.
+

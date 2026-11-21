@@ -66,3 +66,4 @@ The production image uses a multi-stage Docker build based on `python:3.11-slim-
 2. **Readiness & Liveness Probes:**
    - **Liveness Probe (`/api/v1/system/telemetry`):** Returns 200 OK if event loop is unblocked and memory is within thresholds.
    - **Readiness Probe (`/api/v1/projects`):** Returns 200 OK only after SQLite WAL database connection is established and storage volumes are writable.
+

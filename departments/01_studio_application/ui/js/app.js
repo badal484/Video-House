@@ -159,3 +159,4 @@ export class StudioApplication {
 window.addEventListener("DOMContentLoaded", () => {
   window.studioApp = new StudioApplication();
 });
+

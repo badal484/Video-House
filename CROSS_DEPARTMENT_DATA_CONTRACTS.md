@@ -129,3 +129,4 @@ class DeliveryManifest(BaseModel):
     qc_report_id: UUID
     generated_at: str
 ```
+

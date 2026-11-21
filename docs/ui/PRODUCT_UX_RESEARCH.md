@@ -38,3 +38,4 @@ Instead of treating AI as a conversational gimmick or text chatbot sidecar, the 
 3. **High Information Density Without Visual Clutter:** Standardized 8px grid, compact 28px/32px row heights, collapsible tool drawers, and customizable 4-quadrant docking layouts.
 4. **Sub-Millisecond Keyboard Navigation:** Complete J/K/L transport control, 1-frame stepping (`Left`/`Right`), 10-frame jumping (`Shift+Left`/`Shift+Right`), blade cuts (`B`), save (`Cmd+S`), and global search (`Cmd+K`).
 5. **Zero-Loss Data Integrity:** Continuous background autosave with visual indicators, project snapshot branching, and persistent SQLite database state.
+

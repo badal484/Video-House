@@ -60,3 +60,4 @@ class RenderQueueManager:
             return False
         job.status = RenderJobStatus.CANCELLED
         return True
+

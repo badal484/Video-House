@@ -86,3 +86,4 @@ class ProjectVersionSnapshot(BaseModel):
     notes: Optional[str] = None
     snapshot: Dict[str, Any]
     created_at: str
+

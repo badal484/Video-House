@@ -23,3 +23,4 @@ The `api_client.js` module wraps all FastAPI backend endpoints with:
 - **Exponential Backoff & Retries:** Automatically retries transient network interruptions for non-destructive operations.
 - **Timeout Protection:** Configurable timeouts (10s for metadata queries, 300s for media uploads).
 - **Error Propagation:** Transforms backend HTTP 4xx/5xx responses into user-friendly error objects with actionable remediation steps.
+

@@ -57,3 +57,4 @@ class RenderCostManager:
             )
 
         return True, None
+

@@ -34,3 +34,4 @@ class TimelineAdapter:
             "format": "prores_422_hq",
             "file_size_bytes": os.path.getsize(intermediate_output_path),
         }
+

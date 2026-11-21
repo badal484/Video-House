@@ -22,3 +22,4 @@ The `RenderRecoveryManager` ensures robust recovery without wasting already-rend
 ### 2.3 Partial Output Quarantine & Cleanup
 - Partially written video files or truncated MP4 containers are never left in production output paths.
 - They are quarantined to `temp/scratch/` and automatically deleted upon job failure or recovery, preventing corrupted files from ever being delivered.
+

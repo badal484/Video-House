@@ -24,3 +24,4 @@ The studio processes long-running computational tasks across multiple department
 ### 2. Event-Driven Real-Time Updates
 - State polling is kept strictly throttled (1,500ms intervals) and pauses automatically when browser tab is backgrounded.
 - Toast notifications appear on the bottom-right for completed renders or critical QC alerts.
+

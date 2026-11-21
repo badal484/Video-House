@@ -71,3 +71,4 @@ flowchart LR
 - *Mitigation:*
   1. The `ConsentManager` in Department 17 mandates a cryptographically signed biometric consent record (`biometric_consents` table) before initiating custom voice dubbing or character likeness generation.
   2. Consents declare explicit territorial rights and mandatory expiration dates.
+

@@ -63,3 +63,4 @@ class RenderRecoveryManager:
             except OSError:
                 pass
         return False
+

@@ -21,3 +21,4 @@ The `VideoValidator` performs comprehensive frame-level and stream-level analysi
 - **Resolution Verification:** Verifies exact pixel dimensions (e.g. $1920\times1080$, $3840\times2160$). Any deviation triggers a critical error.
 - **Frame Rate & VFR Detection:** Inspects packet timestamps ($\Delta \text{PTS}$). If packet duration varies by $> 2\%$, the stream is flagged as non-standard Variable Frame Rate (VFR), recommending re-conformance to Constant Frame Rate (CFR).
 - **Corrupted Frame Inspection:** Scans for decode errors, missing keyframes, macroblock artifacts, and container truncations.
+

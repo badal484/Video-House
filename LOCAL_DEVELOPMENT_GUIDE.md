@@ -62,3 +62,4 @@ Navigate your browser to `http://localhost:8000` to interact with the Single-Pag
 - `projects/`: SQLite asset registry (`studio_asset_registry.db`).
 - `assets/`: Physical ingested original media and generated derivatives.
 - `temp/`: Scratch directory for intermediate rendering and audio DSP.
+

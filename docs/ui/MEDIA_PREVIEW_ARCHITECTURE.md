@@ -19,3 +19,4 @@ The **Media Preview Engine** provides sub-frame accurate playback and comparison
 ### 3. Split Comparison (Before / After A-B Slider)
 - The preview monitor includes an interactive split slider dividing the canvas into Left (Original Camera Master) and Right (Color Graded / VFX Composite / Restored Output).
 - Dragging the divider allows instant visual verification of skin tones, chroma key despill, and super-resolution sharpness.
+

@@ -26,3 +26,4 @@ We implement a **Web-First Single-Page Application (SPA)** served directly by th
 2. **Hardware Awareness (Apple M4 MacBook Pro):** Eliminates Electron's massive memory overhead, preserving 100% of the 16GB unified RAM for Apple VideoToolbox hardware encoding, PySceneDetect optical flow, and DSP audio processing.
 3. **Decoupled Client-Server Boundary:** The UI communicates exclusively via standard REST endpoints (`/api/v1/*`) and Server-Sent Events / WebSockets. This allows running the backend headless on a high-powered remote GPU server or locally on the laptop with zero frontend code modifications.
 4. **Tauri Drop-In Readiness:** Because the UI is built with standard web technologies (HTML5, modern CSS3 tokens, ES6+ modules) and decoupled from Node-specific internals, it can be wrapped into a native lightweight Tauri desktop binary in minutes whenever offline desktop packaging is required.
+

@@ -20,3 +20,4 @@ The Global Application Shell encapsulates the entire creative experience:
 
 4. **Bottom Status Bar (`<footer>`):**
    - Active project UUID, framerate (24.00 fps), timeline timebase, VideoToolbox hardware acceleration status, backend API health, and system clock.
+

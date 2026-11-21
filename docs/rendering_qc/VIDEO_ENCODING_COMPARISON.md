@@ -33,3 +33,4 @@ On our Apple MacBook Pro (M4, 16GB Unified Memory):
 ## 3. Operational Division of Responsibilities
 1. **DCC / Timeline Engines:** Export high-bitrate uncompressed/lightly-compressed intermediate video (e.g. Apple ProRes 422 HQ).
 2. **Encoding Engine Adapter:** Transforms the intermediate master into the target container, video codec, bit depth, chroma subsampling, and audio configuration specified by the active `RenderProfile`.
+

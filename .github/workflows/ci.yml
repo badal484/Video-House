@@ -90,3 +90,4 @@ jobs:
       - name: Run Integration Test Discovery
         run: |
           python -m unittest discover tests/integration/ -p "test_*.py" -v
+

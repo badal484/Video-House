@@ -26,3 +26,4 @@ Professional masters serve as the highest-quality archive of a completed video p
 - **Video Codec:** Avid DNxHR HQX (10-bit High Quality Extended)
 - **Pixel Format:** `yuv422p10le`
 - **Use Case:** Cross-platform Windows/Linux non-linear editing exchange
+

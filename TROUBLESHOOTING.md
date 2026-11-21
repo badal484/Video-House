@@ -37,3 +37,4 @@
 - **Cause:** Variable Frame Rate (VFR) source material causing timestamp drift.
 - **Resolution:**
   Department 03 conforms VFR material to Constant Frame Rate (CFR) during ingestion. Ensure all source media passes through the proxy/conformance pipeline before timeline insertion.
+

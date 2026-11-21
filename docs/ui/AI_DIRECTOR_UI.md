@@ -23,3 +23,4 @@ The **AI Director Interface** provides a structured, collaborative environment w
 5. **Production Blueprint & Approval Center:**
    - Displays the dependency DAG of tasks to be dispatched across departments (Gen AI, 2D Animation, Editing, Audio, Grading).
    - Formal Approval Gates: creators review task breakdowns and approve execution before compute cycles or API costs are incurred.
+

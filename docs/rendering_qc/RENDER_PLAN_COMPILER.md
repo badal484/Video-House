@@ -41,3 +41,4 @@ The compiler estimates:
 - **Estimated Render Time:** Modeled from timeline duration, resolution, frame rate, and filter complexity.
 - **Estimated Disk Space:** Calculated from target bitrate $\times$ duration plus intermediate buffer requirements.
 - **Estimated Financial Cost:** If remote cloud workers are required, cost is calculated against worker hourly rates. Any job exceeding $\$1.00$ triggers a mandatory `HumanApprovalGate`.
+

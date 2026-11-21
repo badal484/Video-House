@@ -36,3 +36,4 @@ When applying major updates or schema migrations:
 6. Run database migrations.
 7. Execute integration test verification (`python3 -m unittest discover tests/integration/`).
 8. Resume worker queue intake.
+

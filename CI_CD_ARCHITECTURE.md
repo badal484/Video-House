@@ -63,3 +63,4 @@ flowchart LR
 | **Testing / CI** | Pull Request to `main` | Ephemeral GitHub Actions runner | Automated job abort |
 | **Staging** | Merge to `main` branch | Blue/Green container deployment | Immediate traffic switch to Blue |
 | **Production** | Semantic release tag (`vX.Y.Z`) | Canary rolling update (10% -> 50% -> 100%) | Instant container rollback on alert |
+

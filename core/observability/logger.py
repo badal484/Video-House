@@ -134,3 +134,4 @@ def setup_observability_logging(log_level: int = logging.INFO, log_file: Optiona
 
 def get_logger(name: str, department: Optional[str] = None) -> StudioLogger:
     return StudioLogger(name, department=department)
+

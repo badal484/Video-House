@@ -46,3 +46,4 @@ class DeliveryManifestGenerator:
             json.dump(manifest, f, indent=2)
 
         return manifest_path
+

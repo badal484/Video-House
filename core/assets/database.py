@@ -2462,6 +2462,63 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
             );
             CREATE INDEX IF NOT EXISTS idx_project_versions_project ON project_versions(project_id);
+
+            -- Part 14 Rendering & Quality Control Tables
+            CREATE TABLE IF NOT EXISTS render_plans (
+                plan_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                timeline_id TEXT,
+                render_profile_id TEXT NOT NULL,
+                stages_json TEXT NOT NULL,
+                estimated_duration_sec REAL DEFAULT 0.0,
+                estimated_cost_usd REAL DEFAULT 0.0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS qc_reports (
+                report_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                asset_id TEXT NOT NULL,
+                render_job_id TEXT,
+                passed INTEGER NOT NULL,
+                total_issues INTEGER DEFAULT 0,
+                critical_count INTEGER DEFAULT 0,
+                error_count INTEGER DEFAULT 0,
+                warning_count INTEGER DEFAULT 0,
+                defects_json TEXT NOT NULL,
+                metrics_json TEXT,
+                inspected_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS delivery_packages (
+                package_id TEXT PRIMARY KEY,
+                delivery_id TEXT NOT NULL,
+                project_id TEXT NOT NULL,
+                render_job_id TEXT NOT NULL,
+                master_file_path TEXT NOT NULL,
+                sidecars_json TEXT,
+                manifest_path TEXT NOT NULL,
+                total_size_bytes INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_render_plans_project ON render_plans(project_id);
+            CREATE INDEX IF NOT EXISTS idx_qc_reports_project ON qc_reports(project_id);
+            CREATE INDEX IF NOT EXISTS idx_delivery_packages_project ON delivery_packages(project_id);
+
+            CREATE TABLE IF NOT EXISTS project_versions (
+                version_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                version_name TEXT NOT NULL,
+                snapshot_json TEXT NOT NULL,
+                notes TEXT,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
+            CREATE INDEX IF NOT EXISTS idx_project_versions_project ON project_versions(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -2474,6 +2531,100 @@ class AssetDatabase:
 
     def get_project(self, project_id: UUID) -> Optional[Dict[str, Any]]:
         with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM projects WHERE project_id = ?", (str(project_id),)).fetchone()
+            if not row:
+                return None
+            return {
+                "project_id": UUID(row["project_id"]),
+                "name": row["name"],
+                "created_at": row["created_at"],
+                "updated_at": row["updated_at"],
+                "settings": json.loads(row["settings_json"])
+            }
+
+    def list_projects(self, limit: int = 100, offset: int = 0) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT p.*, (SELECT COUNT(*) FROM assets a WHERE a.project_id = p.project_id) as asset_count "
+                "FROM projects p ORDER BY p.updated_at DESC LIMIT ? OFFSET ?",
+                (limit, offset)
+            ).fetchall()
+            results = []
+            for row in rows:
+                results.append({
+                    "project_id": UUID(row["project_id"]),
+                    "name": row["name"],
+                    "created_at": row["created_at"],
+                    "updated_at": row["updated_at"],
+                    "settings": json.loads(row["settings_json"]),
+                    "asset_count": row["asset_count"]
+                })
+            return results
+
+    def update_project(self, project_id: UUID, name: Optional[str] = None, settings: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            existing = self.get_project(project_id)
+            if not existing:
+                return None
+            new_name = name if name is not None else existing["name"]
+            merged_settings = dict(existing.get("settings", {}))
+            if settings is not None:
+                merged_settings.update(settings)
+            new_settings = merged_settings
+            conn.execute(
+                "UPDATE projects SET name = ?, settings_json = ?, updated_at = ? WHERE project_id = ?",
+                (new_name, json.dumps(new_settings), now, str(project_id))
+            )
+        return self.get_project(project_id)
+
+    def delete_project(self, project_id: UUID) -> bool:
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM projects WHERE project_id = ?", (str(project_id),))
+            return cur.rowcount > 0
+
+    def save_project_version(self, project_id: UUID, version_name: str, snapshot_data: Dict[str, Any], notes: Optional[str] = None) -> str:
+        version_id = str(uuid4())
+        now = utc_now_iso()
+        with self.get_connection() as conn:
+            conn.execute(
+                "INSERT INTO project_versions (version_id, project_id, version_name, snapshot_json, notes, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (version_id, str(project_id), version_name, json.dumps(snapshot_data), notes or "", now)
+            )
+        return version_id
+
+    def list_project_versions(self, project_id: UUID) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            rows = conn.execute(
+                "SELECT * FROM project_versions WHERE project_id = ? ORDER BY created_at DESC",
+                (str(project_id),)
+            ).fetchall()
+            return [
+                {
+                    "version_id": row["version_id"],
+                    "project_id": UUID(row["project_id"]),
+                    "version_name": row["version_name"],
+                    "snapshot": json.loads(row["snapshot_json"]),
+                    "notes": row["notes"],
+                    "created_at": row["created_at"]
+                }
+                for row in rows
+            ]
+
+    def get_project_version(self, version_id: str) -> Optional[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM project_versions WHERE version_id = ?", (version_id,)).fetchone()
+            if not row:
+                return None
+            return {
+                "version_id": row["version_id"],
+                "project_id": UUID(row["project_id"]),
+                "version_name": row["version_name"],
+                "snapshot": json.loads(row["snapshot_json"]),
+                "notes": row["notes"],
+                "created_at": row["created_at"]
+            }
             row = conn.execute("SELECT * FROM projects WHERE project_id = ?", (str(project_id),)).fetchone()
             if not row:
                 return None
@@ -11615,58 +11766,18 @@ class AssetDatabase:
                     "project_id": r["project_id"],
                     "name": r["name"],
                     "category": r["category"],
+                    "file_path": r["file_path"],
                     "sample_rate": r["sample_rate"],
                     "channels": r["channels"],
                     "duration_sec": r["duration_sec"],
                     "loudness_lufs": r["loudness_lufs"],
-                    "file_path": r["file_path"],
                     "metadata": json.loads(r["metadata_json"]),
                     "created_at": r["created_at"],
                 }
                 for r in rows
             ]
 
-    def save_generation_job(self, job: Any) -> None:
-        """Persists or updates a GenerationResult / job."""
-        now = datetime.now(timezone.utc).isoformat()
-        if hasattr(job, "to_dict"):
-            data = job.to_dict()
-        elif isinstance(job, dict):
-            data = job
-        else:
-            data = getattr(job, "__dict__", {})
-
-        job_id = str(data.get("job_id", uuid4()))
-        project_id = str(data.get("project_id", "default_project"))
-        shot_id = data.get("shot_id")
-        modality = str(data.get("modality", "TEXT_TO_IMAGE"))
-        provider_id = str(data.get("provider_id", "unknown"))
-        model_id = str(data.get("model_id", "default"))
-        prompt = str(data.get("prompt", data.get("raw_prompt", "")))
-        status = str(data.get("status", "SUBMITTED"))
-        actual_cost_usd = float(data.get("actual_cost_usd", 0.0))
-
-        with self.get_connection() as conn:
-            conn.execute("""
-                INSERT OR REPLACE INTO generation_jobs (
-                    job_id, project_id, shot_id, modality, provider_id, model_id, prompt, status, actual_cost_usd, data_json, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                job_id,
-                project_id,
-                shot_id,
-                modality,
-                provider_id,
-                model_id,
-                prompt,
-                status,
-                actual_cost_usd,
-                json.dumps(data),
-                now,
-                now,
-            ))
-
-    def get_generation_job(self, job_id: str) -> Optional[Dict[str, Any]]:
+    def get_generation_job(self, job_id: UUID) -> Optional[Dict[str, Any]]:
         """Retrieves a generation job by ID."""
         with self.get_connection() as conn:
             row = conn.execute("SELECT * FROM generation_jobs WHERE job_id = ?", (str(job_id),)).fetchone()

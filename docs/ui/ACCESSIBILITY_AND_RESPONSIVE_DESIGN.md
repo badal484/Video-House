@@ -16,3 +16,4 @@ Creative work is performed across diverse screen sizes:
 - All modals implement keyboard focus traps (`Tab` cycles within modal, `Escape` dismisses).
 - Color contrast conforms to WCAG AA ($\ge 4.5:1$ for body text, $\ge 3.0:1$ for UI components).
 - System respects `prefers-reduced-motion` and `prefers-color-scheme`.
+

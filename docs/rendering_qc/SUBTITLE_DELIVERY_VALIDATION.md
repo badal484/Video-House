@@ -18,3 +18,4 @@ The `SubtitleValidator` inspects subtitle and caption sidecars (SRT, WebVTT, ASS
 ### 2.3 Multilingual Alignment & Language Consistency
 - Verifies that every declared subtitle sidecar has an associated audio track with matching BCP-47 language tags.
 - Verifies UTF-8 encoding validity and character set integrity for Indic scripts (Hindi, Tamil, Telugu).
+

@@ -73,3 +73,4 @@ departments/19_rendering_delivery/
 4. **Encoding & Transcoding:** Validated intermediate frames are encoded into target container formats according to the active `RenderProfile`.
 5. **Quality Control Gate:** The rendered media is inspected by `QualityControlService`. If critical rules fail (e.g. resolution mismatch, loud clipping), the job is flagged `QC_FAILED` and delivery is halted.
 6. **Delivery Packaging:** Passing renders are packaged with subtitle sidecars, audio stems, thumbnails, SHA-256 checksums, and signed manifests.
+

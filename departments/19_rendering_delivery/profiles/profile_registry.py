@@ -224,3 +224,4 @@ class RenderProfileRegistry:
     def register_custom_profile(cls, profile: RenderProfile) -> None:
         """Registers a user-defined export profile."""
         cls._PROFILES[profile.profile_id] = profile
+

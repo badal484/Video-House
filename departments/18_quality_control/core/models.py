@@ -70,3 +70,4 @@ class QCReport(BaseModel):
     defects: List[QCDefect] = Field(default_factory=list)
     metrics: Dict[str, Any] = Field(default_factory=dict)
     inspected_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+

@@ -17,3 +17,4 @@ The **Project Management System** (Department 02) orchestrates production lifecy
 
 ### 2. Project Settings Modal
 - Configures Canvas Width/Height, Aspect Ratio, Frame Rate, Timebase, Color Space (Rec.709, ACEScg, P3-D65), Audio Sample Rate (48,000 Hz), and Target Platforms.
+

@@ -51,3 +51,4 @@
 | **Resource Overhead** | Minimal (~20 MB engine overhead) | >1.5 GB just for control plane | ~150 MB Nomad client/server | Minimal local |
 | **GPU Scheduling** | Native `--gpus all` or macOS Metal | NVIDIA GPU Operator | Nomad GPU device driver | Cloud GPU add-on pricing |
 | **Recommendation** | **CANONICAL LOCAL & CLOUD BASELINE**| **Optional for High-Scale Enterprise**| **Alternative for Bare-Metal** | **Convenient Cloud Preview Option** |
+

@@ -76,3 +76,4 @@ Every component implements five mandatory states:
 3. **Active / Pressed:** Inner micro-shadow or accent highlight.
 4. **Focus-Visible:** 2px solid cyan focus ring (`--studio-border-focus`) with 2px offset for complete keyboard navigation.
 5. **Disabled:** 40% opacity, `cursor: not-allowed`, no hover reaction.
+

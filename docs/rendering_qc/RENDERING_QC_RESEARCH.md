@@ -56,3 +56,4 @@ Rendering and delivery in this architecture must bridge:
 Treating timeline rendering and encoding as a monolithic operation creates severe bottlenecks, makes partial re-rendering impossible, and prevents multi-profile delivery.
 - **Timeline Rendering:** Evaluates procedural effects, alpha blending, time remapping, and audio panning into uncompressed or high-bitrate intermediate buffers (e.g. ProRes 422 HQ, DNxHR HQX, or 16-bit float TIFF/EXR sequences).
 - **Encoding:** Ingests the validated intermediate frames and performs temporal motion estimation, macroblock quantization, entropy coding (CABAC/CAVLC), and multiplexing into delivery containers (MP4, MOV, MKV, MXF).
+

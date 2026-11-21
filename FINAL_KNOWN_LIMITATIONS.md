@@ -36,3 +36,4 @@
 ## 4. 3D OpenUSD & Headless Blender Integration
 
 1. **Blender Executable Requirement:** Department 11 requires a locally installed Blender 4.x binary (`blender`) in system PATH to execute OpenUSD viewport rendering. In headless cloud environments, a Blender container layer must be mounted.
+

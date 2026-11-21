@@ -53,3 +53,4 @@ python3 scripts/backup_restore.py restore backups/backup_<PROJECT_ID>_20261121_0
 # Project restored successfully: <PROJECT_ID>
 ```
 3. Restart studio service. The project and all source assets, timelines, and versions appear in the UI immediately.
+

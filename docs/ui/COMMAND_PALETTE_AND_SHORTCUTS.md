@@ -33,3 +33,4 @@ The studio implements a high-speed modal command palette accessible anywhere in 
 | `Cmd + K` | Open Command Palette | Global |
 | `1` through `9`, `0`, `-`, `=` | Switch to Workspace Presets 1–12 | Global |
 | `Escape` | Dismiss Open Modals & Drawers | Global |
+

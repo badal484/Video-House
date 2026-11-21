@@ -49,3 +49,4 @@ volumes:
     driver: local
   studio_temp:
     driver: local
+

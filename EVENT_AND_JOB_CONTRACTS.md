@@ -76,3 +76,4 @@ class JobTicket(BaseModel):
 1. **Cryptographic Idempotency Keys:** Every job ticket calculates an `idempotency_key = sha256(f"{project_id}:{task_type}:{canonical_inputs_json}")`.
 2. **Atomic Ingestion Check:** When a worker or user submits a job with an identical idempotency key that is currently `RUNNING` or `COMPLETED`, the queue returns the existing job ID rather than spawning a duplicate process.
 3. **Partial Output Cleanup:** If a transcode or render job fails or is cancelled mid-execution, the `RecoveryManager` immediately deletes partial output files (`.part`, temporary WAV/MP4 files) to prevent corrupted fragments from polluting project storage.
+

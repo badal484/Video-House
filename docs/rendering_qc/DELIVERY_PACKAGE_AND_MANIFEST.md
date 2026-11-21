@@ -35,3 +35,4 @@ The root `delivery_manifest.json` documents:
 - `technical_specs`: Resolution, frame rate, video codec, audio sample rate, color primaries, transfer curve.
 - `qc_summary`: Overall pass status, total rules evaluated, warnings count.
 - `provenance`: Timestamp, studio render engine version, and C2PA metadata link.
+

@@ -16,3 +16,4 @@
 1. **Native Desktop Wrapper:** Wrap the current ES6+ web client into a Tauri 2.0 native binary with local menu bar integration.
 2. **Multi-Monitor Window Detachment:** Support popping out the Program Monitor or Audio Mixer into secondary physical monitors.
 3. **Real-Time Collaborative Multi-User Cursors:** WebSocket presence indicators for team editing sessions.
+

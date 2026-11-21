@@ -38,3 +38,4 @@ This document details the interface architecture for each of the 9 specialized d
 ## 9. Rendering, QC & Delivery Workspace (Part 14)
 - **Features:** Preflight checklist (offline media, missing fonts, licenses), render plan DAG viewer, profile presets (ProRes 422 HQ, YouTube 1080p, Shorts 9:16, Broadcast MXF, FFV1), real-time priority queue monitor, delivery package manifest viewer, and automated QC defect report cards.
 - **Backend Bridge:** `/api/v1/rendering/*` and `/api/v1/qc/*`
+

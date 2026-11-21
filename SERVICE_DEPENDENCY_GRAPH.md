@@ -104,3 +104,4 @@ graph TD
 | **Dept 15: AI Video Generation Timeout** | Cloud diffusion job times out | Generative shot missing | Production planner flags missing coverage; prompts manual replacement. |
 | **Dept 18: Quality Control Policy Alert** | Broadcast compliance defect detected | Delivery package blocked | Detailed defect report returned to user with specific remediation hints. |
 | **Dept 19: Hardware Encoder Crash** | VideoToolbox ASIC error | Master export interrupted | Automatic fallback to deterministic CPU software encoder (`libx264`). |
+

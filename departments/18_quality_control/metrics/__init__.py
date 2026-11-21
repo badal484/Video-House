@@ -2,3 +2,4 @@
 from .visual_metrics import VisualQualityAssessor
 
 __all__ = ["VisualQualityAssessor"]
+

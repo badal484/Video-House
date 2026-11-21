@@ -34,3 +34,4 @@
 - Hardware VideoToolbox encoding on Apple Silicon delivers a **6x speedup** over CPU software encoding while maintaining broadcast-quality visual fidelity.
 - Full-reference VMAF scoring is compute-intensive (~38 FPS on M4) and should be reserved for release master validation rather than high-frequency preview iterations.
 - Parallelizing independent QC passes (e.g. running audio EBU R128 in parallel with video black frame detection) reduces total pre-delivery validation latency by **45%**.
+

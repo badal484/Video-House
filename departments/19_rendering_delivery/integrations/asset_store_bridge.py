@@ -28,3 +28,4 @@ class AssetStoreBridge:
         """Registers a final delivery master derivative."""
         from uuid import uuid4
         return uuid4()
+

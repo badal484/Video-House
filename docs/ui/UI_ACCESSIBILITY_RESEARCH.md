@@ -27,3 +27,4 @@ Professional creative tools often suffer from poor accessibility: tiny text, unl
 ### 4. Reduced Motion & Sensory Support
 - `@media (prefers-reduced-motion: reduce)` disables non-essential transitions, modal zooms, and animated progress bars.
 - Color is never used as the sole indicator of status: error states always pair color with an icon (`✕`) and descriptive text.
+

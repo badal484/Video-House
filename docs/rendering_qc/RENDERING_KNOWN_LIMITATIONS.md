@@ -12,3 +12,4 @@
 - Hardware-accelerated AV1 encoding on future Apple Silicon generations.
 - Direct IMF SMPTE CPL/PKL XML packaging export with MXF OP-Atom essence wrapping.
 - Web-based real-time frame scrubber for QC defect visual inspection in the Studio UI.
+

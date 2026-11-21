@@ -24,3 +24,4 @@ In accordance with Studio Prime Directive #6, all codecs, muxers, demuxers, libr
   - For software encoding, AV1 (`libsvtav1`) and VP9 are open, royalty-free standards supported across modern browsers and YouTube.
 - **Apple ProRes Licensing:**
   - Apple ProRes encoding on macOS via VideoToolbox is officially licensed and hardware-accelerated by Apple Silicon Media Engine.
+

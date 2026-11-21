@@ -41,3 +41,4 @@ fi
 echo " Launching Studio API Server & Web UI on http://localhost:8000"
 echo " Press Ctrl+C to stop."
 exec python3 -m uvicorn departments.studio_application.api:app --host 0.0.0.0 --port 8000 --log-level info
+

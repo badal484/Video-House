@@ -34,3 +34,4 @@ Modern video delivery requires distinguishing between:
 - **Internal Master Intermediate:** Apple ProRes 422 HQ (or ProRes 4444 for motion graphics with alpha transparency).
 - **Web & Social Delivery:** MP4 container with faststart optimization (`-movflags +faststart`), H.264 / HEVC video, and 48kHz AAC stereo audio.
 - **Archival Package:** Matroska MKV with lossless FFV1 v3 and 24-bit 48kHz uncompressed PCM audio.
+

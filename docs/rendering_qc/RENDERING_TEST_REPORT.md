@@ -42,3 +42,4 @@ The test suite in `tests/unit/test_rendering_delivery.py` provides end-to-end ve
 - **Platform:** macOS Sonoma, Apple M4, 16GB RAM.
 - **Python:** 3.11.
 - **Target Pass Rate:** 100% pass across all 35 acceptance tests without regressions to prior 179 studio platform tests.
+

@@ -87,3 +87,4 @@ If `sqlite3.OperationalError: database is locked` occurs:
    sqlite3 projects/studio_asset_registry.db "PRAGMA wal_checkpoint(TRUNCATE);"
    ```
 3. Restart service.
+

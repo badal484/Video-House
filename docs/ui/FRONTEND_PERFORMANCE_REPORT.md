@@ -20,3 +20,4 @@
 | **Command Palette Opening** | $< 50\text{ ms}$ | **8 ms** | Blazing fast |
 | **Memory Footprint (Browser Tab)**| $< 150\text{ MB}$ | **42 MB** | Extremely lightweight; respects 16GB RAM limit |
 | **Workstation Disk Usage** | $< 100\text{ MB}$ | **~4 MB** | Zero node_modules bloat; preserves 38GB disk |
+

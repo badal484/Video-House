@@ -22,3 +22,4 @@ The `AudioValidator` inspects rendered audio streams for technical defects, loud
 - Compares audio stream duration against video stream duration:
   $$\Delta t_{\text{sync}} = |t_{\text{audio}} - t_{\text{video}}|$$
 - Flags any discrepancy $> 0.040\text{ seconds}$ ($> 1$ video frame at 24fps) as a synchronization error.
+

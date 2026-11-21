@@ -29,3 +29,4 @@ Social media delivery profiles optimize for bandwidth efficiency, mobile display
 - **Video Codec:** H.264 High Profile
 - **Bitrate:** 6 Mbps
 - **Audio:** AAC-LC Stereo, 192 kbps, target $-14.0\text{ LUFS}$
+

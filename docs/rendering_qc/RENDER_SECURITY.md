@@ -17,3 +17,4 @@ Media production pipelines ingest external user footage, third-party motion grap
 ### 2.3 Ephemeral Credentials & Token Scope
 - Cloud worker communication utilizes short-lived HMAC or signed JWT tokens with 1-hour expiration.
 - Cloud storage uploads use pre-signed URLs restricted to specific object keys and `PUT` verbs only.
+

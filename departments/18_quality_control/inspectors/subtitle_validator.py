@@ -97,3 +97,4 @@ class SubtitleValidator:
                 )
 
         return defects
+

@@ -26,3 +26,4 @@ We adopt a **modular Vanilla ES6+ architecture with CSS Design Tokens**:
 2. **Deterministic Browser Sandbox:** Runs natively in any modern browser (Chrome, Safari, Firefox, Edge) without external build tooling dependencies.
 3. **Rock-Solid Reliability:** No broken dependency trees or npm audit vulnerabilities.
 4. **Unmatched Performance:** Direct DOM manipulation for high-frequency operations (timeline playhead at 60 FPS, audio meter peaks) guarantees zero virtual-DOM diffing bottlenecks.
+

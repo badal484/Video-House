@@ -145,3 +145,4 @@ export class CommandPaletteComponent {
     this.el.style.display = "none";
   }
 }
+

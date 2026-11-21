@@ -26,3 +26,4 @@ class DCCRenderBridge:
             "status": "COMPLETED",
             "output_asset_id": task_parameters.get("target_asset_id", "dcc_rendered_asset_01"),
         }
+

@@ -45,3 +45,4 @@ flowchart TD
   1. Inspect error category in logs: `grep -i "error" logs/studio.jsonl | tail -n 20`.
   2. If hardware codec crashed, force CPU fallback mode by setting `HARDWARE_ACCELERATION=cpu` in `.env`.
   3. Restart studio application.
+

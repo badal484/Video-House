@@ -120,3 +120,4 @@ class AudioValidator:
             )
 
         return defects
+

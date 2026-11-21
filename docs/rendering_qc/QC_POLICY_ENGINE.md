@@ -15,3 +15,4 @@ Every rule failure is categorized into one of four severity levels:
 - **STREAMING_PREMIUM:** Zero `CRITICAL` or `ERROR`. Allows up to 2 `WARNING`s with automated mitigation notes.
 - **SOCIAL_FAST_TRACK:** Focuses on file playability, aspect ratio, and faststart; allows minor loudness and compression warnings to pass automatically.
 - **HUMAN_GATE_REQUIRED:** Forces a pause before delivery, presenting the technical report and interactive review timeline to the operator.
+

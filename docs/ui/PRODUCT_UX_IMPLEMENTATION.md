@@ -56,3 +56,4 @@ departments/01_studio_application/ui/
     │   └── project_settings.js  # Resolution, framerate & storage configuration
     └── app.js                   # Main application entry point & router
 ```
+

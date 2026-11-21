@@ -35,3 +35,4 @@ class RemoteRenderWorker:
             "is_mock": self.is_mock,
             "endpoint": self.endpoint_url,
         }
+

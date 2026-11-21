@@ -26,3 +26,4 @@ Each agent is rendered as an actionable telemetry card displaying:
 - **Current Task:** Real-time description of active task and elapsed duration.
 - **Estimated Cost:** Spend accrued in dollars (`$0.00` to `$1.25`).
 - **Action Buttons:** "Assign Task", "Cancel", "Retry", "View Logs", and "Take Over Manually".
+

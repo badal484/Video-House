@@ -12,3 +12,4 @@ The UI test suite (`tests/unit/test_studio_ui.py`) validates the full applicatio
 7. **Generation Studio:** Tests multimodal prompt compilation, capability routing, provider selection, and budget caps.
 8. **Specialized Departments:** Tests Motion Graphics, VFX node DAGs, 2D Animation turnarounds, Audio mixing, Color grading, Localization dubbing, and Rendering QC.
 9. **Resilience & Accessibility:** Tests error states, 404 handling, keyboard shortcuts index, and command palette items.
+

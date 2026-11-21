@@ -27,3 +27,4 @@ class TimelineRenderBridge:
             "intermediate_master": output_intermediate_path,
             "format": "prores_422_hq",
         }
+

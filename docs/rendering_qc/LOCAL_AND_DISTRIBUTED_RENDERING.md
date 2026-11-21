@@ -19,3 +19,4 @@ The studio runtime manages a hybrid compute pool combining local workstation acc
 To preserve temporal integrity, tasks are partitioned strictly according to the operation type:
 - **Intra-Frame Splitting (Allowed):** 3D Cycles renders, 2D vector drawing rasterization, and static background generation are chunked into contiguous frame spans (e.g. frames 0–49, 50–99).
 - **Temporal Context Splitting (Protected):** Temporal motion estimation, video stabilization, frame rate interpolation (RIFE), and inter-frame video encoding are never split at arbitrary frames. They are chunked strictly at scene cut boundaries.
+

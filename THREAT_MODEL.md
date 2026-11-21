@@ -34,3 +34,4 @@
     ├── Craft malformed MP4/MOV header --> MITIGATED: 31 magic byte signature preflight
     └── Trigger heap overflow in libavcodec --> MITIGATED: Unprivileged sandbox execution
 ```
+

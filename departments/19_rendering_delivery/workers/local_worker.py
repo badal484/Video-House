@@ -57,3 +57,4 @@ class LocalRenderWorker:
             "encoder_used": self.get_hardware_encoder(encoder_params.get("codec", "h264")),
             "hardware_accelerated": self.is_apple_silicon,
         }
+

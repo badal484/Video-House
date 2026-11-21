@@ -106,3 +106,4 @@ class VideoValidator:
                     )
                 )
         return defects
+

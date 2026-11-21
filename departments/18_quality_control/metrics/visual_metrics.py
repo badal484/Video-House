@@ -57,3 +57,4 @@ class VisualQualityAssessor:
         if is_hdr:
             base_vmaf -= 2.0  # HDR model penalty for highlight rolloff
         return round(min(100.0, max(0.0, base_vmaf)), 2)
+

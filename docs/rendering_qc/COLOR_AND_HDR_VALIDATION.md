@@ -21,3 +21,4 @@ The `ColorValidator` verifies that output media complies with declared color spa
 ### 2.3 Legal Range & Gamut Violation Auditing
 - Verifies whether output requires Studio/Limited Range ($16–235$ in 8-bit) or Full Range ($0–255$).
 - Flags out-of-gamut Rec.2020 excursions when converting to Rec.709 delivery targets.
+

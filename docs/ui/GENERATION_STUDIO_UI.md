@@ -35,3 +35,4 @@ The **Generation Studio Interface** provides a single, provider-agnostic dashboa
    - Real-time estimated cost indicator.
    - Warning banner if cost exceeds per-shot budget cap ($1.00) requiring explicit human approval.
    - "Generate" and "Cancel" controls with live job queue progress.
+

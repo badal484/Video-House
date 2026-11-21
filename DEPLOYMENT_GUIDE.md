@@ -81,3 +81,4 @@ server {
 git checkout <PREVIOUS_TAG>
 docker compose up -d --build
 ```
+

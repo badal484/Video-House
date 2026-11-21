@@ -947,3 +947,133 @@ flowchart LR
 - **Asset Path:** `departments/01_studio_application/ui/js/command_palette.js`
 
 
+
+---
+
+## 14. Automated Quality Control, Rendering & Delivery Tools (Departments 18 & 19)
+
+### 14.1 Preflight Project Validator
+- **Identifier:** `tool.rendering.preflight`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Inspects complete production projects prior to render job dispatch to ensure zero offline media clips, verify font file availability, confirm LUT resolution, and enforce commercial license clearance.
+- **Invocation Method:** Python in-process (`PreflightValidator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.compiler.preflight import PreflightValidator; print('Preflight Validator OK')"`
+
+### 14.2 Render Plan DAG Compiler
+- **Identifier:** `tool.rendering.plan_compiler`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Compiles target delivery profile requests into an optimized Directed Acyclic Graph (DAG) of render stages (preflight, intermediate timeline rendering, multi-profile transcoding, QC audits, packaging) with accurate compute cost estimation.
+- **Invocation Method:** Python in-process (`RenderPlanCompiler`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.compiler.render_plan_compiler import RenderPlanCompiler; print('Render Plan Compiler OK')"`
+
+### 14.3 Delivery Profile Registry
+- **Identifier:** `tool.rendering.profile_registry`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Manages industry-standard rendering and delivery specifications across Master Archival (ProRes 422 HQ, ProRes 4444, DNxHR HQX, FFV1 MKV), Broadcast (MXF OP1a XDCAM/AVC-Intra), Web Streaming (YouTube 4K/1080p), and Social Vertical (9:16 Shorts/Reels).
+- **Invocation Method:** Python in-process (`RenderProfileRegistry`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.profiles.profile_registry import RenderProfileRegistry; print('Profile Registry OK')"`
+
+### 14.4 Asynchronous Render Job Queue & Scheduler
+- **Identifier:** `tool.rendering.queue_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Prioritizes and orchestrates asynchronous rendering tasks across worker pools, enforcing concurrency limits and cryptographic SHA-256 idempotency caching to prevent duplicate rendering spend.
+- **Invocation Method:** Python in-process (`RenderQueueManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.queue.render_queue_manager import RenderQueueManager; print('Queue Manager OK')"`
+
+### 14.5 Checkpoint & Recovery Manager
+- **Identifier:** `tool.rendering.recovery_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Tracks per-job and per-stage execution checkpoints, provides automated exponential backoff retries on transient errors, and guarantees atomic cleanup of partial output files on cancellation or failure.
+- **Invocation Method:** Python in-process (`RecoveryManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.queue.recovery_manager import RecoveryManager; print('Recovery Manager OK')"`
+
+### 14.6 Local & Distributed Worker Manager
+- **Identifier:** `tool.rendering.worker_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Dispatches encoding tasks to local Apple Silicon VideoToolbox ASIC hardware workers or remote GPU clusters depending on hardware capabilities and queue load.
+- **Invocation Method:** Python in-process (`WorkerManager`, `LocalRenderWorker`, `RemoteRenderWorker`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.workers.worker_manager import WorkerManager; print('Worker Manager OK')"`
+
+### 14.7 Hardware-Accelerated Encoding Engine
+- **Identifier:** `tool.rendering.encoding_engine`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Formulates optimized FFmpeg parameter pipelines for ProRes, H.264, HEVC, and AV1 with FastStart moov atom placement, closed GOP cadence, and NCLX color signaling tags.
+- **Invocation Method:** Python in-process (`EncodingEngine`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.encoding.encoding_engine import EncodingEngine; print('Encoding Engine OK')"`
+
+### 14.8 Delivery Package & Manifest Generator
+- **Identifier:** `tool.rendering.delivery_packager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Bundles master video files, audio stems, multilingual subtitle sidecars, QC validation logs, and metadata into a standardized delivery directory with a machine-readable `delivery_manifest.json` and SHA-256 checksums.
+- **Invocation Method:** Python in-process (`DeliveryPackageManager`, `DeliveryManifestGenerator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.delivery.package_manager import DeliveryPackageManager; print('Package Manager OK')"`
+
+### 14.9 Render Compute Cost Manager
+- **Identifier:** `tool.rendering.cost_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Estimates compute times, cloud GPU rental rates, and storage consumption before execution, enforcing project financial ceilings.
+- **Invocation Method:** Python in-process (`RenderCostManager`).
+- **Health Check Command:** `python3 -c "import departments; from departments.rendering_delivery.delivery.cost_manager import RenderCostManager; print('Cost Manager OK')"`
+
+### 14.10 Automated Media Quality Control Policy Engine
+- **Identifier:** `tool.qc.policy_engine`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Orchestrates multi-check technical quality control audits across video defects, audio loudness, color/HDR metadata, and subtitle conformance against configurable rule policies (Strict Broadcast, Streaming, Archival).
+- **Invocation Method:** Python in-process (`QCPolicyEngine`, `QualityControlService`).
+- **Health Check Command:** `python3 -c "import departments; from departments.quality_control.rules.qc_policy_engine import QCPolicyEngine; print('QC Policy Engine OK')"`
+
+### 14.11 Visual Metric Evaluation Engine
+- **Identifier:** `tool.qc.visual_metrics`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Computes objective visual quality metrics (PSNR, SSIM, and approximate VMAF scores) to evaluate transcoding loss between source masters and compressed delivery derivatives.
+- **Invocation Method:** Python in-process (`VisualMetricsCalculator`).
+- **Health Check Command:** `python3 -c "import departments; from departments.quality_control.metrics.visual_metrics import VisualMetricsCalculator; print('Visual Metrics OK')"`
+
+---
+
+## 15. Studio Application, User Interface & Project Management (Departments 01 & 02)
+
+### 15.1 Studio Application Service & Static SPA Engine
+- **Identifier:** `tool.studio.application_service`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Central application gateway serving the single-page creative workspace, delivering high-performance CSS tokens, Vanilla JS reactive architecture, and system telemetry without external Node.js build dependencies.
+- **Invocation Method:** Python in-process (`StudioApplicationService`, FastAPI endpoints `GET /`, `GET /ui/{file_path:path}`).
+- **Health Check Command:** `python3 -c "from departments.01_studio_application.service import StudioApplicationService; print('Studio App OK')"`
+
+### 15.2 Project Management & Version Snapshotting Engine
+- **Identifier:** `tool.studio.project_manager`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Manages project lifecycles, predefined multi-aspect production templates (YouTube 16:9, Shorts 9:16, DCI Cinema 2.39:1, Anime 2D), immutable project version snapshots, stage transitions, and cascading deletion.
+- **Invocation Method:** Python in-process (`ProjectManagementService`).
+- **Health Check Command:** `python3 -c "from departments.02_project_management.service import ProjectManagementService; print('Project Manager OK')"`
+
+### 15.3 High-Performance Media Preview & Canvas Engine
+- **Identifier:** `tool.ui.media_preview`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Client-side HTML5/Canvas video player supporting rational-time frame-stepping (J/K/L shuttling), A/B split-screen comparison slider, audio waveform sync, and safe-title guides.
+- **Invocation Method:** JavaScript client runtime (`media_preview.js`).
+- **Asset Path:** `departments/01_studio_application/ui/js/media_preview.js`
+
+### 15.4 Command Palette & Keyboard Dispatcher Engine
+- **Identifier:** `tool.ui.command_palette`
+- **Version:** `1.0.0`
+- **License:** Apache 2.0 (Studio Core)
+- **Role:** Global fuzzy-search modal (`Cmd+K` / `Ctrl+K`) and keyboard shortcut routing system enabling keyboard-driven navigation across all 9 specialized studio workspaces and 50+ actions.
+- **Invocation Method:** JavaScript client runtime (`command_palette.js`, `shortcuts.js`).
+- **Asset Path:** `departments/01_studio_application/ui/js/command_palette.js`
+
+

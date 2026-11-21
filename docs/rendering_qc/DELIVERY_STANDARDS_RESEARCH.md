@@ -38,3 +38,4 @@ Delivery packaging requires bundling video streams, multilingual audio tracks, c
 - **Standard:** IETF RFC 9043 (FFV1 Video Codec) in Matroska (`.mkv`).
 - **Features:** Lossless intra-frame compression, CRC32 packet-level error detection, 10-bit or 16-bit 4:2:2 / 4:4:4 color fidelity.
 - **Use Case:** Library of Congress, FIAF national film heritage preservation.
+

@@ -18,3 +18,4 @@ The **Media Asset Browser** interfaces with Department 02 (Media Ingestion) and 
 - 500-point audio waveform preview.
 - SHA-256 cryptographic checksum.
 - Action buttons: "Add to Timeline", "Analyze (PySceneDetect)", "Generate Proxy", "Delete Asset".
+

@@ -32,3 +32,4 @@ The **Creative Workspace** is the core operational cockpit of the studio, implem
 - Time ruler with frame ticks and snap indicators.
 - Draggable cyan playhead needle synchronized with Program Monitor.
 - Clip manipulation: Click to select, drag to reposition, `B` to blade/split at playhead, `Delete` / `Backspace` to delete, handles to trim in/out points.
+
