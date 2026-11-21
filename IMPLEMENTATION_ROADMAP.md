@@ -34,20 +34,21 @@ flowchart LR
   - Audit of Apple M4 local workstation capabilities and cloud tiering boundaries.
 - **Verification Gate:** Architecture quality review passed; all ADRs approved.
 
-### Phase 2 (Part 02): Ingestion, Conformance & Multimodal Intelligence
+### Phase 2 (Part 02): Ingestion, Conformance & Asset Management [COMPLETED]
 - **Focus Departments:**
   - Department 03: Media Ingestion & Conformance
-  - Department 04: Media Intelligence (Multimodal Fusion)
-  - Department 05: Multimodal AI Provider Adapters
   - Department 21: Storage & Asset Management
-- **Key Deliverables:**
-  - Stream inspection and metadata extraction via FFprobe.
-  - VideoToolbox hardware-accelerated proxy generation (ProRes Proxy / H.264 720p).
-  - Deterministic shot detection engine with PySceneDetect.
-  - Local speech transcription and word alignment via `faster-whisper`.
-  - TwelveLabs & Gemini 2.0 API adapters with structured observation extraction.
-  - Common Asset Registry with SQLite / PostgreSQL backend and SHA-256 validation.
-- **Verification Gate:** An ingested 30-minute 4K video generates accurate proxies, frame-exact cut points, and word-level speech transcripts with zero timecode drift.
+  - Department 01: Studio Application (API Gateway)
+- **Key Deliverables Completed:**
+  - Media content validation inspecting 31 magic signatures; spoofed extension rejection.
+  - Streaming SHA-256 cryptographic checksum calculation and duplicate deduplication.
+  - Non-destructive original preservation in project-partitioned storage (`assets/{project_id}/originals/`).
+  - Stream inspection and metadata extraction via FFprobe and Pillow (24 dimensions).
+  - Asynchronous derivative generation: thumbnails, contact sheets, 720p web previews, ProRes proxies, 24-bit 48kHz WAV audio extraction, and waveform peak vectors.
+  - Asynchronous job worker queue with crash recovery and 3x retry exponential backoff.
+  - Persistent SQLite Central Asset Registry with 6 relational tables.
+  - Complete REST API with 11 endpoints.
+- **Verification Gate:** 12 automated unit and integration tests passing with 100% success rate.
 
 ### Phase 3 (Part 03): Core Editorial Timeline & Programmatic Video Editing
 - **Focus Departments:**

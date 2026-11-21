@@ -53,6 +53,21 @@ flowchart LR
 - **Default Algorithm:** `AdaptiveDetector(adaptive_threshold=3.0, min_scene_len=15)`
 - **Health Check Command:** `python3 -c "import scenedetect; print(scenedetect.__version__)"`
 
+### 2.4 Pillow (PIL)
+- **Identifier:** `tool.media.pillow`
+- **Version:** `12.1.1`
+- **License:** Historical Permission Notice and Disclaimer (HPND) / MIT Equivalent
+- **Role:** Primary image inspection, EXIF/color metadata parsing, WebP/JPEG thumbnail scaling with Lanczos filter.
+- **Health Check Command:** `python3 -c "import PIL; print('Pillow:', PIL.__version__)"`
+
+### 2.5 SQLite Database Engine
+- **Identifier:** `tool.storage.sqlite`
+- **Version:** `3.50.4`
+- **License:** Public Domain
+- **Role:** Embedded ACID transactional engine for Central Asset Registry, project metadata, and job state tracking.
+- **Configuration:** WAL mode (`PRAGMA journal_mode=WAL;`), Foreign Keys enabled (`PRAGMA foreign_keys=ON;`).
+- **Health Check Command:** `python3 -c "import sqlite3; print('SQLite3:', sqlite3.sqlite_version)"`
+
 ---
 
 ## 3. Editorial & Timeline Engines
