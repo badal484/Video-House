@@ -60,6 +60,10 @@ class RationalTime:
         new_val = (self._value * new_rate) / self._rate
         return RationalTime(new_val, new_rate)
 
+    def rescale(self, new_rate: float) -> "RationalTime":
+        """Convenience alias for rescaled_to."""
+        return self.rescaled_to(new_rate)
+
     def to_timecode(self, drop_frame: bool = False) -> str:
         """Converts to HH:MM:SS:FF timecode."""
         total_frames = self.to_frames()

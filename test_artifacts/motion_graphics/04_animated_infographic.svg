@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <g id="lyr_7a0067d60afa" opacity="1.000" transform="translate(960.00, 540.00)">
+    <rect x="-127.5" y="120.0" width="45.0" height="0.0" rx="4" fill="#00F0FF" />
+    <text x="-105.0" y="144.0" font-family="Inter" font-size="14" fill="#CCCCCC" text-anchor="middle">JAN</text>
+    <rect x="-57.5" y="120.0" width="45.0" height="0.0" rx="4" fill="#39FF14" />
+    <text x="-35.0" y="144.0" font-family="Inter" font-size="14" fill="#CCCCCC" text-anchor="middle">FEB</text>
+    <rect x="12.5" y="120.0" width="45.0" height="0.0" rx="4" fill="#FF007F" />
+    <text x="35.0" y="144.0" font-family="Inter" font-size="14" fill="#CCCCCC" text-anchor="middle">MAR</text>
+    <rect x="82.5" y="120.0" width="45.0" height="0.0" rx="4" fill="#FFE600" />
+    <text x="105.0" y="144.0" font-family="Inter" font-size="14" fill="#CCCCCC" text-anchor="middle">APR</text>
+  </g>
+</svg>

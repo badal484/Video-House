@@ -1042,6 +1042,21 @@ class AssetDatabase:
                 FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
                 FOREIGN KEY (timeline_id) REFERENCES timelines(timeline_id) ON DELETE CASCADE
             );
+
+            CREATE TABLE IF NOT EXISTS motion_compositions (
+                composition_id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                resolution_w INTEGER NOT NULL,
+                resolution_h INTEGER NOT NULL,
+                fps REAL NOT NULL,
+                duration_frames INTEGER NOT NULL,
+                duration_rate REAL NOT NULL,
+                composition_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+            );
             
             CREATE INDEX IF NOT EXISTS idx_assets_project ON assets(project_id);
             CREATE INDEX IF NOT EXISTS idx_assets_checksum ON assets(checksum_sha256);
@@ -1074,6 +1089,7 @@ class AssetDatabase:
             CREATE INDEX IF NOT EXISTS idx_keyframes_parent ON keyframes(parent_entity_id);
             CREATE INDEX IF NOT EXISTS idx_markers_timeline ON timeline_markers(timeline_id);
             CREATE INDEX IF NOT EXISTS idx_renders_timeline ON render_jobs(timeline_id);
+            CREATE INDEX IF NOT EXISTS idx_mograph_project ON motion_compositions(project_id);
             """)
 
     def create_project(self, project_id: UUID, name: str, settings: Optional[Dict[str, Any]] = None) -> None:
@@ -2505,6 +2521,59 @@ class AssetDatabase:
                 "completed_at": row["completed_at"]
             }
 
+    def save_motion_composition(self, composition: Any) -> None:
+        """Saves or updates a MotionComposition in the database."""
+        now = utc_now_iso()
+        comp_dict = composition.to_dict() if hasattr(composition, "to_dict") else composition
+        comp_id = comp_dict.get("composition_id")
+        project_id = comp_dict.get("project_id", "default")
+        name = comp_dict.get("name", "Motion Composition")
+        res = comp_dict.get("resolution", [1920, 1080])
+        fps = float(comp_dict.get("fps", 24.0))
+        dur_raw = comp_dict.get("duration", {"value": 120, "rate": 24.0})
+        frames = int(dur_raw.get("value", 120))
+        rate = float(dur_raw.get("rate", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO motion_compositions (
+                    composition_id, project_id, name, resolution_w, resolution_h,
+                    fps, duration_frames, duration_rate, composition_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(comp_id),
+                str(project_id),
+                name,
+                int(res[0]),
+                int(res[1]),
+                fps,
+                frames,
+                rate,
+                json.dumps(comp_dict),
+                now,
+                now
+            ))
+
+    def get_motion_composition(self, composition_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM motion_compositions WHERE composition_id = ?", (str(composition_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["composition_json"])
+
+    def list_motion_compositions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all MotionCompositions for a given project_id."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM motion_compositions WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["composition_json"]) for r in rows]
+
+    def delete_motion_composition(self, composition_id: str) -> bool:
+        """Deletes a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
+            return cur.rowcount > 0
+
     # -------------------------------------------------------------
     # Multimodal Intelligence Persistence Methods (Part 03)
     # -------------------------------------------------------------
@@ -3655,3 +3724,56 @@ class AssetDatabase:
                 "created_at": row["created_at"],
                 "completed_at": row["completed_at"]
             }
+
+    def save_motion_composition(self, composition: Any) -> None:
+        """Saves or updates a MotionComposition in the database."""
+        now = utc_now_iso()
+        comp_dict = composition.to_dict() if hasattr(composition, "to_dict") else composition
+        comp_id = comp_dict.get("composition_id")
+        project_id = comp_dict.get("project_id", "default")
+        name = comp_dict.get("name", "Motion Composition")
+        res = comp_dict.get("resolution", [1920, 1080])
+        fps = float(comp_dict.get("fps", 24.0))
+        dur_raw = comp_dict.get("duration", {"value": 120, "rate": 24.0})
+        frames = int(dur_raw.get("value", 120))
+        rate = float(dur_raw.get("rate", 24.0))
+
+        with self.get_connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO motion_compositions (
+                    composition_id, project_id, name, resolution_w, resolution_h,
+                    fps, duration_frames, duration_rate, composition_json, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(comp_id),
+                str(project_id),
+                name,
+                int(res[0]),
+                int(res[1]),
+                fps,
+                frames,
+                rate,
+                json.dumps(comp_dict),
+                now,
+                now
+            ))
+
+    def get_motion_composition(self, composition_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieves a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            row = conn.execute("SELECT * FROM motion_compositions WHERE composition_id = ?", (str(composition_id),)).fetchone()
+            if not row:
+                return None
+            return json.loads(row["composition_json"])
+
+    def list_motion_compositions(self, project_id: str) -> List[Dict[str, Any]]:
+        """Lists all MotionCompositions for a given project_id."""
+        with self.get_connection() as conn:
+            rows = conn.execute("SELECT * FROM motion_compositions WHERE project_id = ? ORDER BY created_at DESC", (str(project_id),)).fetchall()
+            return [json.loads(r["composition_json"]) for r in rows]
+
+    def delete_motion_composition(self, composition_id: str) -> bool:
+        """Deletes a MotionComposition by composition_id."""
+        with self.get_connection() as conn:
+            cur = conn.execute("DELETE FROM motion_compositions WHERE composition_id = ?", (str(composition_id),))
+            return cur.rowcount > 0

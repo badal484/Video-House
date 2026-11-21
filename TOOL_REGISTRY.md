@@ -131,6 +131,30 @@ flowchart LR
 - **Invocation Method:** Node CLI `npx motion-canvas render --output-format png_sequence`.
 - **Health Check Command:** `node -e "console.log('Motion Canvas Environment Ready')"`
 
+### 4.2 Procedural Vector SVG Renderer
+- **Identifier:** `tool.mograph.procedural_vector`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core) / Apache 2.0
+- **Role:** Deterministic, resolution-independent vector frame generation. Renders kinetic typography, animated data charts, HUD reticles, and brand marks directly to standalone SVG XML.
+- **Invocation Method:** Python in-process (`SVGVectorRenderer`).
+- **Health Check Command:** `python3 -c "from departments.motion_graphics.renderers.svg_vector_renderer import SVGVectorRenderer; print('SVG Vector Renderer OK')"`
+
+### 4.3 Canvas2D Raster & Image2Pipe Engine
+- **Identifier:** `tool.mograph.canvas_raster`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core) / HPND (Pillow)
+- **Role:** High-performance 32-bit RGBA direct canvas drawing. Streams uncompressed PNG frames directly into FFmpeg `image2pipe` to encode transparent Apple ProRes 4444 (`yuva444p10le`) and WebM (`yuva420p`) videos with zero disk cache thrashing.
+- **Invocation Method:** Python in-process (`CanvasRasterRenderer`).
+- **Health Check Command:** `python3 -c "from departments.motion_graphics.renderers.canvas_renderer import CanvasRasterRenderer; print('Canvas Raster OK')"`
+
+### 4.4 Motion Graphics Preset & Typography Engine
+- **Identifier:** `tool.mograph.preset_engine`
+- **Version:** `1.0.0`
+- **License:** Proprietary (Studio Core)
+- **Role:** Parameterized preset catalog (kinetic typewriter, cinematic titles, documentary lower thirds, progress rings, telemetry HUDs) with Devanagari Unicode grapheme cluster shaping and safe-margin design validation.
+- **Invocation Method:** Python in-process (`PresetRegistry`, `TypographyEngine`, `DesignValidator`).
+- **Health Check Command:** `python3 -c "from departments.motion_graphics.presets.preset_registry import PresetRegistry; print('Preset Registry OK')"`
+
 ### 4.2 Blender (Headless Automation)
 - **Identifier:** `tool.vfx.blender`
 - **Version:** `4.3.x` / `4.4.x`

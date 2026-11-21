@@ -358,3 +358,79 @@ Chosen option: **Immutable State Snapshots & ACID SQLite Persistence (`TimelineM
 - Before applying any mutating edit operation, `TimelineManager` serializes the current timeline state onto an in-memory undo stack.
 - Changes are committed transactionally to the SQLite `timelines`, `tracks`, and `clips` tables.
 - Enables multi-level non-destructive undo and redo across all editorial actions.
+
+---
+
+## ADR-029: Dual-Engine Routing (Procedural Vector SVG + Canvas2D Raster) for Motion Graphics
+
+### Status
+Accepted & Implemented (Part 06)
+
+### Context & Problem Statement
+Heavy headless browser frameworks (Chromium/Playwright/Remotion) consume 400MB–1.4GB RAM and introduce 8–18s cold-start latencies per 10s composition. Conversely, naive raster drawing cannot produce scalable vector definitions for interchange.
+
+### Decision Outcome
+Chosen option: **Dual-Engine Routing (`MotionRendererRouter`)**.
+- Clean text, titles, lower-thirds, and data charts default to `SVGVectorRenderer`, generating crisp, resolution-independent SVG XML per frame.
+- High-density raster effects, particle streaks, and video overlays stream via `CanvasRasterRenderer` using Pillow and FFmpeg `image2pipe`.
+- Headless web rendering (HyperFrames) is retained strictly as an optional adapter.
+
+---
+
+## ADR-030: Unicode Annex #29 Grapheme Cluster Tokenization for Indic/Devanagari Script Shaping
+
+### Status
+Accepted & Implemented (Part 06)
+
+### Context & Problem Statement
+Standard string slicing (`text[:k]`) breaks complex scripts such as Hindi/Devanagari, splitting consonants from dependent viramas and matras (e.g. producing detached `्` or `े` instead of bonded conjuncts like `स्ते`).
+
+### Decision Outcome
+Chosen option: **Orthographic Syllable / Grapheme Cluster Tokenizer (`TypographyEngine`)**.
+- Inspects Unicode categories (`Mn`, `Mc`) and virama (`U+094D`).
+- Bonds base consonants, viramas, following consonants, and vowel matras into single indivisible syllables for kinetic typewriter and character reveals.
+
+---
+
+## ADR-031: SIL OFL 1.1 Commercial Typography Hygiene and Exclusion of Proprietary Font Runtimes
+
+### Status
+Accepted & Implemented (Part 06)
+
+### Context & Problem Statement
+Broadcasting video content constitutes commercial publication. Standard desktop font licenses (EULAs) prohibit embedding glyphs into broadcast video without enterprise extensions.
+
+### Decision Outcome
+Chosen option: **Standardization on Permissive Open Fonts (SIL OFL 1.1 & Apache 2.0)**.
+- Bundled and verified font families: Inter, Montserrat, Roboto Mono, Playfair Display, Noto Sans Devanagari.
+- Zero commercial royalty obligations or broadcast licensing restrictions.
+
+---
+
+## ADR-032: Direct NLE Track V3 Placement via ProRes 4444 Transparent Media
+
+### Status
+Accepted & Implemented (Part 06)
+
+### Context & Problem Statement
+Motion graphics must integrate into the Part 05 Non-Linear Editing Engine without requiring flattened video re-renders or losing alpha transparency.
+
+### Decision Outcome
+Chosen option: **Transparent Video Conformance & Timeline Insertion (`TimelineMotionAdapter`)**.
+- Compositions compile into Apple ProRes 4444 (`-c:v prores_ks -profile:v 4 -pix_fmt yuva444p10le`) or transparent WebM (`-c:v libvpx-vp9 -pix_fmt yuva420p`).
+- Output files are registered in the Central Asset Registry and inserted onto video track `V3` of the destination timeline as standard `Clip` records.
+
+---
+
+## ADR-033: Automated Layout Aspect Ratio Adaptation (16:9, 9:16, 1:1)
+
+### Status
+Accepted & Implemented (Part 06)
+
+### Context & Problem Statement
+Repurposing landscape video graphics for vertical mobile feeds (9:16) often causes clipped lower-thirds, unreadable text, or awkward horizontal stretching.
+
+### Decision Outcome
+Chosen option: **Semantic Coordinate Re-anchoring (`DesignValidator.adapt_aspect_ratio`)**.
+- Re-scales coordinates proportionally.
+- Intelligently detects vertical aspect ratios ($H > W$), automatically enlarges typography for mobile viewing, and re-centers lower thirds to prevent collision with mobile app UI buttons.

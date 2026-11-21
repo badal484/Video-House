@@ -1092,6 +1092,157 @@ async def export_otio_endpoint(timeline_id: UUID):
     return FileResponse(out_path, media_type="application/json", filename=f"{timeline_id}.otio")
 
 
+# ============================================================================
+# 5. DEPARTMENT 09: MOTION GRAPHICS & TYPOGRAPHY ENDPOINTS
+# ============================================================================
+
+from departments.motion_graphics.service import MotionGraphicsService
+from departments.motion_graphics.core.composition_models import MotionComposition
+from departments.motion_graphics.core.design_validator import DesignValidator
+
+motion_service = MotionGraphicsService(db, storage)
+
+
+class InstantiatePresetRequest(BaseModel):
+    project_id: UUID = Field(..., description="Target project ID")
+    parameters: Dict[str, Any] = Field(default_factory=dict, description="Preset configuration parameters")
+
+
+class SaveCompositionRequest(BaseModel):
+    composition: Dict[str, Any] = Field(..., description="Canonical motion composition dictionary")
+
+
+class RenderCompositionRequest(BaseModel):
+    codec: str = Field(default="prores_ks", description="Target video codec: 'prores_ks' or 'libvpx-vp9'")
+
+
+class InsertToTimelineRequest(BaseModel):
+    timeline_id: UUID = Field(..., description="Target timeline ID")
+    track_name: str = Field(default="V3 - Graphics", description="Target video track name")
+    timeline_in_sec: Optional[float] = Field(default=None, description="Timeline in-point in seconds")
+    codec: str = Field(default="prores_ks", description="Target video codec")
+
+
+@app.get("/api/v1/motion-graphics/presets")
+async def list_motion_presets_endpoint(category: Optional[str] = None):
+    presets = motion_service.presets.list_presets(category)
+    return {
+        "success": True,
+        "presets": [
+            {
+                "preset_id": p.preset_id,
+                "name": p.name,
+                "category": p.category,
+                "description": p.description,
+                "default_duration_sec": p.default_duration.to_seconds(),
+                "supported_aspect_ratios": p.supported_aspect_ratios,
+                "parameters_schema": p.parameters_schema
+            }
+            for p in presets
+        ]
+    }
+
+
+@app.get("/api/v1/motion-graphics/presets/{preset_id}")
+async def get_motion_preset_endpoint(preset_id: str):
+    p = motion_service.presets.get(preset_id)
+    if not p:
+        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
+    return {
+        "success": True,
+        "preset": {
+            "preset_id": p.preset_id,
+            "name": p.name,
+            "category": p.category,
+            "description": p.description,
+            "default_duration_sec": p.default_duration.to_seconds(),
+            "supported_aspect_ratios": p.supported_aspect_ratios,
+            "parameters_schema": p.parameters_schema
+        }
+    }
+
+
+@app.post("/api/v1/motion-graphics/presets/{preset_id}/instantiate")
+async def instantiate_motion_preset_endpoint(preset_id: str, req: InstantiatePresetRequest):
+    p = motion_service.presets.get(preset_id)
+    if not p:
+        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
+
+    params = req.parameters.copy()
+    params["project_id"] = str(req.project_id)
+    comp = motion_service.presets.instantiate(preset_id, params)
+    db.save_motion_composition(comp)
+    val = DesignValidator.validate_composition(comp)
+
+    return {
+        "success": True,
+        "composition": comp.to_dict(),
+        "validation": val
+    }
+
+
+@app.post("/api/v1/motion-graphics/compositions")
+async def save_motion_composition_endpoint(req: SaveCompositionRequest):
+    comp = MotionComposition.from_dict(req.composition)
+    db.save_motion_composition(comp)
+    return {"success": True, "composition_id": comp.composition_id}
+
+
+@app.get("/api/v1/motion-graphics/compositions/{composition_id}")
+async def get_motion_composition_endpoint(composition_id: str):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    return {"success": True, "composition": comp_dict}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/validate")
+async def validate_motion_composition_endpoint(composition_id: str):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+    val = DesignValidator.validate_composition(comp)
+    return {"success": True, "validation": val}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/render")
+async def render_motion_composition_endpoint(composition_id: str, req: RenderCompositionRequest):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+
+    ext = "mov" if req.codec == "prores_ks" else "webm"
+    out_dir = Path("temp/motion_graphics")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = str(out_dir / f"{comp.composition_id}.{ext}")
+
+    rendered = motion_service.router.render(comp, out_path)
+    return {"success": True, "output_path": rendered}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/insert-to-timeline")
+async def insert_motion_composition_to_timeline_endpoint(composition_id: str, req: InsertToTimelineRequest):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+
+    from core.timeline.time_model import RationalTime
+    t_in = RationalTime(int(round(req.timeline_in_sec * comp.fps)), comp.fps) if req.timeline_in_sec is not None else None
+
+    clip = motion_service.timeline_adapter.render_and_insert_to_timeline(
+        composition=comp,
+        timeline_id=str(req.timeline_id),
+        target_track_name=req.track_name,
+        timeline_in=t_in,
+        codec=req.codec
+    )
+    return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
+
+
+
 
 
 # ---------------------------------------------------------
@@ -1686,6 +1837,157 @@ async def export_otio_endpoint(timeline_id: UUID):
     out_path = str(out_dir / f"{timeline_id}.otio")
     OTIOAdapter.export_otio_json(tl, out_path)
     return FileResponse(out_path, media_type="application/json", filename=f"{timeline_id}.otio")
+
+
+# ============================================================================
+# 5. DEPARTMENT 09: MOTION GRAPHICS & TYPOGRAPHY ENDPOINTS
+# ============================================================================
+
+from departments.motion_graphics.service import MotionGraphicsService
+from departments.motion_graphics.core.composition_models import MotionComposition
+from departments.motion_graphics.core.design_validator import DesignValidator
+
+motion_service = MotionGraphicsService(db, storage)
+
+
+class InstantiatePresetRequest(BaseModel):
+    project_id: UUID = Field(..., description="Target project ID")
+    parameters: Dict[str, Any] = Field(default_factory=dict, description="Preset configuration parameters")
+
+
+class SaveCompositionRequest(BaseModel):
+    composition: Dict[str, Any] = Field(..., description="Canonical motion composition dictionary")
+
+
+class RenderCompositionRequest(BaseModel):
+    codec: str = Field(default="prores_ks", description="Target video codec: 'prores_ks' or 'libvpx-vp9'")
+
+
+class InsertToTimelineRequest(BaseModel):
+    timeline_id: UUID = Field(..., description="Target timeline ID")
+    track_name: str = Field(default="V3 - Graphics", description="Target video track name")
+    timeline_in_sec: Optional[float] = Field(default=None, description="Timeline in-point in seconds")
+    codec: str = Field(default="prores_ks", description="Target video codec")
+
+
+@app.get("/api/v1/motion-graphics/presets")
+async def list_motion_presets_endpoint(category: Optional[str] = None):
+    presets = motion_service.presets.list_presets(category)
+    return {
+        "success": True,
+        "presets": [
+            {
+                "preset_id": p.preset_id,
+                "name": p.name,
+                "category": p.category,
+                "description": p.description,
+                "default_duration_sec": p.default_duration.to_seconds(),
+                "supported_aspect_ratios": p.supported_aspect_ratios,
+                "parameters_schema": p.parameters_schema
+            }
+            for p in presets
+        ]
+    }
+
+
+@app.get("/api/v1/motion-graphics/presets/{preset_id}")
+async def get_motion_preset_endpoint(preset_id: str):
+    p = motion_service.presets.get(preset_id)
+    if not p:
+        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
+    return {
+        "success": True,
+        "preset": {
+            "preset_id": p.preset_id,
+            "name": p.name,
+            "category": p.category,
+            "description": p.description,
+            "default_duration_sec": p.default_duration.to_seconds(),
+            "supported_aspect_ratios": p.supported_aspect_ratios,
+            "parameters_schema": p.parameters_schema
+        }
+    }
+
+
+@app.post("/api/v1/motion-graphics/presets/{preset_id}/instantiate")
+async def instantiate_motion_preset_endpoint(preset_id: str, req: InstantiatePresetRequest):
+    p = motion_service.presets.get(preset_id)
+    if not p:
+        raise HTTPException(status_code=404, detail=f"Preset '{preset_id}' not found.")
+
+    params = req.parameters.copy()
+    params["project_id"] = str(req.project_id)
+    comp = motion_service.presets.instantiate(preset_id, params)
+    db.save_motion_composition(comp)
+    val = DesignValidator.validate_composition(comp)
+
+    return {
+        "success": True,
+        "composition": comp.to_dict(),
+        "validation": val
+    }
+
+
+@app.post("/api/v1/motion-graphics/compositions")
+async def save_motion_composition_endpoint(req: SaveCompositionRequest):
+    comp = MotionComposition.from_dict(req.composition)
+    db.save_motion_composition(comp)
+    return {"success": True, "composition_id": comp.composition_id}
+
+
+@app.get("/api/v1/motion-graphics/compositions/{composition_id}")
+async def get_motion_composition_endpoint(composition_id: str):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    return {"success": True, "composition": comp_dict}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/validate")
+async def validate_motion_composition_endpoint(composition_id: str):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+    val = DesignValidator.validate_composition(comp)
+    return {"success": True, "validation": val}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/render")
+async def render_motion_composition_endpoint(composition_id: str, req: RenderCompositionRequest):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+
+    ext = "mov" if req.codec == "prores_ks" else "webm"
+    out_dir = Path("temp/motion_graphics")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = str(out_dir / f"{comp.composition_id}.{ext}")
+
+    rendered = motion_service.router.render(comp, out_path)
+    return {"success": True, "output_path": rendered}
+
+
+@app.post("/api/v1/motion-graphics/compositions/{composition_id}/insert-to-timeline")
+async def insert_motion_composition_to_timeline_endpoint(composition_id: str, req: InsertToTimelineRequest):
+    comp_dict = db.get_motion_composition(composition_id)
+    if not comp_dict:
+        raise HTTPException(status_code=404, detail=f"Motion composition '{composition_id}' not found.")
+    comp = MotionComposition.from_dict(comp_dict)
+
+    from core.timeline.time_model import RationalTime
+    t_in = RationalTime(int(round(req.timeline_in_sec * comp.fps)), comp.fps) if req.timeline_in_sec is not None else None
+
+    clip = motion_service.timeline_adapter.render_and_insert_to_timeline(
+        composition=comp,
+        timeline_id=str(req.timeline_id),
+        target_track_name=req.track_name,
+        timeline_in=t_in,
+        codec=req.codec
+    )
+    return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
+
 
 
 
