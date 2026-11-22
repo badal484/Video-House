@@ -1,0 +1,94 @@
+{
+  "project": "ऑक्टोपस के तीन दिल क्यों होते हैं? (Why 3 Hearts?)",
+  "total_assets": 11,
+  "assets": [
+    {
+      "file": "wk215_deep_sea_octopus.webm",
+      "type": "Video (1280x720, 23.98 fps)",
+      "role": "Scene 1 Hook: Deep sea octopus emerging from darkness",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Wk215-deep-sea-octopuses.webm",
+      "license": "CC BY 3.0",
+      "author": "MBARI / Wikimedia Commons"
+    },
+    {
+      "file": "sealife_munich_octopus_1080p.ogv",
+      "type": "Video (1920x1080, 25.00 fps)",
+      "role": "Scene 1/5: Macro close-up of tentacles, body and pelagic swimming action",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Sealife-Munich-Octopus.ogv",
+      "license": "CC0 1.0 Universal (Public Domain Dedication)",
+      "author": "Sealife Munich / Wikimedia Commons"
+    },
+    {
+      "file": "octopus_vulgaris_poulpe_commun.webm",
+      "type": "Video (1280x720, 25.00 fps)",
+      "role": "Scene 2: Real Octopus vulgaris crawling over coral reef",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Octopus_Vulgaris_-_Poulpe_commun.webm",
+      "license": "CC BY-SA 4.0",
+      "author": "Wikimedia Commons"
+    },
+    {
+      "file": "giant_pacific_octopus_1080p.webm",
+      "type": "Video (1920x1080, 23.98 fps)",
+      "role": "Scene 2: Flexible arm locomotion and hydrostatic body compression",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Giant_Pacific_Octopus_in_Washington.webm",
+      "license": "CC BY 3.0",
+      "author": "Wikimedia Commons"
+    },
+    {
+      "file": "octopus_suckers_kinematics.ogv",
+      "type": "Video (800x600, 25.00 fps)",
+      "role": "Scene 2: Macro tentacle and sucker adhesion kinematics",
+      "source_url": "https://commons.wikimedia.org/wiki/File:The-Morphology-and-Adhesion-Mechanism-of-Octopus-vulgaris-Suckers-pone.0065074.s001.ogv",
+      "license": "CC BY 2.5",
+      "author": "PLOS ONE / Tramacere et al."
+    },
+    {
+      "file": "anatomie_oktopus_1080p.webm",
+      "type": "Video (1920x1080, 25.00 fps)",
+      "role": "Scene 3/4: Real 3D scientific anatomical cutaway of octopus internal organs",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Anatomie_Oktopus.webm",
+      "license": "CC BY 4.0",
+      "author": "Wikimedia Commons"
+    },
+    {
+      "file": "emso_deep_sea_observatory.webm",
+      "type": "Video (1280x720, 4.00 fps)",
+      "role": "Scene 5/6: Pelagic swimming into deep ocean abyss",
+      "source_url": "https://commons.wikimedia.org/wiki/File:An_octopus_is_visiting_the_EMSO-Mol%C3%A8ne_observatory_(Ifremer_00384-49520).webm",
+      "license": "CC BY 4.0",
+      "author": "Ifremer / EMSO-Molène Observatory"
+    },
+    {
+      "file": "octopus_vulgaris_macro_dark.jpg",
+      "type": "High-Res Photo (2704x2058)",
+      "role": "Scene 1: Ultra high-res macro shot of Octopus vulgaris eye and tentacles",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Octopus2.jpg",
+      "license": "CC BY-SA 3.0",
+      "author": "Albert Kok / Wikimedia Commons"
+    },
+    {
+      "file": "octopus_coral_reef_closeup.jpg",
+      "type": "High-Res Photo (4608x3456)",
+      "role": "Scene 2: 4K coral reef octopus photography",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Common_octopus.jpg",
+      "license": "CC BY-SA 3.0",
+      "author": "Wikimedia Commons"
+    },
+    {
+      "file": "octopus_swimming_blue_open.jpg",
+      "type": "High-Res Photo (1777x1783)",
+      "role": "Scene 5: Active jet swimming in pelagic blue water",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Octopus_cyaneain_Kona.jpg",
+      "license": "CC BY-SA 3.0",
+      "author": "Wikimedia Commons"
+    },
+    {
+      "file": "Octopus_Arm_Trabeculae.png",
+      "type": "Scientific Reference",
+      "role": "Scene 2: Anatomical microscopic muscular architecture",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Octopus_Arm_Trabeculae.png",
+      "license": "CC BY 4.0",
+      "author": "Wikimedia Commons"
+    }
+  ]
+}

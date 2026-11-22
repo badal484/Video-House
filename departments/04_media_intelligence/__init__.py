@@ -19,6 +19,16 @@ from .ocr_service import OCRService
 from .reference_analyzer import ReferenceAnalysisService
 from .video_comparator import MultiVideoComparisonService
 from .semantic_search import SemanticSearchService
+from .temporal_engine.normalization import MediaNormalizationService
+from .temporal_engine.sampling_engine import HighResolutionTemporalSamplingEngine, MultiResolutionTimeline
+from .cinematography import CinematographyIntelligenceEngine, ShotCinematographyAnalysis
+from .editing_intelligence import EditingIntelligenceEngine, EditorialRhythmProfile, TransitionDetail
+from .motion_graphics_intelligence import MotionGraphicsReverseEngineeringEngine, TrackedGraphicElement
+from .animation_vfx import AnimationAndVFXIntelligenceEngine, VisualMediumAnalysis
+from .audio_intelligence_v2 import AdvancedAudioIntelligenceEngine, AudioMasterIntelligenceResult
+from .color_grading_intelligence import ColorGradingIntelligenceEngine, ColorGradingProfile
+from .narrative_intelligence import StorytellingIntelligenceEngine, StorytellingProfile
+from .master_reverse_engineer import MasterVideoReverseEngineeringService, ReferenceReconstructionManifest
 
 __all__ = [
     "IMediaIntelligence",
@@ -33,5 +43,25 @@ __all__ = [
     "OCRService",
     "ReferenceAnalysisService",
     "MultiVideoComparisonService",
-    "SemanticSearchService"
+    "SemanticSearchService",
+    "MediaNormalizationService",
+    "HighResolutionTemporalSamplingEngine",
+    "MultiResolutionTimeline",
+    "CinematographyIntelligenceEngine",
+    "ShotCinematographyAnalysis",
+    "EditingIntelligenceEngine",
+    "EditorialRhythmProfile",
+    "TransitionDetail",
+    "MotionGraphicsReverseEngineeringEngine",
+    "TrackedGraphicElement",
+    "AnimationAndVFXIntelligenceEngine",
+    "VisualMediumAnalysis",
+    "AdvancedAudioIntelligenceEngine",
+    "AudioMasterIntelligenceResult",
+    "ColorGradingIntelligenceEngine",
+    "ColorGradingProfile",
+    "StorytellingIntelligenceEngine",
+    "StorytellingProfile",
+    "MasterVideoReverseEngineeringService",
+    "ReferenceReconstructionManifest"
 ]

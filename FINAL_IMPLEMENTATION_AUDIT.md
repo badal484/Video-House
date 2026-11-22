@@ -142,3 +142,72 @@ The studio operates cleanly within the local hardware envelope of the Apple M4 w
 
 The repository foundation is verified, stable, and functionally integrated across 15 completed milestones. All 249 unit tests pass deterministically. The application layer cleanly hosts all 9 specialized creative domains. Part 16 is approved to execute the formal production engineering research, security hardening, end-to-end integration lifecycle verification, and final multi-project demonstrations.
 
+---
+
+## 6. Major Capability Upgrade: External Creative Resource Intelligence & Professional Motion Graphics Engine
+
+### 6.1 Subsystem Implementations
+1. **External Creative Resource Intelligence (Department 03 & 06):**
+   - Pluggable multi-provider discovery (`WikimediaCommonsProvider`, `OpenverseProvider`, `NasaNoaaProvider`) aggregating CC0, Public Domain, and CC-BY/CC-BY-SA media.
+   - Multi-dimensional asset evaluation engine scoring candidates across Semantic Relevance (35%), Technical Quality (25%), Creative Suitability (20%), and Legal Usability (20%).
+   - Asset acquisition service with exponential backoff retry, SHA-256 integrity hashing, FFprobe verification, and central registry ingestion.
+   - Dedicated `CreativeResearchAgent` formulating multi-query, taxonomy-aware search plans from narrative scripts.
+
+2. **Professional Animation & Motion Graphics Engine (Department 09 & 06):**
+   - Bespoke visual design system ("Abyssal Biometrics & Micro-Optics") eliminating generic PowerPoint boxes, cards, and preset templates.
+   - Physiological easing curves: Spring damped overshoot, systolic cardiac pulse, and two-stage cephalopod heartbeats.
+   - Parametric EKG waveform generator with real-time transition to swimming jet arrest flatline.
+   - Dynamic vascular streamline simulation with real-time color shifting from venous cobalt (`#1D4ED8`) to oxygenated hemocyanin cyan (`#00F0FF`).
+   - Micro-optic biometric reticles, technical depth gauges, and borderless Devanagari typography rendered via headless Google Chrome.
+   - Dedicated `MotionDesignDirector` agent art-directing scene compositions and validating against design standards.
+
+3. **REST API Extensions (Department 01):**
+   - `POST /api/v1/projects/{project_id}/research/plan`
+   - `POST /api/v1/projects/{project_id}/research/discover`
+   - `POST /api/v1/projects/{project_id}/research/acquire`
+   - `POST /api/v1/projects/{project_id}/motion-graphics/compose`
+   - `POST /api/v1/projects/{project_id}/motion-graphics/render`
+
+### 6.2 Test & Benchmark Verification
+- **New Test Suites:**
+  - `tests/unit/test_external_resource_intelligence.py` (5/5 passed)
+  - `tests/unit/test_motion_design_engine.py` (6/6 passed)
+  - `tests/integration/test_creative_pipeline_integration.py` (5/5 passed)
+- **Studio Unit Test Suite:** 260/260 tests passed (100% pass rate).
+- **Studio Integration Test Suite:** 31/31 tests passed (100% pass rate).
+- **Benchmark Production:** 50.00-second 1080×1920 30 FPS vertical educational documentary on *"ऑक्टोपस के तीन दिल क्यों होते हैं?"* fully rendered, verified by automated QC (`PASSED_STRICT_CONFORMANCE`), and registered in the database.
+
+---
+
+## 7. Additional Capability: YouTube & Online Media Research, Import, and Reference Intelligence
+
+### 7.1 Implemented Capabilities
+1. **YouTube Video Research (Department 03):**
+   - Official YouTube oEmbed metadata extraction and compliant iframe embed code generation.
+   - Non-download structural inspection via `yt-dlp` capturing exact duration, timestamped chapters, available subtitle/caption tracks, and format manifests.
+   - Search by topic, keyword, or creator/channel.
+2. **Authorized Media Acquisition & Permission Gating (Department 03 & 21):**
+   - Strict 5-tier permission classification: `REFERENCE_ONLY`, `EDITING_PERMITTED`, `COMMERCIAL_PERMITTED`, `REQUIRES_PERMISSION`, `LICENSE_UNKNOWN`.
+   - Blocks unauthorized stream downloading; registers reference metadata without scraping protected content.
+   - Downloads permitted user-owned, creator-authorized, Creative Commons, and public domain media with resolution (1080p, 720p, 480p) or format (WAV, MP3) selection.
+   - Computes SHA-256 integrity hash, validates container via FFprobe, generates thumbnail derivatives, and registers in central Asset Registry.
+3. **Audio Extraction & Acoustic Intelligence (Department 03 & 14):**
+   - Lossless 16-bit 48kHz WAV audio extraction from video containers.
+   - EBU R128 loudness measurement (Integrated LUFS, True Peak dBFS, Dynamic Range).
+   - Normalized 100-bin waveform envelope calculation for UI visualizers.
+   - Frequency band energy ratio (speech band 300Hz-3.4kHz vs musical harmonics).
+4. **Multimodal Reference Analysis & AI Director Inspiration Bridge (Department 04 & 06):**
+   - Deconstructs reference videos into Average Shot Length (ASL), cut frequency (CPM), pacing category, 5-color dominant palette, and camera motion.
+   - Cross-reference multi-video comparator.
+   - AI Director inspiration bridge generating 100% original creative briefs and scene prompt structures inspired by reference grammar without duplicating protected expressive media.
+5. **Unified Media Library & Dedicated Web UI (Department 01):**
+   - Interactive Online Media & Reference Research workspace (`departments/01_studio_application/ui/js/workspaces/online_media_workspace.js`).
+   - Unified Media Library endpoint (`/api/v1/projects/{project_id}/unified-library`) filtering across permission tiers, media types, and commercial eligibility.
+
+### 7.2 Verified Test Coverage
+- `tests/unit/test_online_media_research.py` (8/8 passed)
+- `tests/integration/test_online_media_pipeline.py` (7/7 passed)
+- Full studio regression suite: **306/306 tests passing deterministically (100% pass rate)**.
+
+
+

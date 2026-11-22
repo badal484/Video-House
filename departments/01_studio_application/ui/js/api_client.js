@@ -112,6 +112,32 @@ export class APIClient {
     });
   }
 
+  async uploadAsset(projectId, fileObj, displayName = null, role = "SOURCE_FOOTAGE") {
+    const formData = new FormData();
+    formData.append("file", fileObj);
+    if (displayName) formData.append("display_name", displayName);
+    if (role) formData.append("role", role);
+
+    const url = `${this.baseUrl}/api/v1/projects/${projectId}/assets/upload`;
+    const response = await fetch(url, {
+      method: "POST",
+      body: formData
+    });
+    if (!response.ok) {
+      let errDetail = response.statusText;
+      try {
+        const errJson = await response.json();
+        errDetail = errJson.detail || errJson.message || errDetail;
+      } catch (_) {}
+      throw new Error(`Upload failed: ${errDetail}`);
+    }
+    return await response.json();
+  }
+
+  getStreamUrl(assetId) {
+    return `${this.baseUrl}/api/v1/media/stream/${assetId}`;
+  }
+
   async deleteAsset(projectId, assetId) {
     return this.request(`/api/v1/projects/${projectId}/assets/${assetId}`, {
       method: "DELETE"
@@ -284,6 +310,210 @@ export class APIClient {
     return this.request("/api/v1/qc/audit", {
       method: "POST",
       body: { project_id: projectId, asset_id: assetId, policy_name: policyName }
+    });
+  }
+
+  // ---------------- Online Media & Reference Intelligence (Depts 03 & 04) ----------------
+  async searchOnlineMedia(query, limit = 10, channel = null) {
+    return this.request("/api/v1/online-media/search", {
+      method: "POST",
+      body: { query, limit, channel }
+    });
+  }
+
+  async inspectOnlineMedia(url) {
+    return this.request("/api/v1/online-media/inspect", {
+      method: "POST",
+      body: { url }
+    });
+  }
+
+  async getOnlineCaptions(url, lang = "en") {
+    return this.request(`/api/v1/online-media/captions?url=${encodeURIComponent(url)}&lang=${lang}`);
+  }
+
+  async importOnlineMedia(importData) {
+    return this.request("/api/v1/online-media/import", {
+      method: "POST",
+      body: importData
+    });
+  }
+
+  async extractAudio(audioData) {
+    return this.request("/api/v1/online-media/extract-audio", {
+      method: "POST",
+      body: audioData
+    });
+  }
+
+  async analyzeReference(assetId, name = null) {
+    return this.request("/api/v1/online-media/analyze-reference", {
+      method: "POST",
+      body: { asset_id: assetId, name }
+    });
+  }
+
+  async compareReferences(referenceAssetIds) {
+    return this.request("/api/v1/online-media/compare-references", {
+      method: "POST",
+      body: { reference_asset_ids: referenceAssetIds }
+    });
+  }
+
+  async inspireProduction(referenceAssetId, targetTopic, targetDurationSec = 50.0) {
+    return this.request("/api/v1/online-media/inspire-production", {
+      method: "POST",
+      body: {
+        reference_asset_id: referenceAssetId,
+        target_topic: targetTopic,
+        target_duration_sec: targetDurationSec
+      }
+    });
+  }
+
+  async getUnifiedLibrary(projectId, filters = {}) {
+    let q = "";
+    const params = new URLSearchParams();
+    if (filters.permission_tier) params.append("permission_tier", filters.permission_tier);
+    if (filters.media_type) params.append("media_type", filters.media_type);
+    if (filters.role) params.append("role", filters.role);
+    if (filters.search) params.append("search", filters.search);
+    const qs = params.toString();
+    return this.request(`/api/v1/projects/${projectId}/unified-library${qs ? '?' + qs : ''}`);
+  }
+
+  // ---------------- Advanced Reverse Engineering & Event Graph (Dept 04 & 06) ----------------
+  async reverseEngineerVideo(assetId, title = null) {
+    return this.request("/api/v1/intelligence/reverse-engineer", {
+      method: "POST",
+      body: { asset_id: assetId, title }
+    });
+  }
+
+  async getEventGraph(assetId) {
+    return this.request(`/api/v1/intelligence/event-graph/${assetId}`);
+  }
+
+  async compileProductionBlueprint(assetId, projectId, targetTopic, targetDurationSec = 50.0, aspectRatio = "9:16", targetLanguage = "hi") {
+    return this.request("/api/v1/intelligence/compile-blueprint", {
+      method: "POST",
+      body: {
+        asset_id: assetId,
+        project_id: projectId,
+        target_topic: targetTopic,
+        target_duration_sec: targetDurationSec,
+        aspect_ratio: aspectRatio,
+        target_language: targetLanguage
+      }
+    });
+  }
+
+  async queryEventGraph(assetId, query = null, timestampSec = null) {
+    return this.request("/api/v1/intelligence/query-graph", {
+      method: "POST",
+      body: { asset_id: assetId, query, timestamp_sec: timestampSec }
+    });
+  }
+
+  // ---------------- Online Media & Reference Intelligence (Depts 03 & 04) ----------------
+  async searchOnlineMedia(query, limit = 10, channel = null) {
+    return this.request("/api/v1/online-media/search", {
+      method: "POST",
+      body: { query, limit, channel }
+    });
+  }
+
+  async inspectOnlineMedia(url) {
+    return this.request("/api/v1/online-media/inspect", {
+      method: "POST",
+      body: { url }
+    });
+  }
+
+  async getOnlineCaptions(url, lang = "en") {
+    return this.request(`/api/v1/online-media/captions?url=${encodeURIComponent(url)}&lang=${lang}`);
+  }
+
+  async importOnlineMedia(importData) {
+    return this.request("/api/v1/online-media/import", {
+      method: "POST",
+      body: importData
+    });
+  }
+
+  async extractAudio(audioData) {
+    return this.request("/api/v1/online-media/extract-audio", {
+      method: "POST",
+      body: audioData
+    });
+  }
+
+  async analyzeReference(assetId, name = null) {
+    return this.request("/api/v1/online-media/analyze-reference", {
+      method: "POST",
+      body: { asset_id: assetId, name }
+    });
+  }
+
+  async compareReferences(referenceAssetIds) {
+    return this.request("/api/v1/online-media/compare-references", {
+      method: "POST",
+      body: { reference_asset_ids: referenceAssetIds }
+    });
+  }
+
+  async inspireProduction(referenceAssetId, targetTopic, targetDurationSec = 50.0) {
+    return this.request("/api/v1/online-media/inspire-production", {
+      method: "POST",
+      body: {
+        reference_asset_id: referenceAssetId,
+        target_topic: targetTopic,
+        target_duration_sec: targetDurationSec
+      }
+    });
+  }
+
+  async getUnifiedLibrary(projectId, filters = {}) {
+    let q = "";
+    const params = new URLSearchParams();
+    if (filters.permission_tier) params.append("permission_tier", filters.permission_tier);
+    if (filters.media_type) params.append("media_type", filters.media_type);
+    if (filters.role) params.append("role", filters.role);
+    if (filters.search) params.append("search", filters.search);
+    const qs = params.toString();
+    return this.request(`/api/v1/projects/${projectId}/unified-library${qs ? '?' + qs : ''}`);
+  }
+
+  // ---------------- Advanced Reverse Engineering & Event Graph (Dept 04 & 06) ----------------
+  async reverseEngineerVideo(assetId, title = null) {
+    return this.request("/api/v1/intelligence/reverse-engineer", {
+      method: "POST",
+      body: { asset_id: assetId, title }
+    });
+  }
+
+  async getEventGraph(assetId) {
+    return this.request(`/api/v1/intelligence/event-graph/${assetId}`);
+  }
+
+  async compileProductionBlueprint(assetId, projectId, targetTopic, targetDurationSec = 50.0, aspectRatio = "9:16", targetLanguage = "hi") {
+    return this.request("/api/v1/intelligence/compile-blueprint", {
+      method: "POST",
+      body: {
+        asset_id: assetId,
+        project_id: projectId,
+        target_topic: targetTopic,
+        target_duration_sec: targetDurationSec,
+        aspect_ratio: aspectRatio,
+        target_language: targetLanguage
+      }
+    });
+  }
+
+  async queryEventGraph(assetId, query = null, timestampSec = null) {
+    return this.request("/api/v1/intelligence/query-graph", {
+      method: "POST",
+      body: { asset_id: assetId, query, timestamp_sec: timestampSec }
     });
   }
 

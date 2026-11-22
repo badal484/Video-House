@@ -29,6 +29,8 @@ from .script_engine import ScriptAndNarrativeService
 from .shot_planner import CinematographyShotPlanner
 from .storyboard_planner import StoryboardPlanningService
 from .style_interpreter import ReferenceMatchingDegree, ReferenceStyleInterpreter
+from .research_agent import CreativeResearchAgent
+from .motion_director import MotionDesignDirector
 
 logger = logging.getLogger("studio.creative_direction.service")
 
@@ -41,7 +43,9 @@ class CreativeDirectorService(ICreativeDirection):
         script_service: Optional[ScriptAndNarrativeService] = None,
         shot_planner: Optional[CinematographyShotPlanner] = None,
         storyboard_planner: Optional[StoryboardPlanningService] = None,
-        style_interpreter: Optional[ReferenceStyleInterpreter] = None
+        style_interpreter: Optional[ReferenceStyleInterpreter] = None,
+        research_agent: Optional[CreativeResearchAgent] = None,
+        motion_director: Optional[MotionDesignDirector] = None
     ):
         self.db = db
         self.brief_service = brief_service or CreativeBriefService()
@@ -50,6 +54,8 @@ class CreativeDirectorService(ICreativeDirection):
         self.shot_planner = shot_planner or CinematographyShotPlanner()
         self.storyboard_planner = storyboard_planner or StoryboardPlanningService()
         self.style_interpreter = style_interpreter or ReferenceStyleInterpreter()
+        self.research_agent = research_agent or CreativeResearchAgent()
+        self.motion_director = motion_director or MotionDesignDirector()
 
     def health_check(self) -> bool:
         return True
@@ -100,6 +106,39 @@ class CreativeDirectorService(ICreativeDirection):
                     "premise": c.creative_premise,
                     "complexity": c.production_complexity.value
                 } for c in concepts]}
+            )
+
+        elif action == "research_plan":
+            topic = request.parameters.get("topic", "Documentary Production")
+            scenes = request.parameters.get("scenes", [])
+            plan = self.research_agent.generate_research_plan(
+                project_id=str(project_id),
+                topic=topic,
+                script_scenes=scenes,
+                visual_style=request.parameters.get("visual_style", "Cinematic Natural History Documentary"),
+                target_aspect_ratio=request.parameters.get("target_aspect_ratio", "9:16"),
+                target_fps=float(request.parameters.get("target_fps", 30.0)),
+            )
+            return CreativeDirectionResponse(
+                success=True,
+                message=f"Formulated research plan with {len(plan.items)} targeted asset queries.",
+                data={"research_plan": plan.to_dict()}
+            )
+
+        elif action == "direct_motion":
+            topic = request.parameters.get("topic", "Documentary Production")
+            scenes = request.parameters.get("scenes", [])
+            motion_plan = self.motion_director.direct_project_motion(
+                project_id=str(project_id),
+                topic=topic,
+                script_scenes=scenes,
+                resolution=tuple(request.parameters.get("resolution", (1080, 1920))),
+                fps=float(request.parameters.get("fps", 30.0)),
+            )
+            return CreativeDirectionResponse(
+                success=True,
+                message=f"Art-directed motion graphics composition plan formulated successfully.",
+                data={"motion_plan": motion_plan}
             )
 
         return CreativeDirectionResponse(

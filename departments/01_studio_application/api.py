@@ -19,8 +19,12 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+import logging
 import mimetypes
+import numpy as np
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger("studio.api")
 
 import departments
 from departments.project_management.service import ProjectManagementService, STANDARD_TEMPLATES
@@ -47,6 +51,12 @@ from core.assets.intelligence_models import (
 from departments.media_intelligence.service import MediaIntelligenceService
 from departments.multimodal_providers.router import MultimodalProviderRouter
 from departments.creative_direction.director_service import CreativeDirectorService
+from departments.creative_direction.production_compiler import (
+    ProductionBlueprint,
+    ReferenceToProductionCompiler,
+    TargetProductionBrief
+)
+from core.intelligence.event_graph import TemporalEventGraph
 from departments.production_planning.planning_service import ProductionPlanningService
 from departments.character_production.continuity_service import WorldContinuityService
 from departments.video_editing.service import VideoEditingService
@@ -82,6 +92,9 @@ continuity_service = WorldContinuityService(db)
 video_editor = VideoEditingService(db)
 project_manager = ProjectManagementService(db)
 studio_app = StudioApplicationService(db)
+production_compiler = ReferenceToProductionCompiler()
+active_event_graphs: Dict[UUID, TemporalEventGraph] = {}
+active_reconstruction_manifests: Dict[UUID, Any] = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -1306,6 +1319,709 @@ async def insert_motion_composition_to_timeline_endpoint(composition_id: str, re
         codec=req.codec
     )
     return {"success": True, "clip_id": clip.clip_id, "asset_id": clip.asset_id}
+
+
+# =========================================================================
+# Department 03 & 06: External Creative Resource Intelligence & Bespoke Motion Endpoints
+# =========================================================================
+
+from departments.media_ingestion.discovery.service import CreativeResourceDiscoveryService
+from departments.media_ingestion.discovery.models import ResourceQuery, ResourceMediaType, DiscoveredAsset
+from departments.creative_direction.research_agent import CreativeResearchAgent
+from departments.creative_direction.motion_director import MotionDesignDirector
+
+discovery_service = CreativeResourceDiscoveryService(db)
+research_agent = CreativeResearchAgent()
+motion_director = MotionDesignDirector()
+
+
+class ResearchPlanAPIRequest(BaseModel):
+    topic: str
+    scenes: List[Dict[str, Any]]
+    visual_style: str = "Cinematic Natural History Documentary"
+    target_aspect_ratio: str = "9:16"
+    target_fps: float = 30.0
+
+
+class ResearchDiscoverAPIRequest(BaseModel):
+    query: str
+    media_type: str = "video"
+    aspect_ratio: Optional[str] = "9:16"
+    limit: int = 10
+    provider_keys: Optional[List[str]] = None
+    semantic_tags: List[str] = Field(default_factory=list)
+
+
+class ResearchAcquireAPIRequest(BaseModel):
+    discovered_asset: Dict[str, Any]
+
+
+class MotionComposeAPIRequest(BaseModel):
+    topic: str
+    scenes: List[Dict[str, Any]]
+    resolution: List[int] = Field(default_factory=lambda: [1080, 1920])
+    fps: float = 30.0
+    style_name: str = "Abyssal Biometrics & Micro-Optics"
+
+
+class MotionRenderAPIRequest(BaseModel):
+    composition: Dict[str, Any]
+    codec: str = "prores_ks"
+
+
+@app.post("/api/v1/projects/{project_id}/research/plan")
+async def formulate_research_plan_endpoint(project_id: UUID, req: ResearchPlanAPIRequest):
+    """
+    Formulates a structured multi-query scene-by-scene asset acquisition plan.
+    """
+    plan = research_agent.generate_research_plan(
+        project_id=str(project_id),
+        topic=req.topic,
+        script_scenes=req.scenes,
+        visual_style=req.visual_style,
+        target_aspect_ratio=req.target_aspect_ratio,
+        target_fps=req.target_fps
+    )
+    return {"success": True, "research_plan": plan.to_dict()}
+
+
+@app.post("/api/v1/projects/{project_id}/research/discover")
+async def discover_resources_endpoint(project_id: UUID, req: ResearchDiscoverAPIRequest):
+    """
+    Searches multi-provider creative libraries (Wikimedia, Openverse, NOAA/NASA),
+    computes multi-dimensional rankings, and returns ranked candidates.
+    """
+    q = ResourceQuery(
+        query=req.query,
+        media_type=ResourceMediaType(req.media_type),
+        aspect_ratio=req.aspect_ratio,
+        limit=req.limit,
+        semantic_tags=req.semantic_tags
+    )
+    ranked = discovery_service.search_multi_provider(q, provider_keys=req.provider_keys)
+    return {
+        "success": True,
+        "total_found": len(ranked),
+        "results": [
+            {
+                "asset": asset.to_dict(),
+                "evaluation": score.to_dict()
+            }
+            for asset, score in ranked
+        ]
+    }
+
+
+@app.post("/api/v1/projects/{project_id}/research/acquire")
+async def acquire_resource_endpoint(project_id: UUID, req: ResearchAcquireAPIRequest):
+    """
+    Downloads an external discovered asset with retry backoff, verifies SHA-256 and media
+    integrity via FFprobe, and registers it in the central Asset Registry.
+    """
+    asset = DiscoveredAsset.from_dict(req.discovered_asset)
+    res = discovery_service.acquisition.acquire_asset(asset, project_id=project_id)
+    return {"success": res.success, "download_result": res.to_dict()}
+
+
+@app.post("/api/v1/projects/{project_id}/motion-graphics/compose")
+async def compose_bespoke_motion_endpoint(project_id: UUID, req: MotionComposeAPIRequest):
+    """
+    Art-directs a custom motion design system and synthesizes a MotionComposition.
+    """
+    direction_plan = motion_director.direct_project_motion(
+        project_id=str(project_id),
+        topic=req.topic,
+        script_scenes=req.scenes,
+        resolution=(req.resolution[0], req.resolution[1]),
+        fps=req.fps
+    )
+    comp = motion_director.synthesize_motion_composition(str(project_id), direction_plan)
+    db.save_motion_composition(comp)
+    val = DesignValidator.validate_composition(comp)
+
+    return {
+        "success": True,
+        "composition_plan": direction_plan,
+        "composition": comp.to_dict(),
+        "validation": val
+    }
+
+
+@app.post("/api/v1/projects/{project_id}/motion-graphics/render")
+async def render_bespoke_motion_endpoint(project_id: UUID, req: MotionRenderAPIRequest):
+    """
+    Renders an art-directed motion composition to broadcast-grade transparent video.
+    """
+    comp = MotionComposition.from_dict(req.composition)
+    ext = "mov" if req.codec == "prores_ks" else "webm"
+    out_dir = Path("temp/motion_graphics")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = str(out_dir / f"{comp.composition_id}.{ext}")
+
+    rendered = motion_service.router.render(comp, out_path)
+    return {
+        "success": True,
+        "output_path": rendered,
+        "composition_id": comp.composition_id
+    }
+
+
+# =========================================================================
+# Department 03 & 04: Online Media Research, Import & Reference Analysis Endpoints
+# =========================================================================
+
+from departments.media_ingestion.online_media import (
+    AudioAnalysisReport,
+    AudioExtractionRequest,
+    AudioExtractionService,
+    MediaImportProgress,
+    MediaImportRequest,
+    MediaPermissionTier,
+    OnlineMediaAcquisitionService,
+    OnlineMediaSearchQuery,
+    OnlineVideoMetadata,
+    PermissionDeclaration,
+    YouTubeResearchService,
+)
+
+youtube_research_service = YouTubeResearchService()
+online_acquisition_service = OnlineMediaAcquisitionService(db=db)
+audio_extraction_service = AudioExtractionService()
+
+
+class OnlineMediaInspectRequest(BaseModel):
+    url: str
+
+
+class AnalyzeReferenceAPIRequest(BaseModel):
+    asset_id: UUID
+    name: Optional[str] = None
+
+
+class CompareReferencesAPIRequest(BaseModel):
+    reference_asset_ids: List[UUID]
+
+
+class InspireProductionAPIRequest(BaseModel):
+    reference_asset_id: UUID
+    target_topic: str
+    target_duration_sec: float = 50.0
+
+
+@app.post("/api/v1/online-media/search")
+async def search_online_media_endpoint(query: OnlineMediaSearchQuery):
+    """
+    Searches YouTube by keyword, topic, or creator and returns normalized video metadata.
+    """
+    results = youtube_research_service.search_youtube(query)
+    return {
+        "success": True,
+        "total_found": len(results),
+        "results": [r.to_dict() for r in results]
+    }
+
+
+@app.post("/api/v1/online-media/inspect")
+async def inspect_online_media_endpoint(req: OnlineMediaInspectRequest):
+    """
+    Retrieves deep structural metadata, chapters, resolutions, and available subtitles
+    for a YouTube URL without downloading media streams.
+    """
+    try:
+        meta = youtube_research_service.get_video_metadata(req.url)
+        return {"success": True, "metadata": meta.to_dict()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/v1/online-media/captions")
+async def get_online_media_captions_endpoint(url: str, lang: str = "en"):
+    """
+    Retrieves timed captions or subtitles for a video if available.
+    """
+    captions = youtube_research_service.get_video_captions(url, lang=lang)
+    return {"success": True, "language": lang, "captions": captions}
+
+
+@app.post("/api/v1/online-media/import")
+async def import_online_media_endpoint(req: MediaImportRequest):
+    """
+    Imports online media with strict permission verification.
+    If REFERENCE_ONLY is declared, registers a non-downloaded reference entry.
+    If authorized (user-owned, CC, public domain), downloads media, verifies SHA-256 and registers in DB.
+    """
+    progress = online_acquisition_service.import_online_media(req)
+    if progress.status == "failed":
+        raise HTTPException(status_code=400, detail=progress.error_message or "Import failed")
+    return {"success": True, "import_result": progress.to_dict()}
+
+
+@app.post("/api/v1/online-media/extract-audio")
+async def extract_audio_endpoint(req: AudioExtractionRequest):
+    """
+    Extracts audio from video to target format (WAV, FLAC, MP3, AAC),
+    computes EBU R128 loudness, waveform envelope peaks, and registers in the library.
+    """
+    try:
+        source_path = None
+        if req.source_asset_id:
+            asset = db.get_asset(UUID(req.source_asset_id))
+            if not asset:
+                raise HTTPException(status_code=404, detail="Source asset not found")
+            source_path = Path(asset.storage_path)
+        elif req.source_file_path:
+            source_path = Path(req.source_file_path)
+
+        if not source_path or not source_path.exists():
+            raise HTTPException(status_code=404, detail=f"Source media file not found: {source_path}")
+
+        out_name = f"{source_path.stem}_audio.{req.output_format.lower()}"
+        out_dir = Path("departments/21_storage_asset_management/external_assets")
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / out_name
+
+        extracted = audio_extraction_service.extract_audio(
+            source_path, out_path, output_format=req.output_format,
+            sample_rate=req.sample_rate, channels=req.channels
+        )
+        report = audio_extraction_service.analyze_audio(extracted)
+
+        # Register extracted audio in project if requested
+        asset_id_str = None
+        if req.project_id:
+            proj_uuid = UUID(req.project_id)
+            asset_rec = online_acquisition_service.import_local_media_file(
+                local_path=extracted,
+                project_id=proj_uuid,
+                display_name=f"[Extracted Audio] {source_path.stem}",
+                permission_declaration=PermissionDeclaration.USER_OWNED,
+                role=AssetRole.MUSIC
+            )
+            asset_id_str = str(asset_rec.asset_id)
+
+        return {
+            "success": True,
+            "output_path": str(extracted),
+            "asset_id": asset_id_str,
+            "analysis": report.to_dict()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/v1/online-media/analyze-reference")
+async def analyze_online_reference_endpoint(req: AnalyzeReferenceAPIRequest):
+    """
+    Executes multimodal reference analysis on an imported reference video file,
+    extracting pacing (ASL), dominant color palette, camera motion, and narrative structure.
+    """
+    asset = db.get_asset(req.asset_id)
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    media_path = Path(asset.storage_path)
+    if not media_path.exists():
+        raise HTTPException(status_code=404, detail=f"Physical media file not found: {media_path}")
+
+    profile = intelligence_service.reference_analyzer.generate_reference_profile(
+        media_path, req.asset_id, name=req.name or asset.display_name or asset.original_filename
+    )
+    db.save_reference_profile(profile)
+    return {"success": True, "reference_profile": profile.__dict__}
+
+
+@app.post("/api/v1/online-media/compare-references")
+async def compare_online_references_endpoint(req: CompareReferencesAPIRequest):
+    """
+    Compares two or more reference video profiles, calculating cross-reference ASL,
+    pacing classifications, and unified editorial recommendations.
+    """
+    try:
+        report = intelligence_service.compare_multiple_references(req.reference_asset_ids)
+        return {"success": True, "comparison_report": report}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/v1/online-media/inspire-production")
+async def inspire_production_endpoint(req: InspireProductionAPIRequest):
+    """
+    Generates a structured, 100% original production plan inspired by a reference video's
+    technical grammar and pacing without copying any protected footage or expressive assets.
+    """
+    try:
+        plan = intelligence_service.generate_inspired_production_spec(
+            req.reference_asset_id, req.target_topic, req.target_duration_sec
+        )
+        return {"success": True, "production_plan": plan}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+class ReverseEngineerAPIRequest(BaseModel):
+    asset_id: UUID
+    title: Optional[str] = None
+
+class CompileBlueprintAPIRequest(BaseModel):
+    asset_id: UUID
+    project_id: UUID
+    target_topic: str
+    target_duration_sec: float = 50.0
+    aspect_ratio: str = "9:16"
+    target_language: str = "hi"
+    intended_voiceover_script: Optional[str] = None
+
+class QueryGraphAPIRequest(BaseModel):
+    asset_id: UUID
+    query: Optional[str] = None
+    timestamp_sec: Optional[float] = None
+
+from fractions import Fraction
+
+def _serialize_manifest_node(obj: Any) -> Any:
+    if hasattr(obj, "__dataclass_fields__"):
+        from dataclasses import asdict
+        return {k: _serialize_manifest_node(v) for k, v in asdict(obj).items()}
+    elif isinstance(obj, dict):
+        return {k: _serialize_manifest_node(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_serialize_manifest_node(v) for v in obj]
+    elif isinstance(obj, UUID):
+        return str(obj)
+    elif isinstance(obj, Fraction):
+        return float(obj)
+    elif hasattr(obj, "item"):
+        return obj.item()
+    elif hasattr(obj, "value"):
+        return obj.value
+    elif isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    elif isinstance(obj, (np.integer, int)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, float)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    return obj
+
+
+@app.post("/api/v1/intelligence/reverse-engineer")
+async def reverse_engineer_video_endpoint(req: ReverseEngineerAPIRequest):
+    """
+    Executes deep multimodal reverse engineering across 12 dimensions:
+    presents shot cinematography, transitions, kinetic typography, audio transients,
+    color grading, and narrative structure in a unified temporal event graph.
+    """
+    try:
+        manifest, graph = intelligence_service.reverse_engineer_asset(req.asset_id, req.title)
+        active_event_graphs[req.asset_id] = graph
+        active_reconstruction_manifests[req.asset_id] = manifest
+        return {
+            "success": True,
+            "manifest": _serialize_manifest_node(manifest),
+            "event_graph": _serialize_manifest_node(graph.to_dict())
+        }
+    except Exception as e:
+        logger.error(f"Reverse engineering failed: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/v1/intelligence/event-graph/{asset_id}")
+async def get_event_graph_endpoint(asset_id: UUID):
+    """
+    Retrieves the temporal event graph nodes, edges, and cross-modal synchronization.
+    """
+    graph = active_event_graphs.get(asset_id)
+    if not graph:
+        # Reconstruct on demand
+        try:
+            _, graph = intelligence_service.reverse_engineer_asset(asset_id)
+            active_event_graphs[asset_id] = graph
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=f"Event graph not found for asset {asset_id}: {e}")
+
+    return {"success": True, "event_graph": graph.to_dict()}
+
+
+@app.post("/api/v1/intelligence/compile-blueprint")
+async def compile_blueprint_endpoint(req: CompileBlueprintAPIRequest):
+    """
+    Compiles reverse-engineered reference grammar into an original studio production blueprint:
+    produces OpenTimelineIO timeline (.otio), Motion Canvas composition, Audio DAW stems,
+    and asset acquisition search queries.
+    """
+    try:
+        manifest = active_reconstruction_manifests.get(req.asset_id)
+        if not manifest:
+            manifest, graph = intelligence_service.reverse_engineer_asset(req.asset_id)
+            active_reconstruction_manifests[req.asset_id] = manifest
+            active_event_graphs[req.asset_id] = graph
+
+        brief = TargetProductionBrief(
+            project_id=req.project_id,
+            title=f"Original Production - {req.target_topic}",
+            target_topic=req.target_topic,
+            target_duration_sec=req.target_duration_sec,
+            aspect_ratio=req.aspect_ratio,
+            target_language=req.target_language,
+            intended_voiceover_script=req.intended_voiceover_script
+        )
+        blueprint = production_compiler.compile_reference_to_blueprint(manifest, brief)
+
+        return {
+            "success": True,
+            "blueprint": _serialize_manifest_node(blueprint)
+        }
+    except Exception as e:
+        logger.error(f"Blueprint compilation failed: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/v1/intelligence/query-graph")
+async def query_event_graph_endpoint(req: QueryGraphAPIRequest):
+    """
+    Queries the temporal event graph by exact timecode or natural language text query.
+    """
+    graph = active_event_graphs.get(req.asset_id)
+    if not graph:
+        raise HTTPException(status_code=404, detail=f"No active event graph for asset {req.asset_id}")
+
+    nodes = []
+    if req.timestamp_sec is not None:
+        nodes = graph.query_at_timestamp(req.timestamp_sec)
+    elif req.query:
+        nodes = graph.search_nodes(req.query)
+
+    return {
+        "success": True,
+        "results_count": len(nodes),
+        "nodes": [
+            {
+                "node_id": n.node_id,
+                "node_type": n.node_type.value,
+                "label": n.label,
+                "start_seconds": n.start_seconds,
+                "end_seconds": n.end_seconds,
+                "duration_seconds": round(n.duration_seconds, 3),
+                "attributes": n.attributes
+            }
+            for n in nodes
+        ]
+    }
+
+
+class ReverseEngineerAPIRequest(BaseModel):
+    asset_id: UUID
+    title: Optional[str] = None
+
+class CompileBlueprintAPIRequest(BaseModel):
+    asset_id: UUID
+    project_id: UUID
+    target_topic: str
+    target_duration_sec: float = 50.0
+    aspect_ratio: str = "9:16"
+    target_language: str = "hi"
+    intended_voiceover_script: Optional[str] = None
+
+class QueryGraphAPIRequest(BaseModel):
+    asset_id: UUID
+    query: Optional[str] = None
+    timestamp_sec: Optional[float] = None
+
+def _serialize_manifest_node(obj: Any) -> Any:
+    if hasattr(obj, "__dataclass_fields__"):
+        from dataclasses import asdict
+        return {k: _serialize_manifest_node(v) for k, v in asdict(obj).items()}
+    elif isinstance(obj, dict):
+        return {k: _serialize_manifest_node(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_serialize_manifest_node(v) for v in obj]
+    elif isinstance(obj, UUID):
+        return str(obj)
+    elif hasattr(obj, "item"):
+        return obj.item()
+    elif hasattr(obj, "value"):
+        return obj.value
+    elif isinstance(obj, (np.bool_, bool)):
+        return bool(obj)
+    elif isinstance(obj, (np.integer, int)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, float)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    return obj
+
+
+@app.post("/api/v1/intelligence/reverse-engineer")
+async def reverse_engineer_video_endpoint(req: ReverseEngineerAPIRequest):
+    """
+    Executes deep multimodal reverse engineering across 12 dimensions:
+    presents shot cinematography, transitions, kinetic typography, audio transients,
+    color grading, and narrative structure in a unified temporal event graph.
+    """
+    try:
+        manifest, graph = intelligence_service.reverse_engineer_asset(req.asset_id, req.title)
+        active_event_graphs[req.asset_id] = graph
+        active_reconstruction_manifests[req.asset_id] = manifest
+        return {
+            "success": True,
+            "manifest": _serialize_manifest_node(manifest),
+            "event_graph": graph.to_dict()
+        }
+    except Exception as e:
+        logger.error(f"Reverse engineering failed: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/v1/intelligence/event-graph/{asset_id}")
+async def get_event_graph_endpoint(asset_id: UUID):
+    """
+    Retrieves the temporal event graph nodes, edges, and cross-modal synchronization.
+    """
+    graph = active_event_graphs.get(asset_id)
+    if not graph:
+        # Reconstruct on demand
+        try:
+            _, graph = intelligence_service.reverse_engineer_asset(asset_id)
+            active_event_graphs[asset_id] = graph
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=f"Event graph not found for asset {asset_id}: {e}")
+
+    return {"success": True, "event_graph": graph.to_dict()}
+
+
+@app.post("/api/v1/intelligence/compile-blueprint")
+async def compile_blueprint_endpoint(req: CompileBlueprintAPIRequest):
+    """
+    Compiles reverse-engineered reference grammar into an original studio production blueprint:
+    produces OpenTimelineIO timeline (.otio), Motion Canvas composition, Audio DAW stems,
+    and asset acquisition search queries.
+    """
+    try:
+        manifest = active_reconstruction_manifests.get(req.asset_id)
+        if not manifest:
+            manifest, graph = intelligence_service.reverse_engineer_asset(req.asset_id)
+            active_reconstruction_manifests[req.asset_id] = manifest
+            active_event_graphs[req.asset_id] = graph
+
+        brief = TargetProductionBrief(
+            project_id=req.project_id,
+            title=f"Original Production - {req.target_topic}",
+            target_topic=req.target_topic,
+            target_duration_sec=req.target_duration_sec,
+            aspect_ratio=req.aspect_ratio,
+            target_language=req.target_language,
+            intended_voiceover_script=req.intended_voiceover_script
+        )
+        blueprint = production_compiler.compile_reference_to_blueprint(manifest, brief)
+
+        return {
+            "success": True,
+            "blueprint": _serialize_manifest_node(blueprint)
+        }
+    except Exception as e:
+        logger.error(f"Blueprint compilation failed: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/v1/intelligence/query-graph")
+async def query_event_graph_endpoint(req: QueryGraphAPIRequest):
+    """
+    Queries the temporal event graph by exact timecode or natural language text query.
+    """
+    graph = active_event_graphs.get(req.asset_id)
+    if not graph:
+        raise HTTPException(status_code=404, detail=f"No active event graph for asset {req.asset_id}")
+
+    nodes = []
+    if req.timestamp_sec is not None:
+        nodes = graph.query_at_timestamp(req.timestamp_sec)
+    elif req.query:
+        nodes = graph.search_nodes(req.query)
+
+    return {
+        "success": True,
+        "results_count": len(nodes),
+        "nodes": [
+            {
+                "node_id": n.node_id,
+                "node_type": n.node_type.value,
+                "label": n.label,
+                "start_seconds": n.start_seconds,
+                "end_seconds": n.end_seconds,
+                "duration_seconds": round(n.duration_seconds, 3),
+                "attributes": n.attributes
+            }
+            for n in nodes
+        ]
+    }
+
+
+@app.get("/api/v1/projects/{project_id}/unified-library")
+async def get_unified_media_library_endpoint(
+    project_id: UUID,
+    permission_tier: Optional[str] = None,
+    media_type: Optional[str] = None,
+    role: Optional[str] = None,
+    search: Optional[str] = None
+):
+    """
+    Retrieves the unified online and local media library for a project,
+    annotated with permission tiers, commercial eligibility, and source provenance.
+    """
+    assets = db.list_project_assets(project_id, limit=200)
+    items = []
+    for a in assets:
+        lic = {}
+        perm = MediaPermissionTier.REFERENCE_ONLY.value
+        if a.license_info:
+            try:
+                lic = json.loads(a.license_info)
+                perm = lic.get("permission_tier", MediaPermissionTier.REFERENCE_ONLY.value)
+            except Exception:
+                pass
+
+        if permission_tier and perm.lower() != permission_tier.lower():
+            continue
+        if media_type and a.media_type.value.lower() != media_type.lower():
+            continue
+        if role and not any(r.value.lower() == role.lower() for r in a.roles):
+            continue
+        if search:
+            s_low = search.lower()
+            if s_low not in (a.display_name or "").lower() and s_low not in a.original_filename.lower():
+                continue
+
+        is_prod = perm in (
+            MediaPermissionTier.COMMERCIAL_PERMITTED.value,
+            MediaPermissionTier.EDITING_PERMITTED.value
+        )
+
+        items.append({
+            "asset_id": str(a.asset_id),
+            "display_name": a.display_name,
+            "original_filename": a.original_filename,
+            "media_type": a.media_type.value,
+            "roles": [r.value for r in a.roles],
+            "storage_path": a.storage_path,
+            "source_type": a.source_type,
+            "source_url": lic.get("source_url") or (a.storage_path if a.storage_path.startswith("http") else None),
+            "author": lic.get("author", "Unknown"),
+            "permission_tier": perm,
+            "is_production_eligible": is_prod,
+            "byte_size": a.byte_size,
+            "checksum_sha256": a.checksum_sha256,
+            "created_at": a.import_timestamp
+        })
+
+    return {
+        "success": True,
+        "total": len(items),
+        "assets": items
+    }
+
 
 
 # =========================================================================

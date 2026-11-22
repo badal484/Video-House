@@ -23,6 +23,8 @@ import { ColorWorkspace } from "./workspaces/color_workspace.js";
 import { LocalizationWorkspace } from "./workspaces/localization_workspace.js";
 import { RenderingWorkspace } from "./workspaces/rendering_workspace.js";
 import { ProjectSettingsWorkspace } from "./workspaces/project_settings.js";
+import { OnlineMediaWorkspace } from "./workspaces/online_media_workspace.js";
+import { DeepIntelligenceWorkspace } from "./workspaces/deep_intelligence_workspace.js";
 
 export class StudioApplication {
   constructor() {
@@ -32,7 +34,35 @@ export class StudioApplication {
 
     this.initGlobalComponents();
     this.bindGlobalEvents();
+    this.loadInitialContext();
     this.routeWorkspace(store.getState().activeWorkspace);
+  }
+
+  async loadInitialContext() {
+    try {
+      const { api } = await import("./api_client.js");
+      const projectsRes = await api.listProjects();
+      if (projectsRes && projectsRes.projects && projectsRes.projects.length > 0) {
+        store.setState({ projects: projectsRes.projects });
+        const activeProj = projectsRes.projects.find(p => p.project_id === "88e54cd2-6a21-4e8a-a751-35f177c0964d") || projectsRes.projects[0];
+        store.setState({
+          activeProjectId: activeProj.project_id,
+          activeProject: activeProj
+        });
+        const assetsRes = await api.listAssets(activeProj.project_id);
+        if (assetsRes && assetsRes.assets) {
+          store.setState({ assets: assetsRes.assets });
+          const master = assetsRes.assets.find(a => (a.display_name && a.display_name.includes("Master")) || (a.original_filename && a.original_filename.includes("master")));
+          if (master) {
+            store.setState({ selectedAssetId: master.asset_id });
+          } else if (assetsRes.assets.length > 0) {
+            store.setState({ selectedAssetId: assetsRes.assets[0].asset_id });
+          }
+        }
+      }
+    } catch (err) {
+      console.log("Initial context load error:", err);
+    }
   }
 
   initGlobalComponents() {
@@ -142,6 +172,14 @@ export class StudioApplication {
         break;
       case "rendering":
         this.currentWorkspaceInstance = new RenderingWorkspace(this.mainMount);
+        this.currentWorkspaceInstance.mount();
+        break;
+      case "online_media":
+        this.currentWorkspaceInstance = new OnlineMediaWorkspace(this.mainMount);
+        this.currentWorkspaceInstance.mount();
+        break;
+      case "deep_intelligence":
+        this.currentWorkspaceInstance = new DeepIntelligenceWorkspace(this.mainMount);
         this.currentWorkspaceInstance.mount();
         break;
       case "settings":

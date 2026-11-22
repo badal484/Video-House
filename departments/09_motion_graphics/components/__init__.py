@@ -7,6 +7,8 @@ from .infographics import InfographicsBuilder
 from .brand_animation import BrandBuilder
 from .hud_elements import HUDBuilder
 from .cinematic_elements import CinematicOverlayBuilder
+from .telemetry_hud import TelemetryHUDBuilder
+from .tracking_reticle import TrackingReticleBuilder
 
 __all__ = [
     "KineticTextBuilder",
@@ -15,4 +17,6 @@ __all__ = [
     "BrandBuilder",
     "HUDBuilder",
     "CinematicOverlayBuilder",
+    "TelemetryHUDBuilder",
+    "TrackingReticleBuilder",
 ]

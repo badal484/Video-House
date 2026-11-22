@@ -153,3 +153,110 @@ class ReferenceAnalysisService:
             palette.append(f"#{r:02x}{g:02x}{b:02x}")
 
         return palette, avg_lum, contrast
+
+    @staticmethod
+    def compare_multiple_references(profiles: List[ReferenceProfile]) -> Dict[str, Any]:
+        """
+        Compares multiple reference profiles, calculating editing pacing distribution,
+        dominant camera motions, palette similarities, and aggregate recommendations.
+        """
+        if not profiles:
+            return {"error": "No reference profiles provided for comparison."}
+
+        asls = {}
+        pacings = {}
+        camera_motions = []
+        palettes = []
+
+        for p in profiles:
+            p_name = p.name or str(p.asset_id)[:8]
+            asl = float(p.editing_style.get("average_shot_length_sec", 3.0))
+            pacing = p.editing_style.get("pacing", "MODERATE")
+            asls[p_name] = asl
+            pacings[p_name] = pacing
+            camera_motions.append(p.visual_style.get("primary_camera_motion", "STATIC"))
+            palettes.extend(p.visual_style.get("dominant_palette_hex", []))
+
+        avg_asl = sum(asls.values()) / max(1, len(asls))
+        predominant_motion = max(set(camera_motions), key=camera_motions.count) if camera_motions else "STATIC"
+
+        recommendations = [
+            f"Cross-reference average shot length is {avg_asl:.2f}s.",
+            f"Prevalent camera motion across references: {predominant_motion}.",
+            "Synthesize production using dynamic cuts matching this pacing while maintaining 100% original visual assets."
+        ]
+
+        return {
+            "compared_profiles": list(asls.keys()),
+            "average_shot_lengths": asls,
+            "pacing_comparison": pacings,
+            "mean_asl_sec": round(avg_asl, 2),
+            "common_camera_motions": list(set(camera_motions)),
+            "palette_sample": list(set(palettes))[:8],
+            "editing_recommendation": " ".join(recommendations)
+        }
+
+    @staticmethod
+    def generate_inspired_production_spec(
+        profile: ReferenceProfile,
+        target_topic: str,
+        target_duration_sec: float = 50.0
+    ) -> Dict[str, Any]:
+        """
+        Translates a ReferenceProfile's technical techniques into an original production plan
+        without copying any protected expressive elements or footage.
+        """
+        asl = float(profile.editing_style.get("average_shot_length_sec", 3.0))
+        pacing = profile.editing_style.get("pacing", "MODERATE")
+        palette = profile.visual_style.get("dominant_palette_hex", ["#00F0FF", "#0A2540", "#FFFFFF"])
+        lighting = profile.visual_style.get("lighting_classification", "BALANCED")
+        camera_motion = profile.visual_style.get("primary_camera_motion", "STATIC")
+        bpm = float(profile.audio_style.get("estimated_bpm", 120.0))
+
+        # Calculate optimal shot counts
+        num_shots = max(4, int(round(target_duration_sec / max(1.5, asl))))
+        shot_dur = round(target_duration_sec / num_shots, 2)
+
+        scenes = []
+        for i in range(1, num_shots + 1):
+            if i == 1:
+                intent = "hook"
+                framing = "macro_or_striking_establishing"
+            elif i == num_shots:
+                intent = "conclusion_or_call_to_action"
+                framing = "wide_or_cinematic_pullout"
+            else:
+                intent = f"development_beat_{i-1}"
+                framing = "close_up_or_cutaway" if i % 2 == 0 else "medium_action"
+
+            scenes.append({
+                "scene_number": i,
+                "target_duration_sec": shot_dur,
+                "intent": intent,
+                "recommended_framing": framing,
+                "recommended_camera_motion": camera_motion if i % 2 == 1 else "STATIC",
+                "prompt_direction": (
+                    f"Original cinematic shot for '{target_topic}', adhering to {lighting.lower()} contrast "
+                    f"and accentuating tones matching {palette[0] if palette else '#00F0FF'}."
+                )
+            })
+
+        return {
+            "target_topic": target_topic,
+            "inspired_by_reference": profile.name,
+            "originality_hygiene": (
+                "All media, audio, and graphics must be original or licensed stock. "
+                "Reference is used exclusively for technical rhythm, lighting contrast, and editing grammar."
+            ),
+            "stylistic_parameters": {
+                "target_duration_sec": target_duration_sec,
+                "recommended_shot_count": num_shots,
+                "target_asl_sec": shot_dur,
+                "pacing_classification": pacing,
+                "color_palette_hex": palette,
+                "lighting_style": lighting,
+                "primary_camera_motion": camera_motion,
+                "target_music_bpm": bpm
+            },
+            "planned_scene_structure": scenes
+        }

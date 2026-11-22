@@ -47,6 +47,8 @@ out/
 *.mov
 *.avi
 *.mkv
+*.webm
+*.ogv
 *.wav
 *.flac
 *.mp3
@@ -84,11 +86,22 @@ assets/*
 storage/*
 !storage/.gitkeep
 
+# External downloaded raw media & test outputs (keep manifests, svgs, templates)
+departments/21_storage_asset_management/external_assets/*.webm
+departments/21_storage_asset_management/external_assets/*.ogv
+departments/21_storage_asset_management/external_assets/*.jpg
+departments/21_storage_asset_management/external_assets/*.jpeg
+departments/21_storage_asset_management/external_assets/*.png
+departments/21_storage_asset_management/external_assets/*.wav
+test_artifacts/blueprints/
+test_artifacts/demonstrations/*.mp4
+test_artifacts/demonstrations/previews/
+test_artifacts/demonstrations/previews_overhaul/
+
 # Explicitly allow demonstration test deliverables
-!test_artifacts/demonstrations/**
-!test_artifacts/demonstrations/**/*.mp4
-!test_artifacts/demonstrations/**/*.mov
-!test_artifacts/demonstrations/**/*.wav
+!test_artifacts/demonstrations/demo_a_advertisement/**
+!test_artifacts/demonstrations/demo_b_cinematic/**
+!test_artifacts/demonstrations/demo_c_animation/**
 
 # OS generated
 .DS_Store

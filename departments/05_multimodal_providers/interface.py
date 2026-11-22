@@ -17,6 +17,18 @@ class ProviderRoutingMode(str, Enum):
     COST_OPTIMIZED = "COST_OPTIMIZED"
     ACCURACY_OPTIMIZED = "ACCURACY_OPTIMIZED"
 
+class TaskType(str, Enum):
+    GLOBAL_REASONING = "GLOBAL_REASONING"
+    TEMPORAL_SEGMENTATION = "TEMPORAL_SEGMENTATION"
+    SHOT_BOUNDARY = "SHOT_BOUNDARY"
+    OCR_TYPOGRAPHY = "OCR_TYPOGRAPHY"
+    ASR_TRANSCRIPTION = "ASR_TRANSCRIPTION"
+    AUDIO_CLASSIFICATION = "AUDIO_CLASSIFICATION"
+    MOTION_ESTIMATION = "MOTION_ESTIMATION"
+    CREATIVE_SYNTHESIS = "CREATIVE_SYNTHESIS"
+    CINEMATOGRAPHY = "CINEMATOGRAPHY"
+    COLOR_ANALYSIS = "COLOR_ANALYSIS"
+
 class VideoAnalysisResult(BaseModel):
     provider: str
     model: str
@@ -92,14 +104,17 @@ class MultimodalProvidersRequest(BaseModel):
     project_id: UUID = Field(..., description="Target project UUID")
     action: str = Field(..., description="Action to perform (analyze_video, compare, embed, transcribe)")
     target_path: str = Field(..., description="Path to media file")
+    task_type: Optional[TaskType] = None
     prompt: Optional[str] = None
     parameters: Dict[str, Any] = Field(default_factory=dict)
 
 class MultimodalProvidersResponse(BaseModel):
     success: bool
     provider: str
+    task_type: Optional[TaskType] = None
     data: Dict[str, Any] = Field(default_factory=dict)
     cost_usd: float = 0.0
+    execution_metadata: Dict[str, Any] = Field(default_factory=dict)
 
 class IMultimodalProviders(ABC):
     """

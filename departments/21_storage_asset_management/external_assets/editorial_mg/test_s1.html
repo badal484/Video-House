@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    margin: 0;
+    width: 1080px;
+    height: 1920px;
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Kohinoor Devanagari", "Devanagari Sangam MN", sans-serif;
+    overflow: hidden;
+  }
+  .title-container {
+    position: absolute;
+    top: 180px;
+    left: 80px;
+    right: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .taxonomy-badge {
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: #00F0FF;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .taxonomy-badge::before, .taxonomy-badge::after {
+    content: '';
+    display: inline-block;
+    width: 48px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00F0FF);
+  }
+  .taxonomy-badge::after {
+    background: linear-gradient(90deg, #00F0FF, transparent);
+  }
+  .main-headline {
+    font-size: 88px;
+    font-weight: 900;
+    line-height: 1.15;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.25);
+  }
+  .highlight-gold {
+    color: #FFD700;
+    text-shadow: 0 0 35px rgba(255, 215, 0, 0.65), 0 4px 20px rgba(0,0,0,0.9);
+  }
+  .hairline-divider {
+    width: 380px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.8), #FFD700, rgba(0, 240, 255, 0.8), transparent);
+    margin: 28px 0;
+  }
+  .sub-tagline {
+    font-size: 32px;
+    font-weight: 500;
+    color: #CBD5E1;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.9);
+  }
+</style>
+</head>
+<body>
+  <div class="title-container">
+    <div class="taxonomy-badge">DEPTH 140M • CEPHALOPODA SECRETS</div>
+    <div class="main-headline">
+      <span class="highlight-gold">3 दिल</span> वाला जीव?!
+    </div>
+    <div class="hairline-divider"></div>
+    <div class="sub-tagline">
+      प्रकृति का सबसे विस्मयकारी परिसंचरण तंत्र
+    </div>
+  </div>
+</body>
+</html>

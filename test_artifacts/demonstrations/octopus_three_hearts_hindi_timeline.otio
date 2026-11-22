@@ -1,0 +1,171 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "metadata": {
+    "title": "ऑक्टोपस के तीन दिल क्यों होते हैं? (Why 3 Hearts? - Motion Overhaul)",
+    "director": "Universal AI Studio - Documentary Director",
+    "art_direction": "Deep Ocean Editorial & Biometric Micro-Optics",
+    "language": "Hindi (Devanagari)",
+    "duration_seconds": 50.0,
+    "framerate": 30.0,
+    "resolution": {
+      "width": 1080,
+      "height": 1920,
+      "aspect_ratio": "9:16"
+    },
+    "audio_specs": {
+      "A1": "VOICEOVER_TRACK (Silent placeholder for user recording)",
+      "A2": "MUSIC_TRACK (Cinematic underwater score, -20 LUFS)",
+      "A3": "SFX_TRACK (Sub-bass drone, 60 BPM heartbeats, swimming whoosh, EKG flatline)"
+    }
+  },
+  "tracks": [
+    {
+      "name": "V1_FOOTAGE",
+      "kind": "Video",
+      "clips": [
+        {
+          "name": "Shot 01: Deep Sea Abyss Hook",
+          "source": "wk215_deep_sea_octopus.webm",
+          "start": "00:00:00:00",
+          "end": "00:00:03:06",
+          "duration": "00:00:03:06"
+        },
+        {
+          "name": "Shot 02: Macro Eye & Tentacles",
+          "source": "octopus_vulgaris_macro_dark.jpg",
+          "start": "00:00:03:06",
+          "end": "00:00:06:00",
+          "duration": "00:00:02:24"
+        },
+        {
+          "name": "Shot 03: Coral Reef Crawl",
+          "source": "octopus_vulgaris_poulpe_commun.webm",
+          "start": "00:00:06:00",
+          "end": "00:00:10:00",
+          "duration": "00:00:04:00"
+        },
+        {
+          "name": "Shot 04: Rock Squeeze Locomotion",
+          "source": "giant_pacific_octopus_1080p.webm",
+          "start": "00:00:10:00",
+          "end": "00:00:12:15",
+          "duration": "00:00:02:15"
+        },
+        {
+          "name": "Shot 05: Tentacle Sucker Kinematics",
+          "source": "octopus_suckers_kinematics.ogv",
+          "start": "00:00:12:15",
+          "end": "00:00:14:00",
+          "duration": "00:00:01:15"
+        },
+        {
+          "name": "Shot 06: 3D Anatomical Cutaway (Branchial Hearts)",
+          "source": "anatomie_oktopus_1080p.webm",
+          "start": "00:00:14:00",
+          "end": "00:00:25:00",
+          "duration": "00:00:11:00"
+        },
+        {
+          "name": "Shot 07: 3D Anatomical Zoom (Systemic Heart)",
+          "source": "anatomie_oktopus_1080p.webm",
+          "start": "00:00:25:00",
+          "end": "00:00:36:00",
+          "duration": "00:00:11:00"
+        },
+        {
+          "name": "Shot 08: Pelagic Jet Swimming Action",
+          "source": "sealife_munich_octopus_1080p.ogv",
+          "start": "00:00:36:00",
+          "end": "00:00:44:00",
+          "duration": "00:00:08:00"
+        },
+        {
+          "name": "Shot 09: Oceanic Abyss Swim-Away",
+          "source": "emso_deep_sea_observatory.webm",
+          "start": "00:00:44:00",
+          "end": "00:00:50:00",
+          "duration": "00:00:06:00"
+        }
+      ]
+    },
+    {
+      "name": "V2_MOTION_DESIGN_SUITE",
+      "kind": "Graphics",
+      "clips": [
+        {
+          "name": "Signature Seq A: 3 दिल?! (Optical Glint & Editorial Title)",
+          "start": "00:00:00:00",
+          "end": "00:00:06:00"
+        },
+        {
+          "name": "Scene 2: मिलिए ऑक्टोपस से (Swiss Documentary Lower Third + Sucker Tracking)",
+          "start": "00:00:06:00",
+          "end": "00:00:14:00"
+        },
+        {
+          "name": "Signature Seq B: 2 ब्रैकियल दिल (Organic Flow Streamlines & Gill O2 Shift)",
+          "start": "00:00:14:00",
+          "end": "00:00:25:00"
+        },
+        {
+          "name": "Signature Seq B: सिस्टेमिक दिल (Arterial Network Surges & Blue Blood Gauge)",
+          "start": "00:00:25:00",
+          "end": "00:00:36:00"
+        },
+        {
+          "name": "Signature Seq C: तैरते समय दिल का विराम (Hemodynamic EKG Flatline HUD)",
+          "start": "00:00:36:00",
+          "end": "00:00:44:00"
+        },
+        {
+          "name": "Scene 6: प्रकृति सच में कमाल है! (Grand Outro Typography)",
+          "start": "00:00:44:00",
+          "end": "00:00:50:00"
+        }
+      ]
+    },
+    {
+      "name": "A1_VOICEOVER_PLACEHOLDER",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Voiceover Track (Presynchronized Silent Placeholder for User Voice)",
+          "duration": "00:00:50:00",
+          "status": "READY_FOR_RECORDING"
+        }
+      ]
+    },
+    {
+      "name": "A2_MUSIC",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Cinematic Underwater Ambient Score (-20 LUFS)",
+          "duration": "00:00:50:00",
+          "level_lufs": -20.0
+        }
+      ]
+    },
+    {
+      "name": "A3_SFX",
+      "kind": "Audio",
+      "clips": [
+        {
+          "name": "Oceanic Sub-Drone & Water Rumble",
+          "start": "00:00:00:00",
+          "end": "00:00:50:00"
+        },
+        {
+          "name": "Anatomical Heartbeat Pulses (60 BPM)",
+          "start": "00:00:14:00",
+          "end": "00:00:36:00"
+        },
+        {
+          "name": "Swimming Propulsion EKG Flatline Tone",
+          "start": "00:00:38:00",
+          "end": "00:00:43:15"
+        }
+      ]
+    }
+  ]
+}

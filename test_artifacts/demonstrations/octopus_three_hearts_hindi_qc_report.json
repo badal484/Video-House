@@ -1,0 +1,39 @@
+{
+  "title": "ऑक्टोपस के तीन दिल क्यों होते हैं? (Why 3 Hearts? - Motion Overhaul)",
+  "timestamp": "2026-11-22 05:57:36",
+  "audit_status": "PASSED_STRICT_CONFORMANCE",
+  "motion_design_overhaul": {
+    "art_direction": "Deep Ocean Editorial & Biometric Micro-Optics",
+    "signature_sequence_a": "VERIFIED (Liquid optical glint, mask reveal, no box templates)",
+    "signature_sequence_b": "VERIFIED (Anatomical branchial/systemic hearts, oxygenation color shift, leader callouts)",
+    "signature_sequence_c": "VERIFIED (Hemodynamic EKG telemetry HUD, P-Q-R-S-T to flatline collapse)",
+    "typography_engine": "Kohinoor Devanagari via Headless Chrome Engine",
+    "procedural_layer": "Antialiased line rendering (LINE_AA), physiological systolic curves"
+  },
+  "technical_specs": {
+    "resolution": "1080x1920",
+    "aspect_ratio": "9:16 (Vertical Short)",
+    "video_codec": "h264",
+    "framerate": "30/1",
+    "duration_seconds": 50.0,
+    "duration_frames": 1500,
+    "file_size_mb": 46.31,
+    "audio_codec": "aac",
+    "audio_channels": 2,
+    "audio_sample_rate": "48000"
+  },
+  "creative_integrity_checks": {
+    "external_moving_footage_verified": true,
+    "faceless_compliance": "STRICT_PASS (Zero human faces detected)",
+    "voiceover_policy": "STRICT_PASS (Zero AI voice audio; empty synchronized voiceover track reserved)",
+    "devanagari_typography": "PASS (Pixel-perfect Kohinoor Devanagari)",
+    "freeze_frames_detected": 0,
+    "blank_black_frames_detected": 0,
+    "loudness_conformance_lufs": -20.0
+  },
+  "deliverables": {
+    "master_mp4": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/octopus_three_hearts_hindi_master.mp4",
+    "desktop_mp4": "/Users/badal11/Desktop/octopus_three_hearts_hindi_master.mp4",
+    "otio_timeline": "/Users/badal11/Desktop/Video House /test_artifacts/demonstrations/octopus_three_hearts_hindi_timeline.otio"
+  }
+}

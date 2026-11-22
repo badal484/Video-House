@@ -96,6 +96,7 @@ class TimecodeRange:
 
     @classmethod
     def from_seconds(cls, start_sec: float, end_sec: float, fps: float = 24.0) -> "TimecodeRange":
+        fps = float(fps)
         start_frame = int(round(start_sec * fps))
         end_frame = int(round(end_sec * fps))
         

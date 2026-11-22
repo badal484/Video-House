@@ -39,5 +39,15 @@ for alias, folder in DEPT_MAP.items():
     except Exception:
         pass
 
+# Second pass to resolve any cross-department dependencies
+for alias, folder in DEPT_MAP.items():
+    if alias not in globals():
+        try:
+            mod = importlib.import_module(f"departments.{folder}")
+            globals()[alias] = mod
+            sys.modules[f"departments.{alias}"] = mod
+        except Exception:
+            pass
+
 __all__ = list(DEPT_MAP.keys())
 

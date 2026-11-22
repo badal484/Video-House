@@ -6,7 +6,7 @@ Persists evidence-grounded observations into the Central Asset Registry.
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
 from core.assets.database import (
@@ -29,6 +29,8 @@ from .semantic_search import SemanticSearchService
 from .shot_detector import ShotDetectionService
 from .speech_transcriber import SpeechRecognitionService
 from .video_comparator import MultiVideoComparisonService
+from .master_reverse_engineer import MasterVideoReverseEngineeringService, ReferenceReconstructionManifest
+from core.intelligence.event_graph import TemporalEventGraph
 
 logger = logging.getLogger("studio.media_intelligence")
 
@@ -44,7 +46,8 @@ class MediaIntelligenceService(IMediaIntelligence):
         ocr_service: Optional[OCRService] = None,
         reference_analyzer: Optional[ReferenceAnalysisService] = None,
         comparator: Optional[MultiVideoComparisonService] = None,
-        search_service: Optional[SemanticSearchService] = None
+        search_service: Optional[SemanticSearchService] = None,
+        master_engineer: Optional[MasterVideoReverseEngineeringService] = None
     ):
         self.db = db
         self.shot_detector = shot_detector or ShotDetectionService()
@@ -58,6 +61,7 @@ class MediaIntelligenceService(IMediaIntelligence):
         )
         self.comparator = comparator or MultiVideoComparisonService()
         self.search_service = search_service or SemanticSearchService(db)
+        self.master_engineer = master_engineer or MasterVideoReverseEngineeringService(db=db)
 
     async def analyze_asset(
         self,
@@ -174,6 +178,47 @@ class MediaIntelligenceService(IMediaIntelligence):
         ref_p = ReferenceProfile(**ref_profile_dict)
 
         return self.comparator.compare_to_reference(src_p, ref_p)
+
+    def compare_multiple_references(self, reference_asset_ids: List[UUID]) -> Dict[str, Any]:
+        """Compares two or more reference assets registered in the database."""
+        from core.assets.intelligence_models import ReferenceProfile
+        profiles: List[ReferenceProfile] = []
+        for a_id in reference_asset_ids:
+            p_dict = self.db.get_reference_profile(a_id)
+            if p_dict:
+                profiles.append(ReferenceProfile(**p_dict))
+        if not profiles:
+            raise FileNotFoundError("No valid reference profiles found for given asset IDs.")
+        return self.reference_analyzer.compare_multiple_references(profiles)
+
+    def generate_inspired_production_spec(
+        self, reference_asset_id: UUID, target_topic: str, duration_sec: float = 50.0
+    ) -> Dict[str, Any]:
+        """Generates an original production plan inspired by the reference's grammar and pacing."""
+        from core.assets.intelligence_models import ReferenceProfile
+        p_dict = self.db.get_reference_profile(reference_asset_id)
+        if not p_dict:
+            raise FileNotFoundError(f"Reference profile for asset {reference_asset_id} not found.")
+        profile = ReferenceProfile(**p_dict)
+        return self.reference_analyzer.generate_inspired_production_spec(profile, target_topic, duration_sec)
+
+    def reverse_engineer_asset(
+        self, asset_id: UUID, title: Optional[str] = None
+    ) -> Tuple[ReferenceReconstructionManifest, TemporalEventGraph]:
+        """
+        Executes deep multimodal reverse engineering on an asset, returning the manifest and event graph.
+        """
+        asset = self.db.get_asset(asset_id)
+        if not asset:
+            raise FileNotFoundError(f"Asset {asset_id} not found.")
+        file_path = Path(asset.storage_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"Physical media file missing: {file_path}")
+        return self.master_engineer.reverse_engineer_video(
+            video_path=file_path,
+            asset_id=asset_id,
+            video_title=title or asset.display_name or asset.original_filename
+        )
 
     def health_check(self) -> bool:
         """

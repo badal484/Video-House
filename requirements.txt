@@ -1,0 +1,18 @@
+# Core Runtime Dependencies for Universal AI Video Production Studio
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.7.0
+opentimelineio>=0.16.0
+scenedetect[opencv]>=0.6.4
+numpy>=1.24.0
+pillow>=10.0.0
+httpx>=0.27.0
+python-multipart>=0.0.9
+websockets>=12.0
+
+# Optional / Remote Worker & Cloud Provider Extensions:
+# PyOpenColorIO>=2.3.0
+# pedalboard>=0.8.0
+# faster-whisper>=1.0.0
+# yt-dlp>=2024.0.0
+

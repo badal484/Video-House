@@ -48,6 +48,12 @@ All core architectural decisions and research are documented in the root reposit
 | **[LICENSE_REGISTRY.csv](file:///Users/badal11/Desktop/Video%20House/LICENSE_REGISTRY.csv)** | Machine-readable audit of code licenses, weight terms, and commercial permissions. |
 | **[COMPATIBILITY_MATRIX.md](file:///Users/badal11/Desktop/Video%20House/COMPATIBILITY_MATRIX.md)** | Codec, container, timeline, and 3D format interchange specifications. |
 | **[ENVIRONMENT_REPORT.md](file:///Users/badal11/Desktop/Video%20House/ENVIRONMENT_REPORT.md)** | Empirical hardware and software audit of the host Apple M4 workstation. |
+| **[REVERSE_ENGINEERING_AND_CREATIVE_INTELLIGENCE_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/REVERSE_ENGINEERING_AND_CREATIVE_INTELLIGENCE_ARCHITECTURE.md)** | Multimodal reverse-engineering engine, event graph synthesis, and blueprint generation. |
+| **[REVERSE_ENGINEERING_AND_CREATIVE_INTELLIGENCE_AUDIT.md](file:///Users/badal11/Desktop/Video%20House/REVERSE_ENGINEERING_AND_CREATIVE_INTELLIGENCE_AUDIT.md)** | Implementation audit and capability matrix for video reverse engineering. |
+| **[ONLINE_MEDIA_RESEARCH_AND_REFERENCE_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/ONLINE_MEDIA_RESEARCH_AND_REFERENCE_ARCHITECTURE.md)** | Online media research, reference analysis, and legitimate media acquisition subsystem. |
+| **[EXTERNAL_RESOURCE_INTELLIGENCE_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/EXTERNAL_RESOURCE_INTELLIGENCE_ARCHITECTURE.md)** | External creative resource discovery, multi-registry evaluation, and asset licensing. |
+| **[EXTERNAL_RESOURCES_AND_MOTION_GRAPHICS_AUDIT.md](file:///Users/badal11/Desktop/Video%20House/EXTERNAL_RESOURCES_AND_MOTION_GRAPHICS_AUDIT.md)** | System audit of external asset harvesting and motion graphics engines. |
+| **[FINAL_IMPLEMENTATION_AUDIT.md](file:///Users/badal11/Desktop/Video%20House/FINAL_IMPLEMENTATION_AUDIT.md)** | Comprehensive audit of all 22 production departments, APIs, and verification suites. |
 | **[SYSTEM_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/SYSTEM_ARCHITECTURE.md)** | Master specification of all 22 departments, inputs, outputs, and interfaces. |
 | **[MULTIMODAL_INTELLIGENCE_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/MULTIMODAL_INTELLIGENCE_ARCHITECTURE.md)** | 4-pipeline analysis engine (Visual, Audio, Motion, Temporal) with consensus resolution. |
 | **[AGENT_ARCHITECTURE.md](file:///Users/badal11/Desktop/Video%20House/AGENT_ARCHITECTURE.md)** | Supervisor-specialist agent topology, LangGraph state machines, and Temporal durability. |
@@ -140,3 +146,15 @@ ffmpeg -version
 # 4. Review Part 01 Architecture Baseline
 cat DEVELOPMENT_STATUS.md
 ```
+
+---
+
+## 6. Workstation Architecture & Source of Truth
+
+- **Single Source of Truth:** GitHub repository (`https://github.com/badal484/Video-House`) is the single source of truth for all source code, architecture specifications, schemas, interfaces, and test suites.
+- **Hardware Profile Awareness:**
+  - **Apple Silicon M4 (Current Baseline):** 16GB unified RAM, macOS Darwin. Used for foundation engineering, lightweight media processing, web UI streaming, and comprehensive deterministic verification.
+  - **HP OMEN Workstation (Upcoming Dedicated Rig):** Primary workstation moving forward. Equipped for full local GPU acceleration (NVIDIA CUDA) for heavy AI diffusion (Wan2.1), dense neural rotoscoping (SAM 2.1), and local neural audio processing without cloud bottlenecks.
+- **Strict Repository Boundaries:**
+  - Weights (>2GB) and heavy raw footage are excluded from Git history to maintain repo performance.
+  - Media manifests, schemas, SVG assets, and OTIO timelines provide 100% deterministic reproducibility across development platforms.
